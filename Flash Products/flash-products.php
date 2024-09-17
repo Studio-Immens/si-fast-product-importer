@@ -1,24 +1,23 @@
 <?php
 
 /**
- * @package   Plugin_Name
- * @author    {{author_name}} <{{author_email}}>
+ * @package   Flash_Products
+ * @author    Mauro Arnone <mauro.arnone.ma@gmail.com>
  * @copyright {{author_copyright}}
- * @license   {{author_license}}
- * @link      {{author_url}}
+ * @license   GPL v.3
+ * @link      innovazioneweb.com
  *
- * Plugin Name:     {{plugin_name}}
- * Plugin URI:      @TODO
+ * Plugin Name:     Flash_Products
+ * Plugin URI:      innovazioneweb.com/flash-products
  * Description:     @TODO
- * Version:         {{plugin_version}}
- * Author:          {{author_name}}
- * Author URI:      {{author_url}}
- * Text Domain:     plugin-name
- * License:         {{author_license}}
+ * Version:         1.0.0
+ * Author:          InnovazioneWeb
+ * Author URI:      innovazioneweb.com
+ * Text Domain:     flash-products
+ * License:         GPL v.3
  * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
  * Domain Path:     /languages
  * Requires PHP:    7.4
- * WordPress-Plugin-Boilerplate-Powered: v3.3.0
  */
 
 // If this file is called directly, abort.
@@ -26,23 +25,21 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
 
-define( 'PN_VERSION', '{{plugin_version}}' );
-define( 'PN_TEXTDOMAIN', 'plugin-name' );
-define( 'PN_NAME', '{{plugin_name}}' );
+define( 'PN_VERSION', '1.0.0' );
+define( 'PN_TEXTDOMAIN', 'flash-products' );
+define( 'PN_NAME', 'Flash_Products' );
 define( 'PN_PLUGIN_ROOT', plugin_dir_path( __FILE__ ) );
 define( 'PN_PLUGIN_ABSOLUTE', __FILE__ );
 define( 'PN_MIN_PHP_VERSION', '7.4' );
 define( 'PN_WP_VERSION', '5.3' );
 
-// WPBPGen{{#if language-files}}
 add_action(
 	'init',
 	static function () {
 		load_plugin_textdomain( PN_TEXTDOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	}
-	);
+);
 
-// {{/if}}
 if ( version_compare( PHP_VERSION, PN_MIN_PHP_VERSION, '<=' ) ) {
 	add_action(
 		'admin_init',
@@ -56,12 +53,11 @@ if ( version_compare( PHP_VERSION, PN_MIN_PHP_VERSION, '<=' ) ) {
 			echo wp_kses_post(
 			sprintf(
 				'<div class="notice notice-error"><p>%s</p></div>',
-				__( '"{{plugin_name}}" requires PHP 5.6 or newer.', PN_TEXTDOMAIN )
+				__( '"Flash_Products" requires PHP 5.6 or newer.', PN_TEXTDOMAIN )
 			)
 			);
 		}
 	);
-
 	// Return early to prevent loading the plugin.
 	return;
 }
@@ -69,13 +65,10 @@ if ( version_compare( PHP_VERSION, PN_MIN_PHP_VERSION, '<=' ) ) {
 $plugin_name_libraries = require PN_PLUGIN_ROOT . 'vendor/autoload.php'; //phpcs:ignore
 
 require_once PN_PLUGIN_ROOT . 'functions/functions.php';
-// WPBPGen{{#if libraries_wpbp__debug}}
+
 require_once PN_PLUGIN_ROOT . 'functions/debug.php';
-// {{/if}}
 
-// Add your new plugin on the wiki: https://github.com/WPBP/WordPress-Plugin-Boilerplate-Powered/wiki/Plugin-made-with-this-Boilerplate
 
-// WPBPGen{{#if libraries_micropackage__requirements}}
 $requirements = new \Micropackage\Requirements\Requirements(
 	'Plugin Name',
 	array(
@@ -90,13 +83,9 @@ $requirements = new \Micropackage\Requirements\Requirements(
 
 if ( ! $requirements->satisfied() ) {
 	$requirements->print_notice();
-
 	return;
 }
 
-// {{/if}}
-
-// WPBPGen{{#if libraries_freemius__wordpress-sdk}}
 /**
  * Create a helper function for easy SDK access.
  *
@@ -132,17 +121,11 @@ function pn_fs() {
 			);
 		}
 	}
-
 	return $pn_fs;
 }
-
 // pn_fs();
-// {{/if}}
 
-// WPBPGen{{#if libraries_yahnis-elsts__plugin-update-checker}}
-// Documentation to integrate GitHub, GitLab or BitBucket https://github.com/YahnisElsts/plugin-update-checker/blob/master/README.md
 Puc_v4_Factory::buildUpdateChecker( 'https://github.com/user-name/repo-name/', __FILE__, 'unique-plugin-or-theme-slug' );
-// {{/if}}
 
 if ( ! wp_installing() ) {
 	register_activation_hook( PN_TEXTDOMAIN . '/' . PN_TEXTDOMAIN . '.php', array( new \Plugin_Name\Backend\ActDeact, 'activate' ) );
@@ -154,3 +137,7 @@ if ( ! wp_installing() ) {
 		}
 	);
 }
+
+
+
+
