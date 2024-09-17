@@ -1,18 +1,18 @@
 <?php
 /**
- * Plugin_Name
+ * Flash_Products
  *
- * @package   Plugin_Name
- * @author    {{author_name}} <{{author_email}}>
- * @copyright {{author_copyright}}
- * @license   {{author_license}}
- * @link      {{author_url}}
+ * @package   Flash_Products
+ * @author    Mauro Arnone <mauro.arnone.ma@gmail.com>
+ * @copyright InnovazioneWeb
+ * @license   GPL v.3
+ * @link      innovazioneweb.com
  */
 
 /**
  * Get the settings of the plugin in a filterable way
  *
- * @since {{plugin_version}}
+ * @since 1.0.0
  * @return array
  */
 function pn_get_settings() {
