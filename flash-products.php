@@ -25,118 +25,74 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
 
-define( 'PN_VERSION', '1.0.0' );
-define( 'PN_TEXTDOMAIN', 'flash-products' );
-define( 'PN_NAME', 'Flash_Products' );
-define( 'PN_PLUGIN_ROOT', plugin_dir_path( __FILE__ ) );
-define( 'PN_PLUGIN_ABSOLUTE', __FILE__ );
-define( 'PN_MIN_PHP_VERSION', '7.4' );
-define( 'PN_WP_VERSION', '5.3' );
+define( 'FProd_VERSION', '1.0.0' );
+define( 'FProd_TEXTDOMAIN', 'flash-products' );
+define( 'FProd_NAME', 'Flash_Products' );
+define( 'FProd_PLUGIN_ROOT', plugin_dir_path( __FILE__ ) );
+define( 'FProd_PLUGIN_ABSOLUTE', __FILE__ );
+define( 'FProd_MIN_PHP_VERSION', '7.4' );
+define( 'FProd_WP_VERSION', '5.3' );
 
-add_action(
-	'init',
-	static function () {
-		load_plugin_textdomain( PN_TEXTDOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-	}
-);
 
-if ( version_compare( PHP_VERSION, PN_MIN_PHP_VERSION, '<=' ) ) {
-	add_action(
-		'admin_init',
-		static function() {
-			deactivate_plugins( plugin_basename( __FILE__ ) );
-		}
-	);
-	add_action(
-		'admin_notices',
-		static function() {
-			echo wp_kses_post(
-			sprintf(
-				'<div class="notice notice-error"><p>%s</p></div>',
-				__( '"Flash_Products" requires PHP 5.6 or newer.', PN_TEXTDOMAIN )
-			)
-			);
-		}
-	);
-	// Return early to prevent loading the plugin.
+include_once ABSPATH . 'wp-admin/includes/plugin.php';
+if ( !is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+	add_action( 'admin_notices', 'FP_admin_notice_woocommerce_plugin_error' );
 	return;
 }
-
-$plugin_name_libraries = require PN_PLUGIN_ROOT . 'vendor/autoload.php'; //phpcs:ignore
-
-require_once PN_PLUGIN_ROOT . 'functions/functions.php';
-
-require_once PN_PLUGIN_ROOT . 'functions/debug.php';
-
-
-$requirements = new \Micropackage\Requirements\Requirements(
-	'Plugin Name',
-	array(
-		'php'            => PN_MIN_PHP_VERSION,
-		'php_extensions' => array( 'mbstring' ),
-		'wp'             => PN_WP_VERSION,
-		// 'plugins'            => array(
-		// array( 'file' => 'hello-dolly/hello.php', 'name' => 'Hello Dolly', 'version' => '1.5' )
-		// ),
-	)
-);
-
-if ( ! $requirements->satisfied() ) {
-	$requirements->print_notice();
-	return;
+function FP_admin_notice_woocommerce_plugin_error() {
+	?>
+		<div class="notice notice-error">
+			<p><?php _e( 'ERRORE! WooPrint per funzionare correttamente ha bisogno che il Plugin Woocommerce sia installato e attivo', 'WooPrint' ); ?></p>
+		</div>
+	<?php
 }
 
-/**
- * Create a helper function for easy SDK access.
- *
- * @global type $pn_fs
- * @return object
- */
-function pn_fs() {
-	global $pn_fs;
-
-	if ( !isset( $pn_fs ) ) {
-		require_once PN_PLUGIN_ROOT . 'vendor/freemius/wordpress-sdk/start.php';
-		$pn_fs = fs_dynamic_init(
-			array(
-				'id'             => '',
-				'slug'           => 'plugin-name',
-				'public_key'     => '',
-				'is_live'        => false,
-				'is_premium'     => true,
-				'has_addons'     => false,
-				'has_paid_plans' => true,
-				'menu'           => array(
-					'slug' => 'plugin-name',
-				),
-			)
-		);
-
-		if ( $pn_fs->is_premium() ) {
-			$pn_fs->add_filter(
-				'support_forum_url',
-				static function ( $wp_org_support_forum_url ) { //phpcs:ignore
-					return 'https://your-url.test';
-				}
-			);
-		}
-	}
-	return $pn_fs;
+// if ( !is_plugin_active( 'flash_order/flash_order.php' ) ) {
+// 	add_action( 'admin_notices', 'FP_admin_notice__plugin_base_error' );
+// 	return;
+// }
+function FP_admin_notice__plugin_base_error() {
+?>
+	<div class="notice notice-error">
+		<p><?php esc_html_e( 'ERRORE! WooPrint per funzionare correttamente ha bisogno che il Plugin IW Flash Order sia installato e attivo', 'WooPrint' ); ?></p>
+	</div>
+<?php
 }
-// pn_fs();
 
-Puc_v4_Factory::buildUpdateChecker( 'https://github.com/user-name/repo-name/', __FILE__, 'unique-plugin-or-theme-slug' );
 
-if ( ! wp_installing() ) {
-	register_activation_hook( PN_TEXTDOMAIN . '/' . PN_TEXTDOMAIN . '.php', array( new \Plugin_Name\Backend\ActDeact, 'activate' ) );
-	register_deactivation_hook( PN_TEXTDOMAIN . '/' . PN_TEXTDOMAIN . '.php', array( new \Plugin_Name\Backend\ActDeact, 'deactivate' ) );
-	add_action(
-		'plugins_loaded',
-		static function () use ( $plugin_name_libraries ) {
-			new \Plugin_Name\Engine\Initialize( $plugin_name_libraries );
-		}
-	);
+
+
+add_action( 'init', static function () {
+	load_plugin_textdomain( FProd_TEXTDOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+} );
+
+
+function FProd_init(){
+	FP_load_dependencies();
 }
+FProd_init();
+
+function FP_load_dependencies() {
+	require_once dirname( __FILE__ ) . '/functions.php';
+}
+
+function FP_load_style() {
+	wp_enqueue_style( 'Flash-Products-style-css', plugin_dir_url( __FILE__ ).'/style.css', false, NULL, 'all' );
+}
+add_action( 'wp_enqueue_scripts', 'FP_load_style' );
+// add_action( 'admin_enqueue_scripts', 'FP_load_style' );
+
+function FP_load_animation() {
+	wp_enqueue_script( 'Flash-Products-functions-js', plugin_dir_url( __FILE__ ) . '/functions.js', array( 'jquery' ), NULL, false );
+}
+add_action( 'wp_enqueue_scripts', 'FP_load_animation' );
+// add_action( 'admin_enqueue_scripts', 'FP_load_animation' );
+
+
+// add_action( 'admin_enqueue_scripts', 'WOP_load_wp_media_files' );
+// function WOP_load_wp_media_files( $page ) {
+//     wp_enqueue_media();
+// }
 
 
 
