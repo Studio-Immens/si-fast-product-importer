@@ -42,7 +42,7 @@ if ( !is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 function FP_admin_notice_woocommerce_plugin_error() {
 	?>
 		<div class="notice notice-error">
-			<p><?php _e( 'ERRORE! WooPrint per funzionare correttamente ha bisogno che il Plugin Woocommerce sia installato e attivo', 'WooPrint' ); ?></p>
+			<p><?php esc_html_e( 'ERROR! Flash Products per funzionare correttamente ha bisogno che il Plugin Woocommerce sia installato e attivo', FProd_TEXTDOMAIN ); ?></p>
 		</div>
 	<?php
 }
@@ -54,7 +54,7 @@ function FP_admin_notice_woocommerce_plugin_error() {
 function FP_admin_notice__plugin_base_error() {
 ?>
 	<div class="notice notice-error">
-		<p><?php esc_html_e( 'ERRORE! WooPrint per funzionare correttamente ha bisogno che il Plugin IW Flash Order sia installato e attivo', 'WooPrint' ); ?></p>
+		<p><?php esc_html_e( 'ERROR! Flash Products per funzionare correttamente ha bisogno che il Plugin IW Flash Order sia installato e attivo', FProd_TEXTDOMAIN ); ?></p>
 	</div>
 <?php
 }
