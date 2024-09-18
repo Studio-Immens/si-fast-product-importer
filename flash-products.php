@@ -7,7 +7,7 @@
  * @license   GPL v.3
  * @link      innovazioneweb.com
  *
- * Plugin Name:     Flash_Products
+ * Plugin Name:     IW Flash Products
  * Plugin URI:      innovazioneweb.com/flash-products
  * Description:     @TODO
  * Version:         1.0.0
