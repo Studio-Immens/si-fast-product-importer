@@ -1,3 +1,55 @@
 
 
+:root{
+    --fp-main-color: #0F9CC0;
+    --fp-scnd-color: #2D728F;
+    --fp-high-color: #EE7E14;
+    --fp-link-color: #EA4306; 
+    --fp-selection-color: #F7B21F; 
+
+    --fp-invert-color: #0091ff; 
+    --fp-error-color: #f50000; 
+
+    --fp-bg-color: #505050; 
+    --fp-bg2-color: #404040; 
+    --fp-bg3-color: #303030; 
+    --fp-bg4-color: #202020; 
+    --fp-bg5-color: #101010; 
+    --fp-bg6-color: #000000; 
+
+    --fp-text-color: #ffffff; 
+    --fp-text-color-inv: #000000; 
+
+    --fp-text-shadow:  2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000; 
+    --fp-main-border: 1px solid #715b3e; 
+    --fp-main-tran: 0.6s; 
+    --fp-scnd-tran: 0.3s; 
+
+    --fp-pending: #00f5d0; 
+    --fp-processing: #f5d400; 
+    --fp-failed: #f50000; 
+    --fp-cancelled: #f50000; 
+    --fp-refunded: #f50000; 
+    --fp-completed: #279900; 
+    --fp-modified: #f55600; 	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

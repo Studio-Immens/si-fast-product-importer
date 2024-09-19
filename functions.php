@@ -167,9 +167,74 @@ function FP_delete_meta_by_id( $id ){
   $result = $wpdb->delete( $table, array( 'id'=>$id ) );
   return $result;
 }
+/**
+ * This is a debug function
+ * @since      1.0.0
+ * @package    Flash_Products
+ * @author     InnovazioneWeb <info@innovazioneweb.com>
+ */
+function FP_debug( $var ){ ?>
+	<pre> <?php var_dump($var); ?> </pre> <?php
+}
 
+function FP_general_setting( $setting = array() ){
 
+  $name = ( isset($setting['name']) ) ? $setting['name'] : '';
+  $title = ( isset($setting['title']) ) ? $setting['title'] : '';
+  $default = ( isset($setting['default']) ) ? $setting['default'] : null;
+  $data_default = ( FP_get_meta($name) ) ? FP_get_meta($name) : $default;
+  $options = ( isset($setting['options']) ) ? $setting['options'] : array();
+  $type = ( isset($setting['type']) ) ? $setting['type'] : 'text';
+  $class = ( isset($setting['class']) ) ? $setting['class'] : '';
+  $text = ( isset($setting['text']) ) ? $setting['text'] : '';
+  $info = ( isset($setting['info']) ) ? $setting['info'] : '';
+  $other = ( isset($setting['other']) ) ? $setting['other'] : '';
+  ?>
 
+  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html_e('nome dell\'impostazione nel database: ( ', 'flash_order').esc_attr($name).' )';?>">
+      <?php if($title != ''){ ?>
+          <strong class="FOtextSettings" style="flex-basis:100%"><?php echo esc_attr($title);?></strong>
+      <?php }?>
+      <p class="FOtextSettings"><?php echo esc_attr($text);?></p>
+      <?php if($type == 'textarea'){ ?>
+         <textarea type="<?php echo esc_attr($type);?>" name="setting[<?php echo esc_attr($name);?>]" <?php echo esc_attr($other);?>><?php echo esc_attr($data_default);?></textarea>
+      <?php } elseif ($type != 'select') { ?>
+          <input type="<?php echo esc_attr($type); ?>" name="setting[<?php echo esc_attr($name); ?>]" value="<?php echo esc_attr($data_default);?>" <?php echo esc_attr($other);?>>
+      <?php } else{ ?>
+          <select name="setting[<?php echo esc_attr($name); ?>]" value="<?php echo esc_attr($data_default); ?>" <?php echo esc_attr($other);?>>
+              <option selected disabled hidden><?php echo esc_attr($data_default); ?></option>
+              <?php if ( count($options) ) { ?>
+                  <?php foreach ($options as $option) { ?>
+                      <option value="<?php echo esc_attr($option);?>"><?php echo esc_attr($option);?></option>
+                  <?php } ?>
+              <?php } ?>
+          </select>
+      <?php } ?>
+      <?php if ( $default != '' ) { ?>
+          <span class="dashicons dashicons-image-rotate pointer" onclick="FO_adm_restore_prev_prev( this, <?php echo "'".esc_attr($default)."'";?> )"></span>
+      <?php } ?>
+  </div>
 
+  <?php
+}
 
-
+function FP_save_settings( $args, $assoc_id = '', $debug = false ){
+  if ( isset($_POST["update"]) && current_user_can( 'manage_options' ) ) {
+      // if ( !wp_verify_nonce( $_POST['_fononce_save_settings'], 'FO_save_settings' ) ) {
+      //     return;
+      // }
+      if ( isset( $_POST[$args] ) ) { 
+          foreach ($_POST[$args] as $key => $value) {
+              if ( isset( $_POST[$args][$key] ) ) {
+              // FP_debug($key);
+                  FP_update_meta( $key, $value, $assoc_id ); 
+              }
+          }
+      } //$_SERVER['SERVER_NAME']
+      if ($debug) {
+          FP_debug($_POST);
+      }
+      $url = 'Location: '.$_SERVER['REQUEST_URI'];
+      header( $url );
+  }
+}

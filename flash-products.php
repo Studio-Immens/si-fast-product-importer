@@ -80,7 +80,7 @@ function FP_load_style() {
 	wp_enqueue_style( 'Flash-Products-style-css', plugin_dir_url( __FILE__ ).'/style.css', false, NULL, 'all' );
 }
 add_action( 'wp_enqueue_scripts', 'FP_load_style' );
-// add_action( 'admin_enqueue_scripts', 'FP_load_style' );
+add_action( 'admin_enqueue_scripts', 'FP_load_style' );
 
 function FP_load_animation() {
 	wp_enqueue_script( 'Flash-Products-functions-js', plugin_dir_url( __FILE__ ) . '/functions.js', array( 'jquery' ), NULL, false );
@@ -127,23 +127,60 @@ function FP_menu_page(){
     $menu_slug = 'flash_products';
     $position = (FP_get_meta( 'FP_menu_order') != '')?FP_get_meta( 'FP_menu_order') : '15';
 
-    $link = get_home_url().'/wp-content/plugins/flash_products/includes/img/flash-products-logo-64.png';
+    $link = get_home_url().'/wp-content/plugins/Flash-Products/includes/img/flash-products-logo-20.png';
 
    add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts', 'flash-products' ), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position );
    add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
 }
 add_action( 'admin_menu', 'FP_menu_page' );
 
-
-
-function FP_main_menu_page() {
+function FP_head_menu_page(){
+    ?>
+    <div id="FOadminContent">
+    <h1 style="margin:30px 0px;display:flex;"> 
+        <img src="https://innovazioneweb.com/wp-content/uploads/2023/10/cropped-logo-512-transparent-bg.png" width="50" height="50" alt="light logo">
+        Flash Products 
+		<img src="https://innovazioneweb.com/wp-content/uploads/2024/09/flash-products-logo-512.png" width="50" height="50" alt="light logo">
+        <!-- <button class="FOzero FObutton" onclick="FOtutorialPage();" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"> tutorial </button>  -->
+    </h1>
+    <?php
 
 }
-
-
-function FP_sub_menu_page_settings() {
-
+function FP_nav_menu_page(){
+    $color1 = 'var(--fp-main-color)';
+    $color2 = 'var(--fp-bg3-color)';
+    $FlashOrder_color = ( $_REQUEST['page'] == 'flash_products' )? $color1 : $color2;//phpcs:ignore
+    $Settings_color = ( $_REQUEST['page'] == 'flash_products_settings' )? $color1 : $color2;//phpcs:ignore
+    FP_head_menu_page();
+	// FP_debug($_REQUEST['page']);
+    ?>
+    <nav class="FOMainNav">
+        <a href="admin.php?page=flash_products" class="FOMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
+        <?php esc_html_e( 'FlashProducts', 'flash_order' ); ?></a>
+        <a href="admin.php?page=flash_products_settings" class="FOMainNavEl" style="background-color: <?php echo esc_attr($Settings_color); ?>;">
+        <?php esc_html_e( 'Settings', 'flash_order' ); ?></a>
+    </nav>
+    <?php
 }
+function FP_foot_menu_page( $debug = false ){
+    ?>
+    </div>
+    <?php
+    if ( $debug ) {
+        FP_debug( $_POST );//phpcs:ignore
+    }
+}
+
+function FP_main_menu_page(){
+	FP_nav_menu_page();
+	include( plugin_dir_path( __FILE__ ) . 'pages/main.php');
+	FP_foot_menu_page();
+	}
+	function FP_sub_menu_page_settings(){
+	FP_nav_menu_page();
+	include( plugin_dir_path( __FILE__ ) . 'pages/settings.php');
+	FP_foot_menu_page();
+	}
 
 
 
