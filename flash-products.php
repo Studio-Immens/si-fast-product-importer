@@ -9,7 +9,7 @@
  *
  * Plugin Name:     IW Flash Products
  * Plugin URI:      innovazioneweb.com/flash-products
- * Description:     @TODO
+ * Description:     Flash Products is a powerful WordPress plugin that gives you instant access to a vast database of ready-to-import products for your WooCommerce store. Designed for e-commerce businesses looking to expand their product range quickly and efficiently, Flash Products allows you to import high-quality, pre-configured items with just a few clicks. No more manual data entry or product configuration—this plugin simplifies the process, saving you time and effort.
  * Version:         1.0.0
  * Author:          InnovazioneWeb
  * Author URI:      innovazioneweb.com
@@ -93,6 +93,57 @@ add_action( 'wp_enqueue_scripts', 'FP_load_animation' );
 // function WOP_load_wp_media_files( $page ) {
 //     wp_enqueue_media();
 // }
+
+
+
+
+ /**
+ * Fired during plugin activation.
+ *
+ * @since      1.0.0
+ * @package    Flash_Products
+ * @author     InnovazioneWeb <info@innovazioneweb.com>
+ */
+register_activation_hook( __FILE__, 'activate_flash_products' );
+function activate_flash_products() {
+	FP_create_meta_table();
+}
+
+ /**
+ * Fired during plugin deactivation.
+ *
+ * @since      1.0.0
+ * @package    Flash_Products
+ * @author     InnovazioneWeb <info@innovazioneweb.com>
+ */
+register_deactivation_hook( __FILE__, 'deactivate_flash_products' );
+function deactivate_flash_products() {
+
+}
+
+
+
+function FP_menu_page(){
+    $menu_slug = 'flash_products';
+    $position = (FP_get_meta( 'FP_menu_order') != '')?FP_get_meta( 'FP_menu_order') : '15';
+
+    $link = get_home_url().'/wp-content/plugins/flash_products/includes/img/flash-products-logo-64.png';
+
+   add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts', 'flash-products' ), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position );
+   add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
+}
+add_action( 'admin_menu', 'FP_menu_page' );
+
+
+
+function FP_main_menu_page() {
+
+}
+
+
+function FP_sub_menu_page_settings() {
+
+}
 
 
 
