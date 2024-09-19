@@ -86,7 +86,7 @@ function FP_load_animation() {
 	wp_enqueue_script( 'Flash-Products-functions-js', plugin_dir_url( __FILE__ ) . '/functions.js', array( 'jquery' ), NULL, false );
 }
 add_action( 'wp_enqueue_scripts', 'FP_load_animation' );
-// add_action( 'admin_enqueue_scripts', 'FP_load_animation' );
+add_action( 'admin_enqueue_scripts', 'FP_load_animation' );
 
 
 // add_action( 'admin_enqueue_scripts', 'WOP_load_wp_media_files' );
@@ -136,12 +136,12 @@ add_action( 'admin_menu', 'FP_menu_page' );
 
 function FP_head_menu_page(){
     ?>
-    <div id="FOadminContent">
+    <div id="FPadminContent">
     <h1 style="margin:30px 0px;display:flex;"> 
         <img src="https://innovazioneweb.com/wp-content/uploads/2023/10/cropped-logo-512-transparent-bg.png" width="50" height="50" alt="light logo">
         Flash Products 
 		<img src="https://innovazioneweb.com/wp-content/uploads/2024/09/flash-products-logo-512.png" width="50" height="50" alt="light logo">
-        <!-- <button class="FOzero FObutton" onclick="FOtutorialPage();" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"> tutorial </button>  -->
+        <!-- <button class="FPzero FPbutton" onclick="FPtutorialPage();" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"> tutorial </button>  -->
     </h1>
     <?php
 
@@ -154,10 +154,10 @@ function FP_nav_menu_page(){
     FP_head_menu_page();
 	// FP_debug($_REQUEST['page']);
     ?>
-    <nav class="FOMainNav">
-        <a href="admin.php?page=flash_products" class="FOMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
+    <nav class="FPMainNav">
+        <a href="admin.php?page=flash_products" class="FPMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
         <?php esc_html_e( 'FlashProducts', 'flash_order' ); ?></a>
-        <a href="admin.php?page=flash_products_settings" class="FOMainNavEl" style="background-color: <?php echo esc_attr($Settings_color); ?>;">
+        <a href="admin.php?page=flash_products_settings" class="FPMainNavEl" style="background-color: <?php echo esc_attr($Settings_color); ?>;">
         <?php esc_html_e( 'Settings', 'flash_order' ); ?></a>
     </nav>
     <?php
@@ -176,7 +176,7 @@ function FP_main_menu_page(){
 	include( plugin_dir_path( __FILE__ ) . 'pages/main.php');
 	FP_foot_menu_page();
 	}
-	function FP_sub_menu_page_settings(){
+function FP_sub_menu_page_settings(){
 	FP_nav_menu_page();
 	include( plugin_dir_path( __FILE__ ) . 'pages/settings.php');
 	FP_foot_menu_page();

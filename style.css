@@ -34,6 +34,211 @@
     --fp-modified: #f55600; 	
 }
 
+#FOadminContent pre{
+	color: var(--fp-text-color)!important;
+	background-color: var(--fp-bg-color)!important;
+}
+#FOadminContent h1{
+	color: #fff;
+	    align-items: center;
+}
+#FOadminContent img{
+	padding: 5px;
+	margin: 2px;
+}
+#FOadminContent{
+    margin: 10px;
+    padding: 10px;
+    background-color: var(--fp-bg2-color);
+    color: var(--fp-text-color);
+    font-size: medium;
+}
+.FPForm{
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: #c2c2c2;
+}
+.FPFormSeparator{
+	color: var(--fp-text-color);
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	background-color: var(--fp-bg6-color);
+	padding: 10px;
+	margin: 10px;
+}
+.FPFormCategory{
+	color: var(--fp-text-color);
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	background-color: #00000021;
+/*	padding: 10px;*/
+	margin: 20px;
+}
+.FPFormCategory b{
+	color: var(--fp-text-color);
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	background-color: var(--fp-bg-color);
+	padding: 10px;
+	margin: 0px auto;
+}
+.FPFormZone{
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: 0px 10px;
+}
+.FPFormZone p{
+	margin: 10px;
+}
+.FPFormZone textarea{
+	margin: 10px;
+	width: 100%;
+	min-height: 100px;
+	height: auto;
+}
+.FPFormZone input{
+	margin: 0px 25px 0px 5px;
+}
+.FPFormButton{
+	margin: 10px;
+	cursor: pointer;
+	font-size: medium;
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+	z-index: 10000;
+}
+.FPMainNav{
+	margin: 30px 0px;
+	background-color: var(--fp-bg6-color);;
+	padding: 25px;
+}
+.FPMainNavEl{
+	margin: 10px;
+	padding: 10px;
+	border-radius: 5px;
+	color: var(--fp-text-color);
+	text-decoration: none;
+	background-color: var(--fp-bg3-color);
+	transition: var(--fp-main-tran);
+}
+.FPMainNavEl:hover, .FPMainNavEl:focus{
+	border-radius: 10px;
+	color: var(--fp-text-color);
+	background-color: var(--fp-bg2-color)!important;
+	transition: var(--fp-scnd-tran);
+}
+.FPsettingEl{
+	max-width: 500px;
+	padding: 10px;
+	margin: 10px;
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	transition: var(--fp-main-tran);
+	border: var(--fp-main-border);
+	background-color: #cfcfcf;
+}
+.FPsettingEl textarea{
+	min-width: 500px;
+	padding: 10px;
+	margin: 10px;
+}
+.FPtextSettings{
+	font-size: medium;
+	margin: 0px auto;
+	padding: 10px;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	color: var(--fp-text-color-inv);
+}
+.pointer{
+	cursor: pointer;
+}
+.FPbutton{
+	margin: 10px;
+	padding: 10px;
+	border-radius: 5px;
+	color: var(--fp-text-color);
+	background-color: var(--fp-bg3-color);
+	transition: var(--fp-main-tran);
+	height: 50px;
+}
+.FPbutton:hover, .FPbutton:focus{
+	margin: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	color: var(--fp-text-color);
+	background-color: var(--fp-bg2-color);
+	transition: var(--fp-scnd-tran);
+}
+
+.FPzero{
+	margin: 0px!important;
+	padding: 0px!important;
+}
+
+.FPcomingSoon, .FP_section{
+	padding: 10px;
+	margin: 20px;
+	background-color: var(--fp-main-color);
+}
+
+.FPsettingStyle{
+    margin: 0px;
+    padding: 50px 0 0 0;
+}
+
+.FPsettingStyle p{
+    background-color: #000000b0;
+    margin: 10px!important;
+    padding: 10px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.fp-vari-tabs-container, .FPSetting_Board{
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	height: auto;
+	padding: 10px;
+}
+.fp-vari-tabs-panel{
+	height: 300px;
+	width: 210px;
+	padding: 10px;
+	margin: 5px;
+	overflow: auto;
+	border-radius: 10px;
+	border: 1px solid grey;
+}
+.fp-vari-tabs-panel li{
+	list-style: none;
+}
+.fp-vari-title{
+	font-size: 18;
+	font-weight: 500;
+	width: 100%;
+	position: sticky;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
 
 
 

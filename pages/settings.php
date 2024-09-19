@@ -8,15 +8,15 @@ if ( !defined( 'ABSPATH' ) ) {
 ?>
 
 <div id="settSection">
-<form id="general" method="post" class="FOForm" style="">
-    <button name="update" value="update" class="FObutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> UPDATE </button>
+<form id="general" method="post" class="FPForm" style="">
+    <button name="update" value="update" class="FPbutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> UPDATE </button>
 
-    <div class="FOFormSeparator" onclick="jQuery(`[board='global']`).slideToggle()">
+    <div class="FPFormSeparator" onclick="jQuery(`[board='global']`).slideToggle()">
         <b> <?php esc_html_e('Global Settings' , 'flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down"></span>
     </div>
 
-<!-- global --><div class="FOSetting_Board" board="global">
+<!-- global --><div class="FPSetting_Board" board="global">
 
 <?php
 
@@ -31,16 +31,16 @@ FP_general_setting( array( 'name' => 'FP_menu_order',
 ?>
 <!-- page_flash_order --></div>
 
-    <div class="FOFormSeparator" onclick="jQuery(`[board='page_manage_order']`).slideToggle()">
+    <div class="FPFormSeparator" onclick="jQuery(`[board='page_manage_order']`).slideToggle()">
         <b> <?php esc_html_e('Advanced Settings' , 'flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down"></span>
     </div>
 
-<!-- page_manage_order --><div class="FOSetting_Board" board="page_manage_order" style="display:none;">
+<!-- page_manage_order --><div class="FPSetting_Board" board="page_manage_order" style="display:none;">
 <?php
 
 ?>
-    <div class="FOFormCategory">
+    <div class="FPFormCategory">
         <b> <?php esc_html_e('general settings' , 'flash-products'); ?> </b>
     </div>
 <?php
@@ -51,7 +51,7 @@ FP_general_setting( array( 'name' => 'FP_menu_order',
 ?>
     </div>
 
-    <button name="update" value="update" class="FObutton pointer" style="margin: 10px auto;">UPDATE</button>
+    <button name="update" value="update" class="FPbutton pointer" style="margin: 10px auto;">UPDATE</button>
 
 </form>
 
