@@ -20,7 +20,7 @@
     --fp-text-color: #ffffff; 
     --fp-text-color-inv: #000000; 
 
-    --fp-text-shadow:  2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000; 
+    --fp-text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000; 
     --fp-main-border: 1px solid #715b3e; 
     --fp-main-tran: 0.6s; 
     --fp-scnd-tran: 0.3s; 
@@ -34,19 +34,19 @@
     --fp-modified: #f55600; 	
 }
 
-#FOadminContent pre{
+#FPadminContent pre{
 	color: var(--fp-text-color)!important;
 	background-color: var(--fp-bg-color)!important;
 }
-#FOadminContent h1{
+#FPadminContent h1{
 	color: #fff;
 	    align-items: center;
 }
-#FOadminContent img{
+#FPadminContent img{
 	padding: 5px;
 	margin: 2px;
 }
-#FOadminContent{
+#FPadminContent{
     margin: 10px;
     padding: 10px;
     background-color: var(--fp-bg2-color);
@@ -241,8 +241,28 @@
 
 
 
+.FPMainContainer{
+	width: 100%;
 
+}
 
+.FPNavBar{
+    margin: 10px;
+    padding: 10px;
+    width: calc(100% - 20px);
+    background-color: var(--fp-bg-color);
+    color: var(--fp-text-color);
+    text-shadow: var(--fp-text-shadow);
+}
+.FPContainer{
+    
+}
+.FPSideBar{
+    
+}
+.FPDetailSection{
+    
+}
 
 
 

@@ -8,10 +8,27 @@ if ( !defined( 'ABSPATH' ) ) {
 
 
 
+?>
 
+<div class="FPMainContainer">
 
+    <div class="FPNavBar">
 
+    </div>
 
+    <div class="FPContainer">
+
+    </div>
+
+    <div class="FPSideBar">
+
+    </div>
+
+    <div class="FPDetailSection">
+
+    </div>
+
+</div>
 
 
 
