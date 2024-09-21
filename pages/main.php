@@ -7,7 +7,6 @@ if ( !defined( 'ABSPATH' ) ) {
 
 
 
-
 ?>
 
 <div class="FPMainContainer">

@@ -7,6 +7,8 @@ if ( !defined( 'ABSPATH' ) ) {
 
 ?>
 
+
+
 <div id="settSection">
 <form id="general" method="post" class="FPForm" style="">
     <button name="update" value="update" class="FPbutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> UPDATE </button>
