@@ -246,17 +246,75 @@
 .FPNavBar{
     margin: 10px;
     padding: 10px;
-    width: calc(100% - 20px);
+    width: calc(100% - 40px);
+	display: flex;
+	flex-wrap: wrap;
     background-color: var(--fp-bg-color);
     color: var(--fp-text-color);
     text-shadow: var(--fp-text-shadow);
+}
+.FPNavElement{
+	margin: 5px;
+    padding: 5px;
+	border-radius: 5px;
+	min-width: 30px;
+	/* height: 30px; */
+    background-color: var(--fp-bg2-color);
+    color: var(--fp-text-color);
+    text-shadow: var(--fp-text-shadow);
+	cursor: pointer;
 }
 .FPContainer{
 	margin: 10px;
     padding: 10px;
     width: calc(100% - 20px);
+	min-height: 200px;
+	display: flex;
+	flex-wrap: wrap;
 	/* background-color: var(-); */
     color: var(--fp-text-color-inv);
+}
+.FPCard{
+	margin: 10px;
+    padding: 10px;
+	border-radius: 5px;
+    width: 200px;
+	min-height: 250px;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: var(--fp-bg-color);
+	position: relative;
+	cursor: pointer;
+}
+.FPCardHead{
+	margin: 10px;
+    padding: 10px;
+	border-radius: 5px 5px 0 0;
+    width: 100%;
+	min-height: 150px;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: var(--fp-bg-color);
+}
+.FPCardFoot{
+    padding: 10px;
+	border-radius: 0 0 5px 5px;
+    width: calc(100% - 20px);
+	height: 50px;
+	display: flex;
+	flex-wrap: wrap;
+	background-color: var(--fp-bg3-color);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+}
+.FPCardTitle{
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	color: var(--fp-text-color);
 }
 .FPSideBar{
     
