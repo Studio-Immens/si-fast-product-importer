@@ -4,6 +4,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
+$categories = array();
 
 
 
@@ -13,36 +14,49 @@ if ( !defined( 'ABSPATH' ) ) {
 
     <div class="FPNavBar">
         <div class="FPNavElement">
-            <select class="" name="">
-                <option value="">
-                    
-                </option>
+            Categories:
+            <select class="" name="FP_categories">
+                <option value="blank"> - </option>
+                <?php 
+                foreach ($categories as $key => $value) {
+                    echo '<option value="'.$value.'">'.$value.'</option>';
+                }
+                ?>
             </select>
         </div>
 
         <div class="FPNavElement">
-            <input name="" type="search" onkeyup="">
+            Keyword:
+            <input name="FP_keyword" type="search" placeholder="type a keyword" onkeyup="">
         </div>
     </div>
 
     <div class="FPContainer">
-        <div class="FPCard">
+
+        <div class="FPCard" fp_title="" fp_description="" fp_description="" fp_exerp="" fp_categories="" fp_tag="" fp_ingredient="" fp_macro_cat="" fp_allerg="" fp_sticker="" fp_temp="" onclick="FP_Open_Detail(this)">
+
             <div class="FPCardHead">
                 <img src="">
+                <div class="FORapidImport">
+                    <span class="dashicons dashicons-plus"></span>
+                </div>
             </div>
+
             <div class="FPCardFoot">
                 <strong class="FPCardTitle">
                     Titolo del prodotto
                 </strong>
             </div>
+
         </div>
-    </div>
-
-    <div class="FPSideBar">
 
     </div>
 
-    <div class="FPDetailSection">
+    <div class="FPSideBar" style="display:none;">
+
+    </div>
+
+    <div class="FPDetailSection" style="display:none;">
 
     </div>
 
