@@ -58,10 +58,18 @@ $categories = array();
 
     <div class="FPDetailSection" style="display:;">
         <div class="FPDetailHead">
-
+            Titolo del prodotto
         </div>
         <div class="FPDetailBody">
-
+            <div class="FPDetailBodyImages">
+                
+            </div>
+            <div class="FPDetailBodyCol1">
+                
+            </div>
+            <div class="FPDetailBodyCol2">
+                
+            </div>
         </div>
         <div class="FPDetailFoot">
 
