@@ -56,9 +56,18 @@ $categories = array();
 
     </div>
 
-    <div class="FPDetailSection" style="display:none;">
+    <div class="FPDetailSection" style="display:;">
+        <div class="FPDetailHead">
 
+        </div>
+        <div class="FPDetailBody">
+
+        </div>
+        <div class="FPDetailFoot">
+
+        </div>
     </div>
+    <div class="FPBackGroundSection" style="display:;"></div>
 
 </div>
 

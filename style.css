@@ -330,7 +330,27 @@
     width: 300px;
 }
 .FPDetailSection{
-    width: 100%;
+    width: 95%;
+	height: 90vh;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 999;
+	background-color: var(--fp-bg2-color);
+	border: 1px solid var(--fp-high-color);
+	border-radius: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 40px;
+}
+
+.FPBackGroundSection{
+	background-color: #000;
+	opacity: 0.3;
+	z-index: 995;
+	width: 100%;
 	height: 100%;
 	position: absolute;
 	top: 0;
@@ -338,10 +358,27 @@
 	left: 0;
 	right: 0;
 }
-
-
-
-
+.FPDetailHead{
+	width: calc(100% - 10px);
+	height: 40px;
+	margin-bottom: 10px;
+	background-color: var(--fp-bg4-color);
+	padding: 5px;
+	border-radius: 10px 10px 0 0;
+}
+.FPDetailBody{
+	width: calc(100% - 10px);
+	height: calc(100% - 130px);
+	padding: 5px;
+}
+.FPDetailFoot{
+	width: calc(100% - 10px);
+	height: 40px;
+	margin-top: 10px;
+	background-color: var(--fp-bg4-color);
+	padding: 5px;
+	border-radius: 0 0 10px 10px;
+}
 
 
 
