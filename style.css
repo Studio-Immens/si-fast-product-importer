@@ -394,6 +394,10 @@
 	display: flex;
 	flex-wrap: wrap;
 }
+.FPDetailHead strong{
+	padding: 10px;
+	
+}
 .FPDetailFoot{
 	width: calc(100% - 10px);
 	height: 50px;
@@ -425,8 +429,7 @@
 	width: calc(50% - 15px);
 	padding: 5px;
 	margin: 5px auto;
-	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 }
 .FPDetailBlock{
 	display: flex;

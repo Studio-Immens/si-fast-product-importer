@@ -14,7 +14,7 @@ $categories = array();
 
     <div class="FPNavBar">
         <div class="FPNavElement">
-            Categories:
+            <?php echo esc_html__('Categories:','flash-products');?>
             <select class="" name="FP_categories">
                 <option value="blank"> - </option>
                 <?php 
@@ -26,7 +26,7 @@ $categories = array();
         </div>
 
         <div class="FPNavElement">
-            Keyword:
+            <?php echo esc_html__('Keyword:','flash-products');?>
             <input name="FP_keyword" type="search" placeholder="type a keyword" onkeyup="">
         </div>
     </div>
@@ -37,7 +37,7 @@ $categories = array();
 
             <div class="FPCardHead">
                 <img src="">
-                <div class="FORapidImport">
+                <div class="FORapidImport" onclick="FP_Import_product(jQuery(this).closest('.FPCard'))">
                     <span class="dashicons dashicons-plus"></span>
                 </div>
             </div>
