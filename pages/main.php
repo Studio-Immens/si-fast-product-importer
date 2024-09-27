@@ -85,9 +85,51 @@ $categories = array();
             <div class="FPDetailBodyCol">
                 
                 <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Macro Categories:','flash-products');?></strong>
+                    <div fp-block="fp_macro_cat">
+                        <div class="PFCloud">blank detail</div>
+                    </div>
+                </div>
+
+                <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Categories:','flash-products');?></strong>
-                    <div fp-block="categories">
-                        <div class="PFCloud">category 1</div>
+                    <div fp-block="fp_categories">
+                        <div class="PFCloud">blank detail</div>
+                    </div>
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Tags:','flash-products');?></strong>
+                    <div fp-block="fp_tag">
+                        <div class="PFCloud">blank detail</div>
+                    </div>
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Ingredients:','flash-products');?></strong>
+                    <div fp-block="fp_ingredient">
+                        <div class="PFCloud">blank detail</div>
+                    </div>
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Allergene:','flash-products');?></strong>
+                    <div fp-block="fp_allerg">
+                        <div class="PFCloud">blank detail</div>
+                    </div>
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Sticker:','flash-products');?></strong>
+                    <div fp-block="fp_sticker">
+                        <div class="PFCloud">blank detail</div>
+                    </div>
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Temperature:','flash-products');?></strong>
+                    <div fp-block="fp_temp">
+                        <div class="PFCloud">blank detail</div>
                     </div>
                 </div>
 
