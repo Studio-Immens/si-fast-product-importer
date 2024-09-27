@@ -88,8 +88,6 @@ $categories = array();
                     <strong><?php echo esc_html__('Categories:','flash-products');?></strong>
                     <div fp-block="categories">
                         <div class="PFCloud">category 1</div>
-                        <div class="PFCloud">category 2</div>
-                        <div class="PFCloud">category 3</div>
                     </div>
                 </div>
 

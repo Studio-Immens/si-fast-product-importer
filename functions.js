@@ -11,10 +11,16 @@ function FP_Open_Detail(input){
     jQuery('p[fp-block="exerpt"]').text(jQuery(input).attr('fp_exerp'));
 
     jQuery('div[fp-block="categories"]').empty();
-    var fp_categories = jQuery(input).attr('fp_categories').split(',');
-    fp_categories.forEach(element => {
-        jQuery('div[fp-block="categories"]').append('<div class="PFCloud">'+element+'</div>');
-    });
+    if (jQuery(input).attr('fp_categories') == '') {
+        jQuery('div[fp-block="categories"]').hide();
+    } else{
+        jQuery('div[fp-block="categories"]').show();
+        var fp_categories = jQuery(input).attr('fp_categories').split(',');
+        fp_categories.forEach(element => {
+            jQuery('div[fp-block="categories"]').append('<div class="PFCloud">'+element+'</div>');
+        });
+    }
+
     // jQuery('strong').text(jQuery(input).attr('fp_tag'));
     // jQuery('strong').text(jQuery(input).attr('fp_ingredient'));
     // jQuery('strong').text(jQuery(input).attr('fp_macro_cat'));
