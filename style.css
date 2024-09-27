@@ -33,13 +33,40 @@
     --fp-modified: #f55600; 	
 }
 
+/*---------SCROLLBAR---------*/
+/* width */
+#FPadminContent
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+	position: absolute;
+}
+/* Track */
+#FPadminContent
+::-webkit-scrollbar-track {
+	background: var(--fp-bg-color);
+	border-radius: 2px;
+}
+/* Handle */
+#FPadminContent
+::-webkit-scrollbar-thumb {
+	background: var(--fp-scnd-color);
+	border-radius: 2px;
+}
+/* Handle on hover */
+#FPadminContent
+::-webkit-scrollbar-thumb:hover {
+	background: var(--fp-main-color);
+}
+/*---------FINE---------*/
+
 #FPadminContent pre{
 	color: var(--fp-text-color)!important;
 	background-color: var(--fp-bg-color)!important;
 }
 #FPadminContent h1{
 	color: #fff;
-	    align-items: center;
+	align-items: center;
 }
 #FPadminContent img{
 	padding: 5px;
@@ -430,11 +457,20 @@
 	padding: 10px;
 	margin: 5px;
 	border-radius: 5px;
+	border: 1px solid #fff0;
 	background-color: var(--fp-bg3-color);
 	color: var(--fp-text-color);
 	cursor: pointer;
+	transition: var(--fp-main-tran);
 }
-
+.FPClose:hover{
+	border-radius: 10px;
+	border: 1px solid var(--fp-high-color);
+	background-color: var(--fp-bg2-color);
+	color: var(--fp-text-color);
+	cursor: pointer;
+	transition: var(--fp-scnd-tran);
+}
 
 
 
