@@ -40,8 +40,9 @@ function FP_Create_Detail_tax_cloud( input, key ){
 }
 
 function FP_Import_product(input){
-    jQuery('.FPDetailSection').hide();
-    jQuery('.FPBackGroundSection').hide();
+    // jQuery('.FPDetailSection').hide();
+    // jQuery('.FPBackGroundSection').hide();
+    console.log('FP_Import_product');
 }
 
 

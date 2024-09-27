@@ -33,16 +33,16 @@ $categories = array();
 
     <div class="FPContainer">
 
-        <div class="FPCard" fp_title="Blank Product" fp_description="Blank Product description" fp_exerp="Blank Product exerpt" fp_categories="cat1,cat2,cat3" fp_tag="tag1,tag2,tag3" fp_ingredient="ing1,ing2,ing3" fp_macro_cat="Macro_cat" fp_allerg="allerg" fp_sticker="sticker" fp_temp="cold,hot,ambient" fp_img="" fp_gallery="" onclick="FP_Open_Detail(this)">
+        <div class="FPCard" fp_title="Blank Product" fp_description="Blank Product description" fp_exerp="Blank Product exerpt" fp_categories="cat1,cat2,cat3" fp_tag="tag1,tag2,tag3" fp_ingredient="ing1,ing2,ing3" fp_macro_cat="Macro_cat" fp_allerg="allerg" fp_sticker="sticker" fp_temp="cold,hot,ambient" fp_img="" fp_gallery="">
 
             <div class="FPCardHead">
-                <img src="">
-                <div class="FORapidImport" onclick="FP_Import_product(jQuery(this).closest('.FPCard'))">
+                <img src="" onclick="FP_Open_Detail(jQuery(this).closest('.FPCard'))">
+                <div class="FORapidImport" onclick="FP_Import_product(jQuery(this).closest('.FPCard');)">
                     <span class="dashicons dashicons-plus"></span>
                 </div>
             </div>
 
-            <div class="FPCardFoot">
+            <div class="FPCardFoot" onclick="FP_Open_Detail(jQuery(this).closest('.FPCard'))">
                 <strong class="FPCardTitle">
                     <?php echo esc_html__('Product Title','flash-products');?>
                 </strong>
