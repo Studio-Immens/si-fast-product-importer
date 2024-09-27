@@ -330,7 +330,7 @@
     width: 300px;
 }
 .FPDetailSection{
-    width: calc(95% - 200px);
+    width: 95%;
 	height: 90vh;
 	position: fixed;
 	top: 0;
@@ -341,7 +341,7 @@
 	background-color: var(--fp-bg2-color);
 	border: 1px solid var(--fp-high-color);
 	border-radius: 10px;
-	margin-left: 230px;
+	margin-left: auto;
 	margin-right: auto;
 	margin-top: 50px;
 }
@@ -364,6 +364,8 @@
 	background-color: var(--fp-bg4-color);
 	padding: 5px;
 	border-radius: 10px 10px 0 0;
+	display: flex;
+	flex-wrap: wrap;
 }
 .FPDetailFoot{
 	width: calc(100% - 10px);
@@ -372,6 +374,8 @@
 	background-color: var(--fp-bg4-color);
 	padding: 5px;
 	border-radius: 0 0 10px 10px;
+	display: flex;
+	flex-wrap: wrap;
 }
 .FPDetailBody{
 	width: calc(100% - 10px);
@@ -383,23 +387,53 @@
 }
 .FPDetailBodyImages{
 	width: calc(100% - 10px);
-	height: 400px;
+	height: 300px;
 	padding: 5px;
 	display: flex;
 	flex-wrap: wrap;
 }
-.FPDetailBodyCol1{
+.FPDetailBodyCol{
+	display: flex;
+	flex-wrap: wrap;
+	width: calc(50% - 15px);
+	padding: 5px;
+	margin: 5px auto;
 	display: flex;
 	flex-wrap: wrap;
 }
-.FPDetailBodyCol2{
+.FPDetailBlock{
 	display: flex;
 	flex-wrap: wrap;
+	flex-direction: column;
+	width: calc(100% - 40px);
+	min-height: 30px;
+	padding: 15px;
+	margin: 5px;
+	border-radius: 5px;
+	background-color: var(--fp-bg3-color);
+}
+.FPDetailBlock div{
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
 }
 
+.PFCloud{
+	padding: 10px;
+	margin: 5px;
+	border-radius: 5px;
+	background-color: var(--fp-bg4-color);
+	color: var(--fp-text-color);
 
-
-
+}
+.FPClose{
+	padding: 10px;
+	margin: 5px;
+	border-radius: 5px;
+	background-color: var(--fp-bg3-color);
+	color: var(--fp-text-color);
+	cursor: pointer;
+}
 
 
 
