@@ -1,4 +1,4 @@
-Flash Products Plugin for wordpress
+~Current Version:1.0.0~
 
 === Flash-Products ===
 Contributors: InnovazioneWeb
