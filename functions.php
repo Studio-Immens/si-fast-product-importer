@@ -12,6 +12,7 @@
 
 
  if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+  include_once('updater.php');
   $config = array(
     'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
     'proper_folder_name' => 'Flash-Products', // this is the name of the folder your plugin lives in
