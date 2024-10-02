@@ -37,6 +37,7 @@
 	--fp-card-head-height: 230px
 }
 
+
 /*---------SCROLLBAR---------*/
 /* width */
 #FPadminContent
@@ -484,7 +485,9 @@
 	transition: var(--fp-scnd-tran);
 }
 
-
+.FPdefaultCard{
+	display: none!important;
+}
 
 
 

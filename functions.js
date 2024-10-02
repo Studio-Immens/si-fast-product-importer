@@ -50,9 +50,61 @@ function FP_Import_product(input){
 
 
 
+function FP_search_product(){
+    jQuery('.FPDetailSection').hide();
+    jQuery('.FPBackGroundSection').hide();
+    console.log('FP_search_product');
 
+    var categories = jQuery(".FP_categories").val();
+        if ( categories == null ){ categories = ''; }
+    var s = jQuery(".FP_keyword").val();
+        if ( s == null ){ s = ''; }
+    var url = 'https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/products?categories='+categories+'&s='+s;
 
+    jQuery.get( url, function( data ) {
+        console.log(data.message);
+        console.log(data.result);
 
+        var clone = jQuery('.FPdefaultCard').clone();
+        jQuery(".FPContainer").empty();
+        jQuery(".FPContainer").append(clone);
+
+        FPloopProducts(data.result);
+    });
+}
+
+function FPloopProducts( products ){
+
+    jQuery(products).each(function(i,e){
+        console.log(e);
+
+        var copy = jQuery('.FPdefaultCard').clone();
+        copy.removeClass('FPdefaultCard');
+
+        copy.find('.FPCardTitle').text( e.post_title );
+
+        copy.attr('fp_title', e.post_title);
+        copy.attr('fp_short_title', e.short_title);
+        copy.attr('fp_slang_title', e.slang_title);
+
+        copy.attr('fp_description', e.post_content);
+        copy.attr('fp_exerp', e.post_excerpt);
+        copy.attr('fp_categories', e.product_cat);
+        copy.attr('fp_tag', e.product_tag);
+        copy.attr('fp_ingredient', e.Ingredienti);
+        copy.attr('fp_macro_cat', e.macro_categories);
+        copy.attr('fp_allerg', e.Allergeni);
+        copy.attr('fp_sticker', e.Sticker);
+        copy.attr('fp_temp', e.Temperature);
+
+            // _product_attributes
+
+        // copy.attr('fp_img', element.post_name);
+        // copy.attr('fp_gallery', element.post_name);
+
+        jQuery(".FPContainer").append(copy);
+    });
+}
 
 
 
