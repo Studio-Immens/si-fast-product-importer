@@ -4,24 +4,37 @@
 if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
-
-$categories = array();
+$categories = array('result');
 $categories = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/taxonomy?tax=product_cat') ) );
 
-// fo_debug( $categories->result );
+$languages = array('result');
+$languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/taxonomy?tax=Languages') ) );
 
+// fo_debug( $languages->result );
 ?>
 
 <div class="FPMainContainer">
 
     <div class="FPNavBar">
+
+        <div class="FPNavElement">
+            <?php echo esc_html__('Languages:','flash-products');?>
+            <select class="FP_languages" name="FP_languages" onchange="FP_search_product();">
+                <?php 
+                foreach ($languages->result as $key => $value) {
+                    echo '<option value="'.$value->slug.'">'.$value->name.'</option>';
+                }
+                ?>
+            </select>
+        </div>
+
         <div class="FPNavElement">
             <?php echo esc_html__('Categories:','flash-products');?>
             <select class="FP_categories" name="FP_categories" onchange="FP_search_product();">
                 <option value=""> - select - </option>
                 <?php 
                 foreach ($categories->result as $key => $value) {
-                    echo '<option value="'.$value->name.'">'.$value->name.'</option>';
+                    echo '<option value="'.$value->slug.'">'.$value->name.'</option>';
                 }
                 ?>
             </select>
@@ -29,16 +42,42 @@ $categories = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashp
 
         <div class="FPNavElement">
             <?php echo esc_html__('Keyword:','flash-products');?>
-            <input name="FP_keyword" type="search" placeholder="type a keyword" onkeyup="">
+            <input class="FP_keyword" name="FP_keyword" type="search" placeholder="type a keyword" onkeyup="FP_search_product();">
         </div>
-    </div>
 
+        <div class="FPNavElement">
+            <?php echo esc_html__('Order:','flash-products');?>
+            <select class="FP_orderby" name="FP_orderby" onchange="FP_search_product();">
+                <option value="name"> By Name </option>
+                <option value="date"> By Date </option>
+            </select>
+        </div>
+
+        <div class="FPNavElement">
+            <?php echo esc_html__('Limit:','flash-products');?>
+            <input class="FP_limit" name="FP_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 500','flash-products');?>" min="1" max="500" step="1" value="100" onchange="FP_search_product();" style="width:65px">
+        </div>
+
+        <div class="FPNavElement">
+            <?php echo esc_html__('Page:','flash-products');?>
+            <input class="FP_offset" name="FP_offset" type="number" placeholder="type a number" step="1" value="0" total_pages="0" onchange="FP_search_product();" style="width:65px">
+        </div>
+
+        <div class="FPNavElement">
+            <?php echo esc_html__('Founds:','flash-products');?>
+            <strong class="FPfound"></strong>
+        </div>
+
+
+        <button class="FPNavElement" style="margin-left:auto;" onclick="FP_search_product();"><?php echo esc_html__('SEARCH','flash-products');?></button>
+    </div>
+    
     <div class="FPContainer">
 
-        <div class="FPCard FPdefaultCard" fp_title="Product title" fp_short_title="Product short title" fp_slang_title="Product slang title" fp_description="Blank Product description" fp_exerp="Blank Product exerpt" fp_categories="cat1,cat2,cat3" fp_tag="tag1,tag2,tag3" fp_ingredient="ing1,ing2,ing3" fp_macro_cat="Macro_cat" fp_allerg="allerg" fp_sticker="sticker" fp_temp="cold,hot,ambient" fp_img="" fp_gallery="">
+        <div class="FPCard FPdefaultCard" fp_title="Product title" fp_short_title="Product short title" fp_slang_title="Product slang title" fp_description="Blank Product description" fp_exerp="Blank Product exerpt" fp_categories="cat1,cat2,cat3" fp_tag="tag1,tag2,tag3" fp_ingredient="ing1,ing2,ing3" fp_macro_cat="Macro_cat" fp_allerg="allerg" fp_sticker="sticker" fp_temp="cold,hot,ambient" fp_img="<?php echo wc_placeholder_img_src('300'); ?>" fp_gallery="">
 
             <div class="FPCardHead">
-                <img src="" onclick="FP_Open_Detail(jQuery(this).closest('.FPCard'))">
+                <img src="<?php echo wc_placeholder_img_src('300'); ?>" onclick="FP_Open_Detail(jQuery(this).closest('.FPCard'))">
                 <div class="FORapidImport" onclick="FP_Import_product(jQuery(this).closest('.FPCard'));">
                     <span class="dashicons dashicons-plus"></span>
                 </div>

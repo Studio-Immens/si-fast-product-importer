@@ -17,6 +17,10 @@ function FP_Open_Detail(input){
     FP_Create_Detail_tax_cloud( input, 'fp_sticker' );
     FP_Create_Detail_tax_cloud( input, 'fp_temp' );
 
+    jQuery('.FPDetailBodyImages').empty();
+    var thumb = jQuery(input).attr('fp_img');
+    jQuery('.FPDetailBodyImages').append( '<img src="'+thumb+'">' );
+
     // jQuery('strong').text(jQuery(input).attr('fp_img'));
     // jQuery('strong').text(jQuery(input).attr('fp_gallery'));
 }
@@ -57,9 +61,18 @@ function FP_search_product(){
 
     var categories = jQuery(".FP_categories").val();
         if ( categories == null ){ categories = ''; }
+    var languages = jQuery(".FP_languages").val();
+        if ( languages == null ){ languages = ''; }
+    var orderby = jQuery(".FP_orderby").val();
+        if ( orderby == null ){ orderby = ''; }
+    var limit = jQuery(".FP_limit").val();
+        if ( limit == null ){ limit = ''; }
+    var offset = jQuery(".FP_offset").val();
+        if ( offset == null ){ offset = ''; }
     var s = jQuery(".FP_keyword").val();
+    console.log(s);
         if ( s == null ){ s = ''; }
-    var url = 'https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/products?categories='+categories+'&s='+s;
+    var url = 'https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/products?categories='+categories+'&s='+s+'&languages='+languages+'&orderby='+orderby+'&limit='+limit+'&offset='+offset;
 
     jQuery.get( url, function( data ) {
         console.log(data.message);
@@ -68,12 +81,17 @@ function FP_search_product(){
         var clone = jQuery('.FPdefaultCard').clone();
         jQuery(".FPContainer").empty();
         jQuery(".FPContainer").append(clone);
+        
+        jQuery(".FPfound").text(data.founds);
 
         FPloopProducts(data.result);
     });
 }
 
 function FPloopProducts( products ){
+    var macro_categories='';
+    var product_cat='';
+    var product_tag='';
 
     jQuery(products).each(function(i,e){
         console.log(e);
@@ -89,18 +107,38 @@ function FPloopProducts( products ){
 
         copy.attr('fp_description', e.post_content);
         copy.attr('fp_exerp', e.post_excerpt);
-        copy.attr('fp_categories', e.product_cat);
-        copy.attr('fp_tag', e.product_tag);
         copy.attr('fp_ingredient', e.Ingredienti);
-        copy.attr('fp_macro_cat', e.macro_categories);
         copy.attr('fp_allerg', e.Allergeni);
         copy.attr('fp_sticker', e.Sticker);
         copy.attr('fp_temp', e.Temperature);
 
+        if (e.macro_categories) {
+            jQuery(e.macro_categories).each(function(ind,ele){
+                macro_categories = macro_categories+','+ele.name;
+            });
+            copy.attr('fp_macro_cat', macro_categories);
+        }
+        if (e.product_cat) {
+            jQuery(e.product_cat).each(function(ind,ele){
+                product_cat = product_cat+','+ele.name;
+            });
+            copy.attr('fp_categories', product_cat);
+        }
+        if (e.product_tag) {
+            jQuery(e.product_tag).each(function(ind,ele){
+                product_tag = product_tag+','+ele.name;
+            });
+            copy.attr('fp_tag', product_tag);
+        }
+
+        if (e.thumbnail != '' && e.gallery.length !== 0 ) {
+            copy.find('.FPCardHead img').attr('src', e.gallery[e.thumbnail].guid);
+            copy.attr('fp_img', e.gallery[e.thumbnail].guid);
+        }
+        // copy.find('.FPCardHead img').attr('src', e.gallery[e.thumbnail].guid);
             // _product_attributes
 
-        // copy.attr('fp_img', element.post_name);
-        // copy.attr('fp_gallery', element.post_name);
+        // copy.attr('fp_gallery', e.gallery);
 
         jQuery(".FPContainer").append(copy);
     });
