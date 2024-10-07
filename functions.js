@@ -5,9 +5,31 @@ function FP_Open_Detail(input){
     jQuery('.FPBackGroundSection').show();
 
     jQuery('.FPDetailHead strong').text(jQuery(input).attr('fp_title'));
-    jQuery('p[fp-block="description"]').text(jQuery(input).attr('fp_description'));
-    jQuery('p[fp-block="exerpt"]').text(jQuery(input).attr('fp_exerp'));
 
+    if (jQuery(input).attr('fp_short_title') == '') { 
+        jQuery('p[fp-block="short_title"]').parent().hide();
+    } else{ 
+        jQuery('p[fp-block="short_title"]').parent().show();
+        jQuery('p[fp-block="short_title"]').text(jQuery(input).attr('fp_short_title')); 
+    }
+    if (jQuery(input).attr('fp_slang_title') == '') { 
+        jQuery('p[fp-block="slang_title"]').parent().hide();
+    } else{ 
+        jQuery('p[fp-block="slang_title"]').parent().show(); 
+        jQuery('p[fp-block="slang_title"]').text(jQuery(input).attr('fp_slang_title'));
+    }
+    if (jQuery(input).attr('fp_description') == '') { 
+        jQuery('p[fp-block="description"]').parent().hide();
+    } else{ 
+        jQuery('p[fp-block="description"]').parent().show();
+        jQuery('p[fp-block="description"]').text(jQuery(input).attr('fp_description')); 
+    }
+    if (jQuery(input).attr('fp_exerp') == '') { 
+        jQuery('p[fp-block="exerpt"]').parent().hide();
+    } else{ 
+        jQuery('p[fp-block="exerpt"]').parent().show();
+        jQuery('p[fp-block="exerpt"]').text(jQuery(input).attr('fp_exerp')); 
+    }
     FP_Create_Detail_tax_cloud( input, 'fp_macro_cat' );
     FP_Create_Detail_tax_cloud( input, 'fp_categories' );
     FP_Create_Detail_tax_cloud( input, 'fp_tag' );
@@ -38,7 +60,9 @@ function FP_Create_Detail_tax_cloud( input, key ){
         jQuery('div[fp-block="'+key+'"]').parent().show();
         var fp_categories = jQuery(input).attr(''+key+'').split(',');
         fp_categories.forEach(element => {
-            jQuery('div[fp-block="'+key+'"]').append('<div class="PFCloud">'+element+'</div>');
+            if ( element != '' ) {
+                jQuery('div[fp-block="'+key+'"]').append('<div class="PFCloud">'+element+'</div>');
+            }
         });
     }
 }
@@ -89,12 +113,12 @@ function FP_search_product(){
 }
 
 function FPloopProducts( products ){
-    var macro_categories='';
-    var product_cat='';
-    var product_tag='';
 
     jQuery(products).each(function(i,e){
         console.log(e);
+        var macro_categories = '';
+        var product_cat = '';
+        var product_tag = '';
 
         var copy = jQuery('.FPdefaultCard').clone();
         copy.removeClass('FPdefaultCard');

@@ -55,7 +55,7 @@ $languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashpr
 
         <div class="FPNavElement">
             <?php echo esc_html__('Limit:','flash-products');?>
-            <input class="FP_limit" name="FP_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 500','flash-products');?>" min="1" max="500" step="1" value="100" onchange="FP_search_product();" style="width:65px">
+            <input class="FP_limit" name="FP_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 500','flash-products');?>" min="1" max="500" step="1" value="50" onchange="FP_search_product();" style="width:65px">
         </div>
 
         <div class="FPNavElement">
@@ -71,10 +71,10 @@ $languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashpr
 
         <button class="FPNavElement" style="margin-left:auto;" onclick="FP_search_product();"><?php echo esc_html__('SEARCH','flash-products');?></button>
     </div>
-    
+
     <div class="FPContainer">
 
-        <div class="FPCard FPdefaultCard" fp_title="Product title" fp_short_title="Product short title" fp_slang_title="Product slang title" fp_description="Blank Product description" fp_exerp="Blank Product exerpt" fp_categories="cat1,cat2,cat3" fp_tag="tag1,tag2,tag3" fp_ingredient="ing1,ing2,ing3" fp_macro_cat="Macro_cat" fp_allerg="allerg" fp_sticker="sticker" fp_temp="cold,hot,ambient" fp_img="<?php echo wc_placeholder_img_src('300'); ?>" fp_gallery="">
+        <div class="FPCard FPdefaultCard" fp_title="" fp_short_title="" fp_slang_title="" fp_description="" fp_exerp="" fp_categories="" fp_tag="" fp_ingredient="" fp_macro_cat="" fp_allerg="" fp_sticker="" fp_temp="" fp_img="<?php echo wc_placeholder_img_src('300'); ?>" fp_gallery="">
 
             <div class="FPCardHead">
                 <img src="<?php echo wc_placeholder_img_src('300'); ?>" onclick="FP_Open_Detail(jQuery(this).closest('.FPCard'))">
@@ -109,17 +109,23 @@ $languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashpr
             <div class="FPDetailBodyCol">
 
                 <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Short title:','flash-products');?></strong>
+                    <p fp-block="short_title"></p>
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Slang title:','flash-products');?></strong>
+                    <p fp-block="slang_title"></p>
+                </div>
+
+                <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Exerpt:','flash-products');?></strong>
-                    <p fp-block="exerpt">
-                        <?php echo esc_html__('Product exerption text','flash-products');?>
-                    </p>
+                    <p fp-block="exerpt"></p>
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Description:','flash-products');?></strong>
-                    <p fp-block="description">
-                        <?php echo esc_html__('Product description text','flash-products');?>
-                    </p>
+                    <p fp-block="description"></p>
                 </div>
 
             </div>

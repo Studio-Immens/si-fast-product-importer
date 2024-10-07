@@ -328,12 +328,13 @@
 	flex-wrap: wrap;
 	justify-content: center;
 	background-color: var(--fp-bg-color);
+	overflow: hidden;
 }
 .FPCardHead img{
 	padding: 0px!important;
 	margin: 2px!important;
-    max-width: calc(100% - 10px);
-	height: 226px;
+/*    max-width: calc(100% - 10px);*/
+	max-height: 226px;
 	background-color: var(--fp-bg2-color);
 }
 .FPCardFoot{
@@ -501,7 +502,6 @@
 	justify-content: center;
 	text-align: center;
 	align-items: center;
-	display: flex;
 	padding: 5px;
 	margin: auto;
 }
