@@ -44,6 +44,7 @@ $languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashpr
             <?php echo esc_html__('Keyword:','flash-products');?>
             <input class="FP_keyword" name="FP_keyword" type="search" placeholder="type a keyword" onkeyup="FP_search_product();">
         </div>
+        
 
         <div class="FPNavElement">
             <?php echo esc_html__('Order:','flash-products');?>
@@ -52,6 +53,8 @@ $languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashpr
                 <option value="date"> By Date </option>
             </select>
         </div>
+        
+
 
         <div class="FPNavElement">
             <?php echo esc_html__('Limit:','flash-products');?>
