@@ -4,43 +4,10 @@
  *
  * @package   Flash_Products
  * @author    Mauro Arnone <mauro.arnone.ma@gmail.com>
- * @copyright InnovazioneWeb
+ * @copyright StudioImmens
  * @license   GPL v.3
- * @link      innovazioneweb.com
+ * @link      studioimmens.com
  */
-
-
-
-//  if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
-//   include_once('updater.php');
-//   $config = array(
-//     'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
-//     'proper_folder_name' => 'Flash-Products', // this is the name of the folder your plugin lives in
-//     'api_url' => 'https://api.github.com/repos/Immens95/Flash-Products.git', // the GitHub API url of your GitHub repo
-//     'raw_url' => 'https://raw.github.com/Immens95/Flash-Products.git/master', // the GitHub raw url of your GitHub repo
-//     'github_url' => 'https://github.com/Immens95/Flash-Products.git', // the GitHub url of your GitHub repo
-//     'zip_url' => 'https://github.com/Immens95/Flash-Products/archive/refs/heads/main.zip', // the zip url of the GitHub repo
-//     'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-//     'requires' => '3.0', // which version of WordPress does your plugin require?
-//     'tested' => '3.3', // which version of WordPress is your plugin tested up to?
-//     'readme' => 'README.txt', // which file to use as the readme for the version number
-//     // 'access_token' => '', // Access private repositories by authorizing under Plugins > GitHub Updates when this example plugin is installed
-//   );
-//   new WP_GitHub_Updater($config);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -52,10 +19,10 @@
  *
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
-function FP_create_meta_table( $version = FProd_VERSION ){
-	update_option( 'flash_products_meta_table', FProd_VERSION );
+function FP_create_meta_table( $version = SIFProd_VERSION ){
+	update_option( 'flash_products_meta_table', SIFProd_VERSION );
     global $wpdb;
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     $table_name = $wpdb->prefix . "flash_products_meta";  //get the database table prefix to create my new table
@@ -83,7 +50,7 @@ function FP_create_meta_table( $version = FProd_VERSION ){
  * This function retrieve flash products meta_value or entire row from table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_get_meta( $meta_key, $type = 'var' ){
   global $wpdb;
@@ -101,7 +68,7 @@ function FP_get_meta( $meta_key, $type = 'var' ){
  * This function retrieve flash products meta_value or entire results from table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_get_meta_by_assoc_id( $assoc_id, $type = 'var' ){
   global $wpdb;
@@ -117,7 +84,7 @@ function FP_get_meta_by_assoc_id( $assoc_id, $type = 'var' ){
  * This function retrieve flash products meta_value or entire results from table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_get_meta_by_assoc_tb( $assoc_tb, $type = 'var' ){
   global $wpdb;
@@ -133,7 +100,7 @@ function FP_get_meta_by_assoc_tb( $assoc_tb, $type = 'var' ){
  * This function retrieve flash products meta_value or entire row from table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_get_meta_by_id( $id, $type = 'var' ){
   global $wpdb;
@@ -149,7 +116,7 @@ function FP_get_meta_by_id( $id, $type = 'var' ){
  * This function insert meta row in the table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_insert_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = null ){
   global $wpdb;
@@ -161,7 +128,7 @@ function FP_insert_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = n
  * This function update meta row in the table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_update_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = null ){
   global $wpdb;
@@ -179,7 +146,7 @@ function FP_update_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = n
  * This function delete meta row from table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_delete_meta( $meta_key ){
   global $wpdb;
@@ -191,7 +158,7 @@ function FP_delete_meta( $meta_key ){
  * This function delete meta row from table 'flash_products_meta'
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_delete_meta_by_id( $id ){
   global $wpdb;
@@ -203,7 +170,7 @@ function FP_delete_meta_by_id( $id ){
  * This is a debug function
  * @since      1.0.0
  * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
+ * @author     StudioImmens <info@studioimmens.com>
  */
 function FP_debug( $var ){ ?>
 	<pre> <?php var_dump($var); ?> </pre> <?php
@@ -223,7 +190,7 @@ function FP_general_setting( $setting = array() ){
   $other = ( isset($setting['other']) ) ? $setting['other'] : '';
   ?>
 
-  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html_e('nome dell\'impostazione nel database: ( ', 'flash_order').esc_attr($name).' )';?>">
+  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html_e('nome dell\'impostazione nel database: ( ', SIFProd_TEXTDOMAIN).esc_attr($name).' )';?>">
       <?php if($title != ''){ ?>
           <strong class="FOtextSettings" style="flex-basis:100%"><?php echo esc_attr($title);?></strong>
       <?php }?>

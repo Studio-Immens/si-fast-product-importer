@@ -3,16 +3,16 @@
 /**
  * @package   Flash_Products
  * @author    Mauro Arnone <mauro.arnone.ma@gmail.com>
- * @copyright InnovazioneWeb
+ * @copyright StudioImmens
  * @license   GPL v.3
- * @link      innovazioneweb.com
+ * @link      studioimmens.com
  *
- * Plugin Name:     IW Flash Products
- * Plugin URI:      innovazioneweb.com/flash-products
+ * Plugin Name:     SI Flash Products
+ * Plugin URI:      studioimmens.com/flash-products
  * Description:     Flash Products is a powerful WordPress plugin that gives you instant access to a vast database of ready-to-import products for your WooCommerce store. Designed for e-commerce businesses looking to expand their product range quickly and efficiently, Flash Products allows you to import high-quality, pre-configured items with just a few clicks. No more manual data entry or product configuration—this plugin simplifies the process, saving you time and effort.
  * Version:         1.0.0
- * Author:          InnovazioneWeb
- * Author URI:      innovazioneweb.com
+ * Author:          Immens95
+ * Author URI:      studioimmens.com
  * Text Domain:     flash-products
  * License:         GPL v.3
  * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
@@ -25,13 +25,14 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
 
-define( 'FProd_VERSION', '1.0.0' );
-define( 'FProd_TEXTDOMAIN', 'flash-products' );
-define( 'FProd_NAME', 'Flash_Products' );
-define( 'FProd_PLUGIN_ROOT', plugin_dir_path( __FILE__ ) );
-define( 'FProd_PLUGIN_ABSOLUTE', __FILE__ );
-define( 'FProd_MIN_PHP_VERSION', '7.4' );
-define( 'FProd_WP_VERSION', '5.3' );
+define( 'SIFProd_VERSION', '1.0.0' );
+define( 'SIFProd_TEXTDOMAIN', 'flash-products' );
+define( 'SIFProd_NAME', 'Flash_Products' );
+define( 'SIFProd_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+define( 'SIFProd_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'SIFProd_PLUGIN_ABSOLUTE', __FILE__ );
+define( 'SIFProd_MIN_PHP_VERSION', '7.4' );
+define( 'SIFProd_WP_VERSION', '5.3' );
 
 
 include_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -42,28 +43,13 @@ if ( !is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 function FP_admin_notice_woocommerce_plugin_error() {
 	?>
 		<div class="notice notice-error">
-			<p><?php esc_html_e( 'ERROR! Flash Products needs the Woocommerce Plugin installed and active to work properly', FProd_TEXTDOMAIN ); ?></p>
+			<p><?php esc_html_e( 'ERROR! Flash Products needs the Woocommerce Plugin installed and active to work properly', SIFProd_TEXTDOMAIN ); ?></p>
 		</div>
 	<?php
 }
 
-// if ( !is_plugin_active( 'flash_order/flash_order.php' ) ) {
-// 	add_action( 'admin_notices', 'FP_admin_notice__plugin_base_error' );
-// 	return;
-// }
-function FP_admin_notice__plugin_base_error() {
-?>
-	<div class="notice notice-error">
-		<p><?php esc_html_e( 'ERROR! Flash Products needs the IW Flash Order Plugin installed and active to work properly', FProd_TEXTDOMAIN ); ?></p>
-	</div>
-<?php
-}
-
-
-
-
 add_action( 'init', static function () {
-	load_plugin_textdomain( FProd_TEXTDOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	load_plugin_textdomain( SIFProd_TEXTDOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 } );
 
 
@@ -77,51 +63,29 @@ function FP_load_dependencies() {
 }
 
 function FP_load_style() {
-	wp_enqueue_style( 'Flash-Products-style-css', plugin_dir_url( __FILE__ ).'/style.css', false, NULL, 'all' );
+	wp_enqueue_style( 'Flash-Products-style-css', SIFProd_PLUGIN_URL.'/style.css', false, NULL, 'all' );
 }
 add_action( 'wp_enqueue_scripts', 'FP_load_style' );
 add_action( 'admin_enqueue_scripts', 'FP_load_style' );
 
 function FP_load_animation() {
-	wp_enqueue_script( 'Flash-Products-functions-js', plugin_dir_url( __FILE__ ) . '/functions.js', array( 'jquery' ), NULL, false );
+	wp_enqueue_script( 'Flash-Products-functions-js', SIFProd_PLUGIN_URL . '/functions.js', array( 'jquery' ), NULL, false );
 }
 add_action( 'wp_enqueue_scripts', 'FP_load_animation' );
 add_action( 'admin_enqueue_scripts', 'FP_load_animation' );
 
 
-// add_action( 'admin_enqueue_scripts', 'WOP_load_wp_media_files' );
-// function WOP_load_wp_media_files( $page ) {
-//     wp_enqueue_media();
-// }
 
 
-
-
- /**
- * Fired during plugin activation.
- *
- * @since      1.0.0
- * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
- */
 register_activation_hook( __FILE__, 'activate_flash_products' );
 function activate_flash_products() {
 	FP_create_meta_table();
 }
 
- /**
- * Fired during plugin deactivation.
- *
- * @since      1.0.0
- * @package    Flash_Products
- * @author     InnovazioneWeb <info@innovazioneweb.com>
- */
 register_deactivation_hook( __FILE__, 'deactivate_flash_products' );
 function deactivate_flash_products() {
 
 }
-
-
 
 function FP_menu_page(){
     $menu_slug = 'flash_products';
@@ -129,8 +93,8 @@ function FP_menu_page(){
 
     $link = get_home_url().'/wp-content/plugins/Flash-Products/includes/img/flash-products-logo-20.png';
 
-   add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts', 'flash-products' ), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position );
-   add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
+    add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts','flash-products'), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position);
+    add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
 }
 add_action( 'admin_menu', 'FP_menu_page' );
 
@@ -146,6 +110,7 @@ function FP_head_menu_page(){
     <?php
 
 }
+
 function FP_nav_menu_page(){
     $color1 = 'var(--fp-main-color)';
     $color2 = 'var(--fp-bg3-color)';
@@ -162,6 +127,7 @@ function FP_nav_menu_page(){
     </nav>
     <?php
 }
+
 function FP_foot_menu_page( $debug = false ){
     ?>
     </div>
@@ -173,14 +139,15 @@ function FP_foot_menu_page( $debug = false ){
 
 function FP_main_menu_page(){
 	FP_nav_menu_page();
-	include( plugin_dir_path( __FILE__ ) . 'pages/main.php');
+	include( SIFProd_PLUGIN_PATH . 'pages/main.php');
 	FP_foot_menu_page();
-	}
+}
+
 function FP_sub_menu_page_settings(){
 	FP_nav_menu_page();
-	include( plugin_dir_path( __FILE__ ) . 'pages/settings.php');
+	include( SIFProd_PLUGIN_PATH . 'pages/settings.php');
 	FP_foot_menu_page();
-	}
+}
 
 
 

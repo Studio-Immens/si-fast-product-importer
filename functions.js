@@ -1,5 +1,4 @@
 
-
 function FP_Open_Detail(input){
     jQuery('.FPDetailSection').slideToggle();
     jQuery('.FPBackGroundSection').show();
@@ -96,7 +95,7 @@ function FP_search_product(){
     var s = jQuery(".FP_keyword").val();
     console.log(s);
         if ( s == null ){ s = ''; }
-    var url = 'https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/products?categories='+categories+'&s='+s+'&languages='+languages+'&orderby='+orderby+'&limit='+limit+'&offset='+offset;
+    var url = 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/products?categories='+categories+'&s='+s+'&languages='+languages+'&orderby='+orderby+'&limit='+limit+'&offset='+offset;
 
     jQuery.get( url, function( data ) {
         console.log(data.message);

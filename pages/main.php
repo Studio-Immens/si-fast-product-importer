@@ -5,12 +5,13 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
 $categories = array('result');
-$categories = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/taxonomy?tax=product_cat') ) );
+$categories = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat') ) );
 
 $languages = array('result');
-$languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashproducts.innovazioneweb.com/wp-json/flash_products/v1/taxonomy?tax=Languages') ) );
+$languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=Languages') ) );
 
 // fo_debug( $languages->result );
+
 ?>
 
 <div class="FPMainContainer">
@@ -112,16 +113,6 @@ $languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashpr
             <div class="FPDetailBodyCol">
 
                 <div class="FPDetailBlock">
-                    <strong><?php echo esc_html__('Short title:','flash-products');?></strong>
-                    <p fp-block="short_title"></p>
-                </div>
-
-                <div class="FPDetailBlock">
-                    <strong><?php echo esc_html__('Slang title:','flash-products');?></strong>
-                    <p fp-block="slang_title"></p>
-                </div>
-
-                <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Exerpt:','flash-products');?></strong>
                     <p fp-block="exerpt"></p>
                 </div>
@@ -133,13 +124,6 @@ $languages = json_decode( wp_remote_retrieve_body(wp_remote_get('https://flashpr
 
             </div>
             <div class="FPDetailBodyCol">
-                
-                <div class="FPDetailBlock">
-                    <strong><?php echo esc_html__('Macro Categories:','flash-products');?></strong>
-                    <div fp-block="fp_macro_cat">
-                        <div class="PFCloud">blank detail</div>
-                    </div>
-                </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Categories:','flash-products');?></strong>
