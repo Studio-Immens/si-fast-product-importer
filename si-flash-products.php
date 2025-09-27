@@ -1,23 +1,15 @@
 <?php
 
 /**
- * @package   Flash_Products
- * @author    Mauro Arnone <mauro.arnone.ma@gmail.com>
- * @copyright StudioImmens
- * @license   GPL v.3
- * @link      studioimmens.com
- *
- * Plugin Name:     SI Flash Products
- * Plugin URI:      studioimmens.com/flash-products
- * Description:     Flash Products is a powerful WordPress plugin that gives you instant access to a vast database of ready-to-import products for your WooCommerce store. Designed for e-commerce businesses looking to expand their product range quickly and efficiently, Flash Products allows you to import high-quality, pre-configured items with just a few clicks. No more manual data entry or product configuration—this plugin simplifies the process, saving you time and effort.
- * Version:         1.0.0
- * Author:          Immens95
- * Author URI:      studioimmens.com
- * Text Domain:     flash-products
- * License:         GPL v.3
- * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
- * Domain Path:     /languages
- * Requires PHP:    7.4
+ Plugin Name:     SI Flash Products
+ Description:     Flash Products is a powerful WordPress plugin that gives you instant access to a vast database of ready-to-import products for your WooCommerce store. Designed for e-commerce businesses looking to expand their product range quickly and efficiently, Flash Products allows you to import high-quality, pre-configured items with just a few clicks. No more manual data entry or product configuration—this plugin simplifies the process, saving you time and effort.
+ Version:         1.0.0
+ Author:          Studio Immens
+ Text Domain:     si-flash-products
+ License:         GPL v.3
+ License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
+ Domain Path:     /languages
+ Requires PHP:    7.4
  */
 
 // If this file is called directly, abort.
@@ -26,13 +18,8 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 define( 'SIFProd_VERSION', '1.0.0' );
-define( 'SIFProd_TEXTDOMAIN', 'flash-products' );
-define( 'SIFProd_NAME', 'Flash_Products' );
 define( 'SIFProd_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SIFProd_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'SIFProd_PLUGIN_ABSOLUTE', __FILE__ );
-define( 'SIFProd_MIN_PHP_VERSION', '7.4' );
-define( 'SIFProd_WP_VERSION', '5.3' );
 
 
 include_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -43,15 +30,10 @@ if ( !is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 function FP_admin_notice_woocommerce_plugin_error() {
 	?>
 		<div class="notice notice-error">
-			<p><?php esc_html_e( 'ERROR! Flash Products needs the Woocommerce Plugin installed and active to work properly', SIFProd_TEXTDOMAIN ); ?></p>
+			<p><?php esc_html_e( 'ERROR! Flash Products needs the Woocommerce Plugin installed and active to work properly', 'si-flash-products' ); ?></p>
 		</div>
 	<?php
 }
-
-add_action( 'init', static function () {
-	load_plugin_textdomain( SIFProd_TEXTDOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-} );
-
 
 function FProd_init(){
 	FP_load_dependencies();
@@ -91,10 +73,10 @@ function FP_menu_page(){
     $menu_slug = 'flash_products';
     $position = (FP_get_meta( 'FP_menu_order') != '')?FP_get_meta( 'FP_menu_order') : '15';
 
-    $link = get_home_url().'/wp-content/plugins/Flash-Products/includes/img/flash-products-logo-20.png';
+    $link = SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-20.png';
 
-    add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts','flash-products'), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position);
-    add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
+    add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts','si-flash-products'), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position);
+    add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'si-flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
 }
 add_action( 'admin_menu', 'FP_menu_page' );
 
@@ -102,9 +84,8 @@ function FP_head_menu_page(){
     ?>
     <div id="FPadminContent">
     <h1 style="margin:30px 0px;display:flex;"> 
-        <img src="https://innovazioneweb.com/wp-content/uploads/2023/10/cropped-logo-512-transparent-bg.png" width="50" height="50" alt="light logo">
+        <img src="<?php echo SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-512.png' ?>" width="50" height="50" alt="light logo">
         Flash Products 
-		<img src="https://innovazioneweb.com/wp-content/uploads/2024/09/flash-products-logo-512.png" width="50" height="50" alt="light logo">
         <!-- <button class="FPzero FPbutton" onclick="FPtutorialPage();" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"> tutorial </button>  -->
     </h1>
     <?php
@@ -121,9 +102,9 @@ function FP_nav_menu_page(){
     ?>
     <nav class="FPMainNav">
         <a href="admin.php?page=flash_products" class="FPMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
-        <?php esc_html_e( 'FlashProducts', 'flash_order' ); ?></a>
+        <?php esc_html_e( 'FlashProducts', 'si-flash-products' ); ?></a>
         <a href="admin.php?page=flash_products_settings" class="FPMainNavEl" style="background-color: <?php echo esc_attr($Settings_color); ?>;">
-        <?php esc_html_e( 'Settings', 'flash_order' ); ?></a>
+        <?php esc_html_e( 'Settings', 'si-flash-products' ); ?></a>
     </nav>
     <?php
 }

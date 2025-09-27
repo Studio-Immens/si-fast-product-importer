@@ -14,7 +14,7 @@ if ( !defined( 'ABSPATH' ) ) {
     <button name="update" value="update" class="FPbutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> UPDATE </button>
 
     <div class="FPFormSeparator" onclick="jQuery(`[board='global']`).slideToggle()">
-        <b> <?php esc_html_e('Global Settings' , 'flash-products'); ?> </b>
+        <b> <?php esc_html_e('Global Settings' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down"></span>
     </div>
 
@@ -26,15 +26,15 @@ FP_general_setting( array( 'name' => 'FP_menu_order',
     'default'   => '15',
     'type'      => 'number',
     'class'     => '',
-    'text'      => __('menù admin position' , 'flash-products'),
-    'info'      => __('enter the position of the menu panel in the backend', 'flash-products')
+    'text'      => __('menù admin position' , 'si-flash-products'),
+    'info'      => __('enter the position of the menu panel in the backend', 'si-flash-products')
 ) );
 
 ?>
 <!-- page_flash_order --></div>
 
     <div class="FPFormSeparator" onclick="jQuery(`[board='page_manage_order']`).slideToggle()">
-        <b> <?php esc_html_e('Advanced Settings' , 'flash-products'); ?> </b>
+        <b> <?php esc_html_e('Advanced Settings' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down"></span>
     </div>
 
@@ -43,7 +43,7 @@ FP_general_setting( array( 'name' => 'FP_menu_order',
 
 ?>
     <div class="FPFormCategory">
-        <b> <?php esc_html_e('general settings' , 'flash-products'); ?> </b>
+        <b> <?php esc_html_e('general settings' , 'si-flash-products'); ?> </b>
     </div>
 <?php
 
@@ -54,6 +54,8 @@ FP_general_setting( array( 'name' => 'FP_menu_order',
     </div>
 
     <button name="update" value="update" class="FPbutton pointer" style="margin: 10px auto;">UPDATE</button>
+
+    <input type="hidden" name="sett_nonce" value="<?php echo wp_create_nonce('si-flash-prod-sett'); ?>">
 
 </form>
 

@@ -190,7 +190,7 @@ function FP_general_setting( $setting = array() ){
   $other = ( isset($setting['other']) ) ? $setting['other'] : '';
   ?>
 
-  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html_e('nome dell\'impostazione nel database: ( ', SIFProd_TEXTDOMAIN).esc_attr($name).' )';?>">
+  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html_e('nome dell\'impostazione nel database: ( ', 'si-flash-products').esc_attr($name).' )';?>">
       <?php if($title != ''){ ?>
           <strong class="FOtextSettings" style="flex-basis:100%"><?php echo esc_attr($title);?></strong>
       <?php }?>
@@ -219,9 +219,9 @@ function FP_general_setting( $setting = array() ){
 
 function FP_save_settings( $args, $assoc_id = '', $debug = false ){
   if ( isset($_POST["update"]) && current_user_can( 'manage_options' ) ) {
-      // if ( !wp_verify_nonce( $_POST['_fononce_save_settings'], 'FO_save_settings' ) ) {
-      //     return;
-      // }
+      if ( !wp_verify_nonce( $_POST['sett_nonce'], 'si-flash-prod-sett' ) ) {
+          return;
+      }
       if ( isset( $_POST[$args] ) ) { 
           foreach ($_POST[$args] as $key => $value) {
               if ( isset( $_POST[$args][$key] ) ) {
