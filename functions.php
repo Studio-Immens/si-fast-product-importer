@@ -198,6 +198,9 @@ function FP_debug( $var ){ ?>
 }
 
 function FP_general_setting( $setting = array() ){
+  if ( ! current_user_can( 'manage_options' ) ) {
+    return;
+  }
 
   $name = ( isset($setting['name']) ) ? sanitize_key($setting['name']) : '';
   $title = ( isset($setting['title']) ) ? sanitize_text_field($setting['title']) : '';
@@ -211,7 +214,7 @@ function FP_general_setting( $setting = array() ){
   $other = ( isset($setting['other']) ) ? $setting['other'] : '';
   ?>
 
-  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('nome dell\'impostazione nel database: ( ', 'si-flash-products').esc_attr($name).' )';?>">
+  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('Database setting name: ( ', 'si-flash-products').esc_attr($name).' )';?>">
       <?php if($title != ''){ ?>
           <strong class="FOtextSettings" style="flex-basis:100%"><?php echo esc_html($title);?></strong>
       <?php }?>
@@ -223,7 +226,7 @@ function FP_general_setting( $setting = array() ){
       <?php } else{ ?>
           <select name="setting[<?php echo esc_attr($name); ?>]" <?php echo $other; //phpcs:ignore ?>>
               <option selected disabled hidden><?php echo esc_html($data_default); ?></option>
-              <?php if ( count($options) ) { ?>
+              <?php if ( is_array($options) && count($options) ) { ?>
                   <?php foreach ($options as $option) { ?>
                       <option value="<?php echo esc_attr($option);?>" <?php selected($data_default, $option); ?>><?php echo esc_html($option);?></option>
                   <?php } ?>
@@ -246,24 +249,61 @@ function FP_save_settings( $args, $assoc_id = '', $debug = false ){
       if ( isset( $_POST[$args] ) ) { 
           foreach ($_POST[$args] as $key => $value) {
               if ( isset( $_POST[$args][$key] ) ) {
-              // FP_debug($key);
                   FP_update_meta( $key, $value, $assoc_id ); 
               }
           }
-      } //$_SERVER['SERVER_NAME']
+      }
       if ($debug) {
           FP_debug($_POST);
       }
-      $url = 'Location: '.$_SERVER['REQUEST_URI'];
-      header( $url );
+      wp_safe_redirect( $_SERVER['REQUEST_URI'] );
+      exit;
   }
 }
 
 /**
  * AJAX Handler for product search (Proxy to external API)
  */
+/**
+ * Log an event to the plugin's internal log system
+ * 
+ * @param string $message The message to log
+ * @param string $context The context (e.g., 'Gemini API', 'Product Import')
+ */
+function FP_log_event( $message, $context = 'General' ) {
+    $logs = get_option( 'fp_error_logs', array() );
+    
+    // Add new log entry at the beginning
+    array_unshift( $logs, array(
+        'timestamp' => current_time( 'mysql' ),
+        'context'   => $context,
+        'message'   => $message
+    ) );
+    
+    // Keep only the last 50 logs
+    $logs = array_slice( $logs, 0, 50 );
+    
+    update_option( 'fp_error_logs', $logs );
+}
+
+function fp_ajax_clear_logs() {
+    check_ajax_referer( 'fp_import_nonce', 'nonce' );
+    
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
+    }
+    
+    delete_option( 'fp_error_logs' );
+    wp_send_json_success( array( 'message' => __( 'Logs cleared successfully!', 'si-flash-products' ) ) );
+}
+add_action( 'wp_ajax_fp_clear_logs', 'fp_ajax_clear_logs' );
+
 function FP_ajax_search_products() {
     check_ajax_referer( 'fp_import_nonce', 'nonce' );
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
+    }
 
     $categories = isset( $_GET['categories'] ) ? sanitize_text_field( $_GET['categories'] ) : '';
     $languages = isset( $_GET['languages'] ) ? sanitize_text_field( $_GET['languages'] ) : '';
@@ -323,8 +363,9 @@ function FP_ajax_import_product() {
         'fp_categories' => sanitize_text_field( $product_data['fp_categories'] ),
         'fp_tag'        => sanitize_text_field( $product_data['fp_tag'] ),
         'fp_img'        => esc_url_raw( $product_data['fp_img'] ),
-        'regular_price' => sanitize_text_field( $product_data['regular_price'] ),
-        'sale_price'    => sanitize_text_field( $product_data['sale_price'] ),
+        'fp_gallery'    => implode(',', array_filter(array_map('esc_url_raw', explode(',', $product_data['fp_gallery'] ?? '')))),
+        'regular_price' => wc_format_decimal( $product_data['regular_price'] ),
+        'sale_price'    => wc_format_decimal( $product_data['sale_price'] ),
         'sku'           => sanitize_text_field( $product_data['sku'] ),
         'stock_status'  => sanitize_text_field( $product_data['stock_status'] ),
         'stock_qty'     => intval( $product_data['stock_qty'] ),
@@ -332,6 +373,9 @@ function FP_ajax_import_product() {
         'length'        => sanitize_text_field( $product_data['length'] ),
         'width'         => sanitize_text_field( $product_data['width'] ),
         'height'        => sanitize_text_field( $product_data['height'] ),
+        'is_virtual'    => isset($product_data['is_virtual']) && $product_data['is_virtual'] === 'yes',
+        'is_downloadable' => isset($product_data['is_downloadable']) && $product_data['is_downloadable'] === 'yes',
+        'attributes'    => isset($product_data['attributes']) ? $product_data['attributes'] : array(),
     );
 
     $result = FP_create_woo_product( $sanitized_data );
@@ -358,19 +402,24 @@ function FP_ajax_ai_generate_product() {
     $context = isset( $_POST['context'] ) ? sanitize_textarea_field( $_POST['context'] ) : '';
 
     if ( empty( $name ) ) {
-        wp_send_json_error( array( 'message' => __( 'Il nome del prodotto è obbligatorio', 'si-flash-products' ) ) );
+        wp_send_json_error( array( 'message' => __( 'Product name is required', 'si-flash-products' ) ) );
     }
 
     $api_key = FP_get_meta('FP_gemini_api_key');
     $model = FP_get_meta('FP_ai_model') ?: 'gemini-2.0-flash';
+    $tone = FP_get_meta('FP_ai_tone') ?: 'Professionale e persuasivo';
+    $sku_prefix = FP_get_meta('FP_sku_prefix') ?: 'PROD-';
+    $default_stock = FP_get_meta('FP_default_stock') ?: '10';
+    $temperature = floatval(FP_get_meta('FP_ai_creativity') ?: '0.7');
 
     if ( empty( $api_key ) ) {
-        wp_send_json_error( array( 'message' => __( 'API Key mancante nelle impostazioni', 'si-flash-products' ) ) );
+        wp_send_json_error( array( 'message' => __( 'API Key missing in settings', 'si-flash-products' ) ) );
     }
 
     $prompt = "Genera i dettagli di un prodotto WooCommerce basandoti su queste informazioni:
     Nome: $name
     Contesto aggiuntivo: $context
+    Tono richiesto: $tone
 
     Restituisci ESCLUSIVAMENTE un oggetto JSON con questi campi:
     - post_title: un titolo accattivante
@@ -380,13 +429,15 @@ function FP_ajax_ai_generate_product() {
     - fp_tag: 3-5 tag separati da virgola
     - regular_price: un prezzo realistico (solo numero)
     - sale_price: un prezzo scontato realistico o vuoto (solo numero)
-    - sku: un codice SKU univoco basato sul nome
+    - sku: un codice SKU univoco che inizia con $sku_prefix
     - stock_status: 'instock'
-    - stock_qty: un numero tra 10 e 100
+    - stock_qty: un numero (default consigliato: $default_stock)
     - weight: peso realistico (solo numero)
     - length: lunghezza realistica (solo numero)
     - width: larghezza realistica (solo numero)
     - height: altezza realistica (solo numero)
+    - fp_gallery: 2-3 URL di immagini realistiche correlate al prodotto, separate da virgola (usa URL placeholder di alta qualità se non ne hai di specifici)
+    - attributes: un array di oggetti con 'name' (es. 'Color') e 'values' (es. 'Red | Blue | Green')
 
     Il JSON deve essere valido e non contenere altri testi.";
 
@@ -402,6 +453,7 @@ function FP_ajax_ai_generate_product() {
         ),
         'generationConfig' => array(
             'response_mime_type' => 'application/json',
+            'temperature' => $temperature,
         )
     );
 
@@ -412,23 +464,83 @@ function FP_ajax_ai_generate_product() {
     ) );
 
     if ( is_wp_error( $response ) ) {
-        wp_send_json_error( array( 'message' => $response->get_error_message() ) );
+        $error_msg = $response->get_error_message();
+        FP_log_event( $error_msg, 'Gemini API' );
+        wp_send_json_error( array( 'message' => $error_msg ) );
     }
 
     $res_body = json_decode( wp_remote_retrieve_body( $response ), true );
     
+    if ( isset( $res_body['error'] ) ) {
+        $error_msg = isset( $res_body['error']['message'] ) ? $res_body['error']['message'] : __( 'Unknown API Error', 'si-flash-products' );
+        FP_log_event( $error_msg, 'Gemini API' );
+        wp_send_json_error( array( 'message' => $error_msg ) );
+    }
+
     if ( isset( $res_body['candidates'][0]['content']['parts'][0]['text'] ) ) {
         $ai_text = $res_body['candidates'][0]['content']['parts'][0]['text'];
         $product_data = json_decode( $ai_text, true );
         
         if ( $product_data ) {
+            // Clean attributes if they exist
+            if ( isset( $product_data['attributes'] ) && is_array( $product_data['attributes'] ) ) {
+                $sanitized_attrs = array();
+                foreach ( $product_data['attributes'] as $attr ) {
+                    if ( isset( $attr['name'] ) && isset( $attr['values'] ) ) {
+                        $sanitized_attrs[] = array(
+                            'name'   => sanitize_text_field( $attr['name'] ),
+                            'values' => sanitize_text_field( $attr['values'] )
+                        );
+                    }
+                }
+                $product_data['attributes'] = $sanitized_attrs;
+            }
             wp_send_json_success( $product_data );
         }
     }
 
-    wp_send_json_error( array( 'message' => __( 'Errore nella generazione del contenuto AI. Verifica la tua API Key e riprova.', 'si-flash-products' ) ) );
+    wp_send_json_error( array( 'message' => __( 'Error generating AI content. Check your API Key and try again.', 'si-flash-products' ) ) );
 }
 add_action( 'wp_ajax_fp_ai_generate_product', 'FP_ajax_ai_generate_product' );
+
+/**
+ * AJAX Handler for Taxonomy Search (Autocomplete)
+ */
+function FP_ajax_search_terms() {
+    check_ajax_referer( 'fp_import_nonce', 'nonce' );
+
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
+    }
+
+    $taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_key( $_GET['taxonomy'] ) : 'product_cat';
+    $search = isset( $_GET['q'] ) ? sanitize_text_field( $_GET['q'] ) : '';
+
+    $args = array(
+        'taxonomy'   => $taxonomy,
+        'hide_empty' => false,
+        'name__like' => $search,
+        'number'     => 10
+    );
+
+    $terms = get_terms( $args );
+
+    if ( is_wp_error( $terms ) ) {
+        wp_send_json_error( array( 'message' => $terms->get_error_message() ) );
+    }
+
+    $results = array();
+    foreach ( $terms as $term ) {
+        $results[] = array(
+            'id'   => $term->term_id,
+            'name' => $term->name,
+            'slug' => $term->slug
+        );
+    }
+
+    wp_send_json_success( $results );
+}
+add_action( 'wp_ajax_fp_search_terms', 'FP_ajax_search_terms' );
 
 /**
  * Create WooCommerce product from remote data
@@ -448,6 +560,10 @@ function FP_create_woo_product( $data ) {
     $product->set_name( $data['post_title'] );
     $product->set_description( $data['post_content'] );
     $product->set_short_description( $data['post_excerpt'] );
+    
+    // Product Type
+    $product->set_virtual( $data['is_virtual'] );
+    $product->set_downloadable( $data['is_downloadable'] );
     
     // WooCommerce Base Fields
     if ( ! empty( $data['regular_price'] ) ) $product->set_regular_price( $data['regular_price'] );
@@ -503,15 +619,67 @@ function FP_create_woo_product( $data ) {
         }
     }
 
-    $product_id = $product->save();
+    // Handle Gallery
+    if ( ! empty( $data['fp_gallery'] ) ) {
+        $gallery_urls = explode( ',', $data['fp_gallery'] );
+        $gallery_ids = array();
+        foreach ( $gallery_urls as $g_url ) {
+            if ( empty( $g_url ) ) continue;
+            $g_id = FP_sideload_image( trim( $g_url ), $data['post_title'] . ' Gallery' );
+            if ( ! is_wp_error( $g_id ) ) {
+                $gallery_ids[] = $g_id;
+            }
+        }
+        if ( ! empty( $gallery_ids ) ) {
+            $product->set_gallery_image_ids( $gallery_ids );
+        }
+    }
 
-    return $product_id;
+    // Handle Attributes
+    if ( ! empty( $data['attributes'] ) && is_array( $data['attributes'] ) ) {
+        $attributes = array();
+        foreach ( $data['attributes'] as $attr_data ) {
+            if ( empty( $attr_data['name'] ) || empty( $attr_data['values'] ) ) continue;
+
+            $attribute = new WC_Product_Attribute();
+            $attribute->set_name( sanitize_text_field( $attr_data['name'] ) );
+            $attribute->set_options( array_map( 'trim', explode( '|', $attr_data['values'] ) ) );
+            $attribute->set_position( count( $attributes ) );
+            $attribute->set_visible( true );
+            $attribute->set_variation( false );
+            $attributes[] = $attribute;
+        }
+        $product->set_attributes( $attributes );
+    }
+
+    try {
+        $product_id = $product->save();
+        if ( ! $product_id ) {
+            throw new Exception( __( 'Unknown error during product save', 'si-flash-products' ) );
+        }
+        return $product_id;
+    } catch ( Exception $e ) {
+        $error_msg = 'Failed to create product "' . $data['post_title'] . '": ' . $e->getMessage();
+        FP_log_event( $error_msg, 'Product Creation' );
+        return new WP_Error( 'save_error', $error_msg );
+    }
 }
 
 /**
  * Sideload image from URL to Media Library
  */
 function FP_sideload_image( $url, $title ) {
+    // Se l'URL è già un ID (caso del media uploader di WP)
+    if ( is_numeric( $url ) ) {
+        return (int) $url;
+    }
+
+    // Se l'URL fa parte della nostra libreria media, proviamo a trovare l'ID
+    $attachment_id = attachment_url_to_postid( $url );
+    if ( $attachment_id ) {
+        return $attachment_id;
+    }
+
     require_once( ABSPATH . 'wp-admin/includes/media.php' );
     require_once( ABSPATH . 'wp-admin/includes/file.php' );
     require_once( ABSPATH . 'wp-admin/includes/image.php' );
@@ -519,15 +687,27 @@ function FP_sideload_image( $url, $title ) {
     $url = esc_url_raw( $url );
     $filename = basename( $url );
 
-    // Check if image already exists in media library by filename
+    // 1. Check if we already sideloaded this exact URL
     global $wpdb;
+    $attachment_id = $wpdb->get_var( $wpdb->prepare(
+        "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_fp_source_url' AND meta_value = %s",
+        $url
+    ) );
+
+    if ( $attachment_id ) {
+        return (int) $attachment_id;
+    }
+
+    // 2. Fallback: Check if image already exists in media library by filename
     $attachment_id = $wpdb->get_var( $wpdb->prepare(
         "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s",
         '%' . $filename
     ) );
 
     if ( $attachment_id ) {
-        return $attachment_id;
+        // Also tag it with the source URL for future lookups
+        update_post_meta( $attachment_id, '_fp_source_url', $url );
+        return (int) $attachment_id;
     }
 
     $desc = $title;
@@ -537,7 +717,7 @@ function FP_sideload_image( $url, $title ) {
     $tmp = download_url( $url );
 
     if ( is_wp_error( $tmp ) ) {
-        error_log( 'Flash Products Error: Failed to download image from ' . $url . ' - ' . $tmp->get_error_message() );
+        FP_log_event( 'Failed to download image from ' . $url . ' - ' . $tmp->get_error_message(), 'Image Sideload' );
         return $tmp;
     }
 
@@ -550,7 +730,10 @@ function FP_sideload_image( $url, $title ) {
     // If error, unlink
     if ( is_wp_error( $id ) ) {
         @unlink( $file_array['tmp_name'] );
-        error_log( 'Flash Products Error: Failed to sideload image ' . $filename . ' - ' . $id->get_error_message() );
+        FP_log_event( 'Failed to sideload image ' . $filename . ' - ' . $id->get_error_message(), 'Image Sideload' );
+    } else {
+        // Success! Store source URL for future reference
+        update_post_meta( $id, '_fp_source_url', $url );
     }
 
     return $id;

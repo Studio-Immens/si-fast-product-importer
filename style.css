@@ -14,9 +14,11 @@
     --fp-bg-hover: #3d3d3d;
     
     /* Testi */
-    --fp-text: #e0e0e0;
-    --fp-text-muted: #b0b0b0;
+    --fp-text: #ffffff;
+    --fp-text-muted: #e0e0e0;
     --fp-text-on-accent: #ffffff;
+    --fp-label: #cccccc;
+    --fp-placeholder: #888888;
     
     /* Stati */
     --fp-success: #2ecc71;
@@ -209,6 +211,61 @@
     transition: var(--fp-transition);
 }
 
+.FPCardSelection {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 30;
+    background: rgba(0,0,0,0.5);
+    padding: 5px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.FPCardSelection input[type="checkbox"] {
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    cursor: pointer;
+}
+
+.bulk-actions {
+    display: flex;
+    align-items: center;
+    background: rgba(15, 156, 192, 0.1);
+    padding: 10px 15px !important;
+    border-radius: 8px;
+    border: 1px solid rgba(15, 156, 192, 0.2);
+}
+
+.bulk-actions label {
+    margin: 0 15px 0 5px;
+    font-weight: 600;
+    color: var(--fp-primary);
+    cursor: pointer;
+}
+
+.FP_bulk_import_btn {
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+}
+
+.FP_bulk_import_btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.FPCard.selected {
+    border-color: var(--fp-primary);
+    box-shadow: 0 0 0 2px var(--fp-primary);
+}
+
+.FPCard.selected .FPCardSelection {
+    background: var(--fp-primary);
+}
+
 .FPCard:hover .FPCardHead img {
     transform: scale(1.05);
 }
@@ -277,7 +334,7 @@
 }
 
 .TitleGroup p {
-    color: #888;
+    color: var(--fp-text-muted);
     margin: 5px 0 0 0;
     font-size: 1.1rem;
 }
@@ -301,6 +358,67 @@
 .PresetBtn:hover {
     background: var(--fp-primary);
     border-color: var(--fp-primary);
+}
+
+.TaxonomySelector {
+    position: relative;
+    width: 100%;
+}
+
+.AutocompleteResults {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--fp-bg-card);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-top: none;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: var(--fp-text-light);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background: var(--fp-primary);
+    color: #fff;
+}
+
+/* Notices */
+.fp-notice {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.fp-notice-success {
+    background: rgba(46, 213, 115, 0.1);
+    color: #2ed573;
+    border: 1px solid rgba(46, 213, 115, 0.2);
+}
+
+.fp-notice-error {
+    background: rgba(255, 71, 87, 0.1);
+    color: #ff4757;
+    border: 1px solid rgba(255, 71, 87, 0.2);
 }
 
 .GeneratorLayout {
@@ -352,18 +470,23 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #888;
+    color: var(--fp-label);
     margin-bottom: 8px;
+    font-weight: 600;
 }
 
 .FormField input, .FormField select, .FormField textarea {
     width: 100%;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 8px;
     padding: 12px 15px;
     color: #fff;
     transition: var(--fp-transition);
+}
+
+.FormField input::placeholder, .FormField textarea::placeholder {
+    color: var(--fp-placeholder);
 }
 
 .FormField input:focus {
@@ -418,10 +541,11 @@
 
 .AI_Badge {
     font-size: 0.7rem;
-    background: rgba(255,255,255,0.1);
-    padding: 2px 8px;
+    background: rgba(255,255,255,0.15);
+    padding: 2px 10px;
     border-radius: 10px;
-    color: #aaa;
+    color: #fff;
+    font-weight: 600;
 }
 
 .AI_Generate_Btn {
@@ -467,6 +591,22 @@
     align-items: center;
 }
 
+#select_image_btn {
+    white-space: nowrap;
+    height: 44px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--fp-bg-input);
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+#select_image_btn:hover {
+    background: var(--fp-primary);
+    border-color: var(--fp-primary);
+}
+
 .ImagePreview {
     width: 60px;
     height: 60px;
@@ -476,6 +616,113 @@
     background-size: cover;
     background-position: center;
     flex-shrink: 0;
+}
+
+/* Taxonomy Badges */
+.TaxonomySelector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.QuickSelect {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 100px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.tax-badge {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--fp-text-muted);
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: var(--fp-transition);
+}
+
+.tax-badge:hover, .tax-badge.active {
+    background: var(--fp-primary);
+    color: #fff;
+    border-color: var(--fp-primary);
+}
+
+/* Gallery Grid */
+.GalleryInputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.GalleryPreviewGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+}
+
+.gallery-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-gallery-item {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: var(--fp-error);
+    color: #fff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.remove-gallery-item:hover {
+    opacity: 1;
+}
+
+.CheckboxGroup {
+    display: flex;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--fp-text);
+    cursor: pointer;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.checkbox-label input {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
 }
 
 @media (max-width: 1100px) {
@@ -535,6 +782,13 @@
     text-align: left !important;
     margin: 0 0 10px 0 !important;
     padding: 0 !important;
+    font-weight: 600;
+}
+
+.FPsettingEl p {
+    color: var(--fp-text-muted);
+    font-size: 13px;
+    margin-top: 5px;
 }
 
 /* Notifiche */
@@ -553,6 +807,100 @@
 @keyframes fp-spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* Attributes Row Styling */
+.AttributeRow {
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: var(--fp-transition);
+}
+
+.AttributeRow:hover {
+    border-color: var(--fp-primary);
+}
+
+/* Error Logs Section */
+.FPLogSection {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.FPLogHeader {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.FPLogTableContainer {
+    border: 1px solid #eee !important;
+}
+
+.FPLogTableContainer table th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+.FPLogTableContainer code {
+    font-family: monospace;
+    color: #d63384;
+}
+
+/* Form Validation */
+.FormField input:invalid, 
+.FormField textarea:invalid {
+    border-color: var(--fp-error);
+}
+
+.FormField input:valid:not(:placeholder-shown) {
+    border-color: #4CAF50;
+}
+
+.fp-validation-msg {
+    font-size: 11px;
+    color: var(--fp-error);
+    margin-top: 4px;
+    display: none;
+}
+
+.FormField.has-error .fp-validation-msg {
+    display: block;
+}
+
+.FormField.has-error input,
+.FormField.has-error textarea {
+    border-color: var(--fp-error);
+}
+
+/* Bulk Import Progress */
+.FPCard.importing {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.FPCard.importing::after {
+    content: "\f463";
+    font-family: dashicons;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    color: var(--fp-primary);
+    animation: rotation 2s infinite linear;
+    z-index: 10;
+}
+
+.FPCard.import-success {
+    border: 2px solid #4CAF50;
+}
+
+.FPCard.import-error {
+    border: 2px solid var(--fp-error);
 }
 
 @media (max-width: 768px) {

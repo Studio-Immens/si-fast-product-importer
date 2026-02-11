@@ -85,6 +85,12 @@ if ( false === $languages ) {
             <strong class="FPfound"></strong>
         </div>
 
+        <div class="FPNavElement bulk-actions" style="display:none; margin-left: 20px;">
+            <input type="checkbox" id="select_all_products">
+            <label for="select_all_products"><?php esc_html_e('Select All', 'si-flash-products'); ?></label>
+            <button class="FP_bulk_import_btn button-primary" style="margin-left: 10px;"><?php esc_html_e('Import Selected', 'si-flash-products'); ?> (<span class="selected-count">0</span>)</button>
+        </div>
+
 
         <button class="FPNavElement FP_search_btn" style="margin-left:auto;"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
     </div>
@@ -94,6 +100,9 @@ if ( false === $languages ) {
         <div class="FPCard FPdefaultCard" fp_title="" fp_short_title="" fp_slang_title="" fp_description="" fp_exerp="" fp_categories="" fp_tag="" fp_ingredient="" fp_macro_cat="" fp_allerg="" fp_sticker="" fp_temp="" fp_img="<?php echo wc_placeholder_img_src('300'); ?>" fp_gallery="">
 
             <div class="FPCardHead">
+                <div class="FPCardSelection">
+                    <input type="checkbox" class="fp-product-select">
+                </div>
                 <img class="FPCardImg" src="<?php echo wc_placeholder_img_src('300'); ?>">
                 <div class="FORapidImport">
                     <span class="dashicons dashicons-plus"></span>
@@ -126,7 +135,7 @@ if ( false === $languages ) {
             <div class="FPDetailBodyCol">
 
                 <div class="FPDetailBlock">
-                    <strong><?php echo esc_html__('Exerpt:','si-flash-products');?></strong>
+                    <strong><?php echo esc_html__('Excerpt:','si-flash-products');?></strong>
                     <p fp-block="exerpt"></p>
                 </div>
 
@@ -160,14 +169,14 @@ if ( false === $languages ) {
                 </div>
 
                 <div class="FPDetailBlock">
-                    <strong><?php echo esc_html__('Allergene:','si-flash-products');?></strong>
+                    <strong><?php echo esc_html__('Allergens:','si-flash-products');?></strong>
                     <div fp-block="fp_allerg">
                         <div class="PFCloud">blank detail</div>
                     </div>
                 </div>
 
                 <div class="FPDetailBlock">
-                    <strong><?php echo esc_html__('Sticker:','si-flash-products');?></strong>
+                    <strong><?php echo esc_html__('Stickers:','si-flash-products');?></strong>
                     <div fp-block="fp_sticker">
                         <div class="PFCloud">blank detail</div>
                     </div>

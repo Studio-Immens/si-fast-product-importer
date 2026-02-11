@@ -36,6 +36,7 @@ function FP_admin_notice_woocommerce_plugin_error() {
 }
 
 function FProd_init(){
+	load_plugin_textdomain( 'si-flash-products', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	FP_load_dependencies();
 }
 FProd_init();
@@ -52,12 +53,31 @@ function FP_load_assets( $hook ) {
 
 	wp_enqueue_style( 'Flash-Products-style-css', SIFProd_PLUGIN_URL . '/style.css', array(), SIFProd_VERSION, 'all' );
 	
+	// Carica il media uploader di WordPress
+	wp_enqueue_media();
+	
 	wp_enqueue_script( 'Flash-Products-functions-js', SIFProd_PLUGIN_URL . '/functions.js', array( 'jquery' ), SIFProd_VERSION, true );
 
-	// Localizzazione per AJAX
+	// Localizzazione per AJAX e Settings
 	wp_localize_script( 'Flash-Products-functions-js', 'fp_ajax', array(
-		'ajax_url' => admin_url( 'admin-ajax.php' ),
-		'nonce'    => wp_create_nonce( 'fp_import_nonce' ),
+		'ajax_url'      => admin_url( 'admin-ajax.php' ),
+		'nonce'         => wp_create_nonce( 'fp_import_nonce' ),
+		'sku_prefix'    => FP_get_meta('FP_sku_prefix') ?: 'PROD-',
+		'default_stock' => FP_get_meta('FP_default_stock') ?: '10',
+		'strings'       => array(
+			'confirm_bulk_import' => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
+			'bulk_import_done'    => __( 'Import completed: %d success, %d failure.', 'si-flash-products' ),
+			'confirm_clear_logs'  => __( 'Are you sure you want to clear all logs?', 'si-flash-products' ),
+			'error_clear_logs'    => __( 'Error while clearing logs', 'si-flash-products' ),
+			'error_missing_name'  => __( 'Please enter at least the product name', 'si-flash-products' ),
+			'ai_gen_success'      => __( 'Content generated successfully!', 'si-flash-products' ),
+			'attr_limit_reached'  => __( 'At least one attribute must be present (even if empty).', 'si-flash-products' ),
+			'importing'           => __( 'Importing...', 'si-flash-products' ),
+			'generating'          => __( 'Generating...', 'si-flash-products' ),
+			'error_ai_call'       => __( 'Error during AI call', 'si-flash-products' ),
+			'error_import'        => __( 'Error during import', 'si-flash-products' ),
+			'preset_loaded'       => __( 'Preset loaded!', 'si-flash-products' ),
+		)
 	) );
 }
 add_action( 'admin_enqueue_scripts', 'FP_load_assets' );
