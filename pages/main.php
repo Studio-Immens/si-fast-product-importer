@@ -150,42 +150,42 @@ if ( false === $languages ) {
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Categories:','si-flash-products');?></strong>
                     <div fp-block="fp_categories">
-                        <div class="PFCloud">blank detail</div>
+                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
                     </div>
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Tags:','si-flash-products');?></strong>
                     <div fp-block="fp_tag">
-                        <div class="PFCloud">blank detail</div>
+                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
                     </div>
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Ingredients:','si-flash-products');?></strong>
                     <div fp-block="fp_ingredient">
-                        <div class="PFCloud">blank detail</div>
+                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
                     </div>
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Allergens:','si-flash-products');?></strong>
                     <div fp-block="fp_allerg">
-                        <div class="PFCloud">blank detail</div>
+                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
                     </div>
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Stickers:','si-flash-products');?></strong>
                     <div fp-block="fp_sticker">
-                        <div class="PFCloud">blank detail</div>
+                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
                     </div>
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Temperature:','si-flash-products');?></strong>
                     <div fp-block="fp_temp">
-                        <div class="PFCloud">blank detail</div>
+                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
                     </div>
                 </div>
 

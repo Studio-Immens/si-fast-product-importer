@@ -47,7 +47,7 @@ $api_key = FP_get_meta('FP_gemini_api_key');
                     <div class="CardBody">
                         <div class="FormField full">
                             <label><?php esc_html_e('Product Title', 'si-flash-products'); ?></label>
-                            <input type="text" name="post_title" id="out_post_title" placeholder="<?php esc_attr_e('Product name...', 'si-flash-products'); ?>">
+                            <input type="text" name="post_title" id="out_post_title" placeholder="<?php esc_attr_e('Product name...', 'si-flash-products'); ?>" required>
                         </div>
                         
                         <div class="FormField full">

@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 <div id="settSection">
 <form id="general" method="post" class="FPForm" style="">
-    <button name="update" value="update" class="FPbutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> UPDATE </button>
+    <button name="update" value="update" class="FPbutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> <?php esc_html_e('UPDATE', 'si-flash-products'); ?> </button>
 
     <div class="FPFormSeparator">
         <b> <?php esc_html_e('Global Settings' , 'si-flash-products'); ?> </b>
@@ -169,7 +169,7 @@ FP_general_setting( array( 'name' => 'FP_default_product_status',
     </div>
 </div>
 
-    <button name="update" value="update" class="FPbutton pointer" style="margin: 10px auto;">UPDATE</button>
+    <button name="update" value="update" class="FPbutton pointer" style="margin: 10px auto;"><?php esc_html_e('UPDATE', 'si-flash-products'); ?></button>
 
     <input type="hidden" name="sett_nonce" value="<?php echo wp_create_nonce('si-flash-prod-sett'); ?>">
 

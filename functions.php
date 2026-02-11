@@ -214,7 +214,7 @@ function FP_general_setting( $setting = array() ){
   $other = ( isset($setting['other']) ) ? $setting['other'] : '';
   ?>
 
-  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('Database setting name: ( ', 'si-flash-products').esc_attr($name).' )';?>">
+  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('Database setting name:', 'si-flash-products').' ( '.esc_attr($name).' )';?>">
       <?php if($title != ''){ ?>
           <strong class="FOtextSettings" style="flex-basis:100%"><?php echo esc_html($title);?></strong>
       <?php }?>
@@ -225,7 +225,9 @@ function FP_general_setting( $setting = array() ){
           <input type="<?php echo esc_attr($type); ?>" name="setting[<?php echo esc_attr($name); ?>]" value="<?php echo esc_attr($data_default);?>" <?php echo $other; //phpcs:ignore ?>>
       <?php } else{ ?>
           <select name="setting[<?php echo esc_attr($name); ?>]" <?php echo $other; //phpcs:ignore ?>>
-              <option selected disabled hidden><?php echo esc_html($data_default); ?></option>
+              <?php if ( ! empty($data_default) ) : ?>
+                  <option selected disabled hidden><?php echo esc_html($data_default); ?></option>
+              <?php endif; ?>
               <?php if ( is_array($options) && count($options) ) { ?>
                   <?php foreach ($options as $option) { ?>
                       <option value="<?php echo esc_attr($option);?>" <?php selected($data_default, $option); ?>><?php echo esc_html($option);?></option>

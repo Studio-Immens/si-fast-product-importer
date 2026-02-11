@@ -77,6 +77,12 @@ function FP_load_assets( $hook ) {
 			'error_ai_call'       => __( 'Error during AI call', 'si-flash-products' ),
 			'error_import'        => __( 'Error during import', 'si-flash-products' ),
 			'preset_loaded'       => __( 'Preset loaded!', 'si-flash-products' ),
+			'select_image'        => __( 'Select Product Image', 'si-flash-products' ),
+			'use_image'           => __( 'Use this image', 'si-flash-products' ),
+			'select_gallery'      => __( 'Select Gallery Images', 'si-flash-products' ),
+			'add_to_gallery'      => __( 'Add to gallery', 'si-flash-products' ),
+			'error'               => __( 'Error', 'si-flash-products' ),
+			'fetch_error'         => __( 'Failed to fetch products', 'si-flash-products' ),
 		)
 	) );
 }
