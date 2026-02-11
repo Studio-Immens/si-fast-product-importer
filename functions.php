@@ -323,6 +323,15 @@ function FP_ajax_import_product() {
         'fp_categories' => sanitize_text_field( $product_data['fp_categories'] ),
         'fp_tag'        => sanitize_text_field( $product_data['fp_tag'] ),
         'fp_img'        => esc_url_raw( $product_data['fp_img'] ),
+        'regular_price' => sanitize_text_field( $product_data['regular_price'] ),
+        'sale_price'    => sanitize_text_field( $product_data['sale_price'] ),
+        'sku'           => sanitize_text_field( $product_data['sku'] ),
+        'stock_status'  => sanitize_text_field( $product_data['stock_status'] ),
+        'stock_qty'     => intval( $product_data['stock_qty'] ),
+        'weight'        => sanitize_text_field( $product_data['weight'] ),
+        'length'        => sanitize_text_field( $product_data['length'] ),
+        'width'         => sanitize_text_field( $product_data['width'] ),
+        'height'        => sanitize_text_field( $product_data['height'] ),
     );
 
     $result = FP_create_woo_product( $sanitized_data );
@@ -369,6 +378,15 @@ function FP_ajax_ai_generate_product() {
     - post_content: una descrizione completa e formattata in HTML (usa tag <p>, <ul>, <li>, <strong>)
     - fp_categories: 2-3 categorie separate da virgola
     - fp_tag: 3-5 tag separati da virgola
+    - regular_price: un prezzo realistico (solo numero)
+    - sale_price: un prezzo scontato realistico o vuoto (solo numero)
+    - sku: un codice SKU univoco basato sul nome
+    - stock_status: 'instock'
+    - stock_qty: un numero tra 10 e 100
+    - weight: peso realistico (solo numero)
+    - length: lunghezza realistica (solo numero)
+    - width: larghezza realistica (solo numero)
+    - height: altezza realistica (solo numero)
 
     Il JSON deve essere valido e non contenere altri testi.";
 
@@ -430,6 +448,25 @@ function FP_create_woo_product( $data ) {
     $product->set_name( $data['post_title'] );
     $product->set_description( $data['post_content'] );
     $product->set_short_description( $data['post_excerpt'] );
+    
+    // WooCommerce Base Fields
+    if ( ! empty( $data['regular_price'] ) ) $product->set_regular_price( $data['regular_price'] );
+    if ( ! empty( $data['sale_price'] ) ) $product->set_sale_price( $data['sale_price'] );
+    if ( ! empty( $data['sku'] ) ) $product->set_sku( $data['sku'] );
+    
+    if ( ! empty( $data['stock_status'] ) ) {
+        $product->set_stock_status( $data['stock_status'] );
+    }
+    
+    if ( isset( $data['stock_qty'] ) ) {
+        $product->set_manage_stock( true );
+        $product->set_stock_quantity( $data['stock_qty'] );
+    }
+
+    if ( ! empty( $data['weight'] ) ) $product->set_weight( $data['weight'] );
+    if ( ! empty( $data['length'] ) ) $product->set_length( $data['length'] );
+    if ( ! empty( $data['width'] ) ) $product->set_width( $data['width'] );
+    if ( ! empty( $data['height'] ) ) $product->set_height( $data['height'] );
     
     // Get default status from settings
     $default_status = FP_get_meta('FP_default_product_status');

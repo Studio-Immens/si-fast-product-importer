@@ -1,529 +1,356 @@
 
-:root{
-    --fp-main-color: #0F9CC0;
-    --fp-scnd-color: #2D728F;
-    --fp-high-color: #EE7E14;
-    --fp-link-color: #EA4306; 
-    --fp-selection-color: #F7B21F; 
-
-    --fp-invert-color: #0091ff; 
-    --fp-error-color: #f50000; 
-
-    --fp-bg-color: #505050; 
-    --fp-bg2-color: #404040; 
-    --fp-bg3-color: #303030; 
-    --fp-bg4-color: #202020; 
-    --fp-bg5-color: #101010; 
-    --fp-bg6-color: #000000; 
-
-    --fp-text-color: #ffffff; 
-    --fp-text-color-inv: #000000; 
-
-    --fp-text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000, 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000; 
-    --fp-main-border: 1px solid #715b3e; 
-    --fp-main-tran: 0.6s; 
-    --fp-scnd-tran: 0.3s; 
-
-    --fp-pending: #00f5d0; 
-    --fp-processing: #f5d400; 
-    --fp-failed: #f50000; 
-    --fp-cancelled: #f50000; 
-    --fp-refunded: #f50000; 
-    --fp-completed: #279900; 
-    --fp-modified: #f55600; 	
-
-	--fp-card-head-height: 226px
+:root {
+    /* Nuova Palette Moderna - Mantenendo i colori caratteristici */
+    --fp-primary: #0F9CC0;
+    --fp-primary-dark: #0A7A96;
+    --fp-accent: #EE7E14;
+    --fp-accent-dark: #D16D0F;
+    
+    /* Backgrounds Moderni (Dark Theme evoluto) */
+    --fp-bg-main: #1e1e1e;
+    --fp-bg-card: #2a2a2a;
+    --fp-bg-nav: #121212;
+    --fp-bg-input: #333333;
+    --fp-bg-hover: #3d3d3d;
+    
+    /* Testi */
+    --fp-text: #e0e0e0;
+    --fp-text-muted: #b0b0b0;
+    --fp-text-on-accent: #ffffff;
+    
+    /* Stati */
+    --fp-success: #2ecc71;
+    --fp-error: #e74c3c;
+    --fp-warning: #f1c40f;
+    --fp-info: #3498db;
+    
+    /* UI Elements */
+    --fp-radius: 8px;
+    --fp-radius-lg: 12px;
+    --fp-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    --fp-shadow-hover: 0 8px 24px rgba(0,0,0,0.4);
+    --fp-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
-/*---------SCROLLBAR---------*/
-/* width */
-#FPadminContent
-::-webkit-scrollbar {
-	width: 10px;
-	height: 10px;
-	position: absolute;
-}
-/* Track */
-#FPadminContent
-::-webkit-scrollbar-track {
-	background: var(--fp-bg-color);
-	border-radius: 2px;
-}
-/* Handle */
-#FPadminContent
-::-webkit-scrollbar-thumb {
-	background: var(--fp-scnd-color);
-	border-radius: 2px;
-}
-/* Handle on hover */
-#FPadminContent
-::-webkit-scrollbar-thumb:hover {
-	background: var(--fp-main-color);
-}
-/*---------FINE---------*/
-
-#FPadminContent pre{
-	color: var(--fp-text-color)!important;
-	background-color: var(--fp-bg-color)!important;
-}
-#FPadminContent h1{
-	color: #fff;
-	align-items: center;
-}
-#FPadminContent img{
-	padding: 5px;
-	margin: 2px;
-}
-#FPadminContent{
-    margin: 10px;
-    padding: 10px;
-    background-color: var(--fp-bg2-color);
-    color: var(--fp-text-color);
-    font-size: medium;
-}
-.FPForm{
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	background-color: #c2c2c2;
-}
-.FPFormSeparator{
-	color: var(--fp-text-color);
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	background-color: var(--fp-bg6-color);
-	padding: 10px;
-	margin: 10px;
-}
-.FPFormCategory{
-	color: var(--fp-text-color);
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	background-color: #00000021;
-/*	padding: 10px;*/
-	margin: 20px;
-}
-.FPFormCategory b{
-	color: var(--fp-text-color);
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	background-color: var(--fp-bg-color);
-	padding: 10px;
-	margin: 0px auto;
-}
-.FPFormZone{
-	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	margin: 0px 10px;
-}
-.FPFormZone p{
-	margin: 10px;
-}
-.FPFormZone textarea{
-	margin: 10px;
-	width: 100%;
-	min-height: 100px;
-	height: auto;
-}
-.FPFormZone input{
-	margin: 0px 25px 0px 5px;
-}
-.FPFormButton{
-	margin: 10px;
-	cursor: pointer;
-	font-size: medium;
-	position: fixed;
-	right: 10px;
-	bottom: 10px;
-	z-index: 10000;
-}
-.FPMainNav{
-	margin: 30px 0px;
-	background-color: var(--fp-bg6-color);;
-	padding: 25px;
-}
-.FPMainNavEl{
-	margin: 10px;
-	padding: 10px;
-	border-radius: 5px;
-	color: var(--fp-text-color);
-	text-decoration: none;
-	background-color: var(--fp-bg3-color);
-	transition: var(--fp-main-tran);
-}
-.FPMainNavEl:hover, .FPMainNavEl:focus{
-	border-radius: 10px;
-	color: var(--fp-text-color);
-	background-color: var(--fp-bg2-color)!important;
-	transition: var(--fp-scnd-tran);
-}
-.FPsettingEl{
-	max-width: 500px;
-	padding: 10px;
-	margin: 10px;
-	align-items: center;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	transition: var(--fp-main-tran);
-	border: var(--fp-main-border);
-	background-color: #cfcfcf;
-}
-.FPsettingEl textarea{
-	min-width: 500px;
-	padding: 10px;
-	margin: 10px;
-}
-.FPtextSettings{
-	font-size: medium;
-	margin: 0px auto;
-	padding: 10px;
-	text-align: center;
-	justify-content: center;
-	align-items: center;
-	color: var(--fp-text-color-inv);
-}
-.pointer{
-	cursor: pointer;
-}
-.FPbutton{
-	margin: 10px;
-	padding: 10px;
-	border-radius: 5px;
-	color: var(--fp-text-color);
-	background-color: var(--fp-bg3-color);
-	transition: var(--fp-main-tran);
-	height: 50px;
-}
-.FPbutton:hover, .FPbutton:focus{
-	margin: 10px;
-	padding: 10px;
-	border-radius: 10px;
-	color: var(--fp-text-color);
-	background-color: var(--fp-bg2-color);
-	transition: var(--fp-scnd-tran);
+/* Reset & Globali */
+#FPadminContent {
+    margin: 20px;
+    padding: 30px;
+    background-color: var(--fp-bg-main);
+    color: var(--fp-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    border-radius: var(--fp-radius-lg);
+    box-shadow: var(--fp-shadow);
+    line-height: 1.6;
 }
 
-.FPzero{
-	margin: 0px!important;
-	padding: 0px!important;
-}
-
-.FPcomingSoon, .FP_section{
-	padding: 10px;
-	margin: 20px;
-	background-color: var(--fp-main-color);
-}
-
-.FPsettingStyle{
-    margin: 0px;
-    padding: 50px 0 0 0;
-}
-
-.FPsettingStyle p{
-    background-color: #000000b0;
-    margin: 10px!important;
-    padding: 10px;
-    color: #fff;
+#FPadminContent h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 30px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    gap: 15px;
+}
+
+#FPadminContent h1 img {
+    padding: 0;
+    margin: 0;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+/* Scrollbar Moderna */
+#FPadminContent::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+#FPadminContent::-webkit-scrollbar-track {
+    background: var(--fp-bg-nav);
+}
+#FPadminContent::-webkit-scrollbar-thumb {
+    background: #444;
     border-radius: 10px;
 }
-
-.fp-vari-tabs-container, .FPSetting_Board{
-	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
-	height: auto;
-	padding: 10px;
-}
-.fp-vari-tabs-panel{
-	height: 300px;
-	width: 210px;
-	padding: 10px;
-	margin: 5px;
-	overflow: auto;
-	border-radius: 10px;
-	border: 1px solid grey;
-}
-.fp-vari-tabs-panel li{
-	list-style: none;
-}
-.fp-vari-title{
-	font-size: 18;
-	font-weight: 500;
-	width: 100%;
-	position: sticky;
-	top: 0;
-	left: 0;
-	right: 0;
+#FPadminContent::-webkit-scrollbar-thumb:hover {
+    background: var(--fp-primary);
 }
 
-
-
-.FPMainContainer{
-	width: 100%;
-}
-.FPNavBar{
-    margin: 10px;
+/* Navigazione */
+.FPMainNav {
+    margin: 0 0 40px 0;
+    background-color: var(--fp-bg-nav);
     padding: 10px;
-    width: calc(100% - 40px);
-	display: flex;
-	flex-wrap: wrap;
-    background-color: var(--fp-bg-color);
-    color: var(--fp-text-color);
-    text-shadow: var(--fp-text-shadow);
-}
-.FPNavElement{
-	margin: 5px;
-    padding: 5px;
-	border-radius: 5px;
-	min-width: 30px;
-	/* height: 30px; */
-    background-color: var(--fp-bg2-color);
-    color: var(--fp-text-color);
-    text-shadow: var(--fp-text-shadow);
-	cursor: pointer;
-}
-.FPContainer{
-	margin: 10px;
-    padding: 10px;
-    width: calc(100% - 20px);
-	min-height: 200px;
-	display: flex;
-	flex-wrap: wrap;
-	/* background-color: var(-); */
-    color: var(--fp-text-color-inv);
-}
-.FPCard{
-	margin: 10px;
-	border-radius: 5px;
-    width: 250px;
-	min-height: 300px;
-	display: flex;
-	flex-wrap: wrap;
-	background-color: var(--fp-bg-color);
-	position: relative;
-	cursor: pointer;
-}
-.FPCardHead{
-    /* padding: 10px; */
-    margin: 0px auto!important;
-	border-radius: 5px 5px 0 0;
-/*    width: 100%;*/
-	height: 100%;
-	min-height: 150px;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	background-color: var(--fp-bg-color);
-	overflow: hidden;
-}
-.FPCardHead img{
-	padding: 0px!important;
-	margin: 2px!important;
-/*    max-width: calc(100% - 10px);*/
-	max-height: 226px;
-	background-color: var(--fp-bg2-color);
-}
-.FPCardFoot{
-    padding: 10px;
-	border-radius: 0 0 5px 5px;
-    width: calc(100% - 20px);
-	height: 50px;
-	display: flex;
-	flex-wrap: wrap;
-	background-color: var(--fp-bg3-color);
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: 10;
-}
-.FPCardTitle{
-	overflow: hidden;
-	width: 100%;
-	height: 100%;
-	color: var(--fp-text-color);
-}
-.FORapidImport{
-	position: absolute;
-	top: 0;
-	right: 0;
-	padding: 10px;
-	border-radius: 5px;
-	margin: 10px;
-	background-color: var(--fp-bg2-color);
-	opacity: 0.9;
-}
-.FPSideBar{
-    width: 300px;
-}
-.FPDetailSection{
-    width: 95%;
-	height: 90vh;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: 99999;
-	background-color: var(--fp-bg2-color);
-	border: 1px solid var(--fp-high-color);
-	border-radius: 10px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 50px;
-}
-.FPBackGroundSection{
-	background-color: #000;
-	opacity: 0.3;
-	z-index: 99995;
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-.FPDetailHead{
-	width: calc(100% - 10px);
-	height: 50px;
-	margin-bottom: 10px;
-	background-color: var(--fp-bg4-color);
-	padding: 5px;
-	border-radius: 10px 10px 0 0;
-	display: flex;
-	flex-wrap: wrap;
-}
-.FPDetailHead strong{
-	padding: 10px;
-
-}
-.FPDetailFoot{
-	width: calc(100% - 10px);
-	height: 50px;
-	margin-top: 10px;
-	background-color: var(--fp-bg4-color);
-	padding: 5px;
-	border-radius: 0 0 10px 10px;
-	display: flex;
-	flex-wrap: wrap;
-}
-.FPDetailBody{
-	width: calc(100% - 10px);
-	height: calc(100% - 150px);
-	padding: 5px;
-	display: flex;
-	flex-wrap: wrap;
-	overflow-y: scroll;
-}
-.FPDetailBodyImages{
-	width: calc(100% - 10px);
-	height: 300px;
-	padding: 5px;
-	display: flex;
-	flex-wrap: wrap;
-}
-.FPDetailBodyImages img{
-	max-height: 290px;
-	display: flex;
-	flex-wrap: wrap;
-}
-.FPDetailBodyCol{
-	display: flex;
-	flex-wrap: wrap;
-	width: calc(50% - 15px);
-	padding: 5px;
-	margin: 5px auto;
-	flex-direction: column;
-}
-.FPDetailBlock{
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: column;
-	width: calc(100% - 40px);
-	min-height: 30px;
-	padding: 15px;
-	margin: 5px;
-	border-radius: 5px;
-	background-color: var(--fp-bg3-color);
-}
-.FPDetailBlock div{
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: row;
+    border-radius: var(--fp-radius);
+    display: flex;
+    gap: 5px;
 }
 
-.PFCloud{
-	padding: 10px;
-	margin: 5px;
-	border-radius: 5px;
-	background-color: var(--fp-bg4-color);
-	color: var(--fp-text-color);
-
-}
-.FPClose{
-	padding: 10px;
-	margin: 5px;
-	border-radius: 5px;
-	border: 1px solid #fff0;
-	background-color: var(--fp-bg3-color);
-	color: var(--fp-text-color);
-	cursor: pointer;
-	transition: var(--fp-main-tran);
-}
-.FPClose:hover{
-	border-radius: 10px;
-	border: 1px solid var(--fp-high-color);
-	background-color: var(--fp-bg2-color);
-	color: var(--fp-text-color);
-	cursor: pointer;
-	transition: var(--fp-scnd-tran);
+.FPMainNavEl {
+    margin: 0;
+    padding: 12px 24px;
+    border-radius: var(--fp-radius);
+    color: var(--fp-text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--fp-transition);
+    background-color: transparent;
 }
 
-/* Animations */
-@keyframes spin {
+.FPMainNavEl:hover {
+    color: var(--fp-text);
+    background-color: var(--fp-bg-hover) !important;
+}
+
+/* Bottoni Moderni */
+.FPbutton, .FP_search_btn, .AI_Generate_Btn, .AI_Import_Btn {
+    background: var(--fp-primary) !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: var(--fp-radius) !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: var(--fp-transition) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 13px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.FPbutton:hover, .FP_search_btn:hover {
+    background: var(--fp-primary-dark) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+/* Navbar Filtri */
+.FPNavBar {
+    background-color: var(--fp-bg-card);
+    padding: 20px;
+    border-radius: var(--fp-radius);
+    margin: 0 0 30px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.FPNavElement {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--fp-text-muted);
+}
+
+.FPNavElement select, .FPNavElement input {
+    background-color: var(--fp-bg-input) !important;
+    color: var(--fp-text) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    height: 40px !important;
+    transition: var(--fp-transition);
+}
+
+.FPNavElement select:focus, .FPNavElement input:focus {
+    border-color: var(--fp-primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(15, 156, 192, 0.2) !important;
+}
+
+/* Grid Prodotti */
+.FPContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 0;
+    margin: 0;
+}
+
+.FPCard {
+    background-color: var(--fp-bg-card);
+    border-radius: var(--fp-radius-lg);
+    overflow: hidden;
+    transition: var(--fp-transition);
+    border: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+}
+
+.FPCard:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--fp-shadow-hover);
+    border-color: var(--fp-primary);
+}
+
+.FPCardHead {
+    position: relative;
+    height: 220px;
+    background-color: #000;
+}
+
+.FPCardHead img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--fp-transition);
+}
+
+.FPCard:hover .FPCardHead img {
+    transform: scale(1.05);
+}
+
+.FPCardFoot {
+    padding: 20px;
+    background: transparent;
+    position: relative;
+    height: auto;
+}
+
+.FPCardTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--fp-text);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.FORapidImport {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--fp-primary);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--fp-shadow);
+    z-index: 20;
+    transition: var(--fp-transition);
+}
+
+.FORapidImport:hover {
+    background: var(--fp-accent);
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* AI Generator Moderno */
+.AI_Grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 30px;
+}
+
+.AI_Column {
+    background-color: var(--fp-bg-card) !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    box-shadow: var(--fp-shadow) !important;
+}
+
+.AI_Field label {
+    color: var(--fp-text) !important;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.AI_Field input, .AI_Field textarea {
+    background-color: var(--fp-bg-input) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+    color: var(--fp-text) !important;
+}
+
+/* Modali e Dettagli */
+.FPDetailSection {
+    background-color: var(--fp-bg-main) !important;
+    border: none !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6) !important;
+    border-radius: 16px !important;
+}
+
+.FPDetailHead {
+    background-color: var(--fp-bg-nav) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 20px 30px !important;
+    height: auto !important;
+}
+
+.FPDetailTitle {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+}
+
+.PFCloud {
+    background-color: rgba(15, 156, 192, 0.1) !important;
+    color: var(--fp-primary) !important;
+    border: 1px solid rgba(15, 156, 192, 0.2);
+    border-radius: 20px !important;
+    padding: 5px 15px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+/* Settings Page */
+.FPFormSeparator {
+    background-color: var(--fp-bg-nav) !important;
+    padding: 15px 25px !important;
+    border-radius: var(--fp-radius) !important;
+    margin: 30px 0 20px 0 !important;
+}
+
+.FPsettingEl {
+    background-color: var(--fp-bg-card) !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    border-radius: var(--fp-radius) !important;
+    max-width: none !important;
+    padding: 20px !important;
+    justify-content: flex-start !important;
+}
+
+.FPtextSettings {
+    color: var(--fp-text) !important;
+    text-align: left !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
+}
+
+/* Notifiche */
+.fp-notification {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Utility */
+.spin {
+    animation: fp-spin 1s linear infinite;
+}
+
+@keyframes fp-spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
-.spin {
-    animation: spin 1s linear infinite;
-    display: inline-block;
+
+@media (max-width: 768px) {
+    .AI_Grid { grid-template-columns: 1fr; }
+    .FPNavBar { flex-direction: column; align-items: stretch; }
 }
-
-.fp-loading {
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-.FPdefaultCard{
-	display: none!important;
-}
-
-.FPfound{
-	justify-content: center;
-	text-align: center;
-	align-items: center;
-	padding: 5px;
-	margin: auto;
-}
-
-
-
-
-
-
-
-
-

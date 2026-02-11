@@ -88,7 +88,7 @@ function FP_menu_page(){
     $link = SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-20.png';
 
     add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts','si-flash-products'), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position);
-    add_submenu_page( $menu_slug, 'flash_products_ai', esc_html__( 'AI Generator', 'si-flash-products' ), 'manage_options', $menu_slug.'_ai', 'FP_sub_menu_page_ai' );
+    add_submenu_page( $menu_slug, 'flash_products_generator', esc_html__( 'Generator', 'si-flash-products' ), 'manage_options', $menu_slug.'_generator', 'FP_sub_menu_page_generator' );
     add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'si-flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
 }
 add_action( 'admin_menu', 'FP_menu_page' );
@@ -109,7 +109,7 @@ function FP_nav_menu_page(){
     $color1 = 'var(--fp-main-color)';
     $color2 = 'var(--fp-bg3-color)';
     $FlashOrder_color = ( $_REQUEST['page'] == 'flash_products' )? $color1 : $color2;//phpcs:ignore
-    $AI_color = ( $_REQUEST['page'] == 'flash_products_ai' )? $color1 : $color2;//phpcs:ignore
+    $Generator_color = ( $_REQUEST['page'] == 'flash_products_generator' )? $color1 : $color2;//phpcs:ignore
     $Settings_color = ( $_REQUEST['page'] == 'flash_products_settings' )? $color1 : $color2;//phpcs:ignore
     FP_head_menu_page();
 	// FP_debug($_REQUEST['page']);
@@ -117,8 +117,8 @@ function FP_nav_menu_page(){
     <nav class="FPMainNav">
         <a href="admin.php?page=flash_products" class="FPMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
         <?php esc_html_e( 'FlashProducts', 'si-flash-products' ); ?></a>
-        <a href="admin.php?page=flash_products_ai" class="FPMainNavEl" style="background-color: <?php echo esc_attr($AI_color); ?>;">
-        <?php esc_html_e( 'AI Generator', 'si-flash-products' ); ?></a>
+        <a href="admin.php?page=flash_products_generator" class="FPMainNavEl" style="background-color: <?php echo esc_attr($Generator_color); ?>;">
+        <?php esc_html_e( 'Generator', 'si-flash-products' ); ?></a>
         <a href="admin.php?page=flash_products_settings" class="FPMainNavEl" style="background-color: <?php echo esc_attr($Settings_color); ?>;">
         <?php esc_html_e( 'Settings', 'si-flash-products' ); ?></a>
     </nav>
@@ -140,9 +140,9 @@ function FP_main_menu_page(){
 	FP_foot_menu_page();
 }
 
-function FP_sub_menu_page_ai(){
+function FP_sub_menu_page_generator(){
 	FP_nav_menu_page();
-	include( SIFProd_PLUGIN_PATH . 'pages/ai-generator.php');
+	include( SIFProd_PLUGIN_PATH . 'pages/generator.php');
 	FP_foot_menu_page();
 }
 

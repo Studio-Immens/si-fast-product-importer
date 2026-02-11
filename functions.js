@@ -202,6 +202,17 @@ jQuery(document).ready(function($) {
                     $('#out_fp_categories').val(data.fp_categories);
                     $('#out_fp_tag').val(data.fp_tag);
                     
+                    // New WooCommerce fields
+                    $('#out_regular_price').val(data.regular_price);
+                    $('#out_sale_price').val(data.sale_price);
+                    $('#out_sku').val(data.sku);
+                    $('#out_stock_status').val(data.stock_status || 'instock');
+                    $('#out_stock_qty').val(data.stock_qty || 10);
+                    $('#out_weight').val(data.weight);
+                    $('#out_length').val(data.length);
+                    $('#out_width').val(data.width);
+                    $('#out_height').val(data.height);
+
                     // Update WP Editor (TinyMCE)
                     if (window.tinyMCE && tinyMCE.get('out_post_content')) {
                         tinyMCE.get('out_post_content').setContent(data.post_content);
@@ -278,6 +289,51 @@ jQuery(document).ready(function($) {
             tinyMCE.get('out_post_content').setContent('');
         }
         $('#ai_product_name, #ai_product_context').val('');
+        $('#img_preview_container').css('background-image', 'none');
+    });
+
+    // Image Preview
+    $('#out_fp_img').on('input change', function() {
+        var url = $(this).val();
+        if (url) {
+            $('#img_preview_container').css('background-image', 'url(' + url + ')');
+        } else {
+            $('#img_preview_container').css('background-image', 'none');
+        }
+    });
+
+    // Presets
+    $('.PresetBtn').on('click', function() {
+        var preset = $(this).data('preset');
+        var now = new Date();
+        var skuBase = 'PRD-' + now.getTime().toString().slice(-6);
+
+        switch(preset) {
+            case 'simple':
+                $('#out_post_title').val('Bozza Prodotto Semplice');
+                $('#out_regular_price').val('19.90');
+                $('#out_sku').val(skuBase);
+                $('#out_stock_status').val('instock');
+                $('#out_stock_qty').val('100');
+                break;
+            case 'physical':
+                $('#out_post_title').val('Nuovo Prodotto Fisico');
+                $('#out_regular_price').val('49.00');
+                $('#out_sku').val(skuBase);
+                $('#out_weight').val('1.5');
+                $('#out_length').val('20');
+                $('#out_width').val('15');
+                $('#out_height').val('10');
+                break;
+            case 'premium':
+                $('#out_post_title').val('Prodotto Premium Gold');
+                $('#out_regular_price').val('299.00');
+                $('#out_sale_price').val('249.00');
+                $('#out_sku').val('PREM-' + skuBase);
+                $('#out_stock_qty').val('5');
+                break;
+        }
+        FP_Notify('Preset caricato!', 'success');
     });
 });
 
