@@ -44,17 +44,29 @@ function FP_load_dependencies() {
 	require_once dirname( __FILE__ ) . '/functions.php';
 }
 
-function FP_load_style() {
-	wp_enqueue_style( 'Flash-Products-style-css', SIFProd_PLUGIN_URL.'/style.css', false, NULL, 'all' );
-}
-add_action( 'wp_enqueue_scripts', 'FP_load_style' );
-add_action( 'admin_enqueue_scripts', 'FP_load_style' );
+function FP_load_assets( $hook ) {
+	// Carica gli asset solo nelle pagine del plugin
+	if ( strpos( $hook, 'flash_products' ) === false ) {
+		return;
+	}
 
-function FP_load_animation() {
-	wp_enqueue_script( 'Flash-Products-functions-js', SIFProd_PLUGIN_URL . '/functions.js', array( 'jquery' ), NULL, false );
+	wp_enqueue_style( 'Flash-Products-style-css', SIFProd_PLUGIN_URL . '/style.css', array(), SIFProd_VERSION, 'all' );
+	
+	wp_enqueue_script( 'Flash-Products-functions-js', SIFProd_PLUGIN_URL . '/functions.js', array( 'jquery' ), SIFProd_VERSION, true );
+
+	// Localizzazione per AJAX
+	wp_localize_script( 'Flash-Products-functions-js', 'fp_ajax', array(
+		'ajax_url' => admin_url( 'admin-ajax.php' ),
+		'nonce'    => wp_create_nonce( 'fp_import_nonce' ),
+	) );
 }
-add_action( 'wp_enqueue_scripts', 'FP_load_animation' );
-add_action( 'admin_enqueue_scripts', 'FP_load_animation' );
+add_action( 'admin_enqueue_scripts', 'FP_load_assets' );
+
+// Rimosse le vecchie funzioni di caricamento asset non ottimizzate
+// add_action( 'wp_enqueue_scripts', 'FP_load_style' );
+// add_action( 'admin_enqueue_scripts', 'FP_load_style' );
+// add_action( 'wp_enqueue_scripts', 'FP_load_animation' );
+// add_action( 'admin_enqueue_scripts', 'FP_load_animation' );
 
 
 
@@ -76,6 +88,7 @@ function FP_menu_page(){
     $link = SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-20.png';
 
     add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts','si-flash-products'), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position);
+    add_submenu_page( $menu_slug, 'flash_products_ai', esc_html__( 'AI Generator', 'si-flash-products' ), 'manage_options', $menu_slug.'_ai', 'FP_sub_menu_page_ai' );
     add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'si-flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
 }
 add_action( 'admin_menu', 'FP_menu_page' );
@@ -96,6 +109,7 @@ function FP_nav_menu_page(){
     $color1 = 'var(--fp-main-color)';
     $color2 = 'var(--fp-bg3-color)';
     $FlashOrder_color = ( $_REQUEST['page'] == 'flash_products' )? $color1 : $color2;//phpcs:ignore
+    $AI_color = ( $_REQUEST['page'] == 'flash_products_ai' )? $color1 : $color2;//phpcs:ignore
     $Settings_color = ( $_REQUEST['page'] == 'flash_products_settings' )? $color1 : $color2;//phpcs:ignore
     FP_head_menu_page();
 	// FP_debug($_REQUEST['page']);
@@ -103,6 +117,8 @@ function FP_nav_menu_page(){
     <nav class="FPMainNav">
         <a href="admin.php?page=flash_products" class="FPMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
         <?php esc_html_e( 'FlashProducts', 'si-flash-products' ); ?></a>
+        <a href="admin.php?page=flash_products_ai" class="FPMainNavEl" style="background-color: <?php echo esc_attr($AI_color); ?>;">
+        <?php esc_html_e( 'AI Generator', 'si-flash-products' ); ?></a>
         <a href="admin.php?page=flash_products_settings" class="FPMainNavEl" style="background-color: <?php echo esc_attr($Settings_color); ?>;">
         <?php esc_html_e( 'Settings', 'si-flash-products' ); ?></a>
     </nav>
@@ -121,6 +137,12 @@ function FP_foot_menu_page( $debug = false ){
 function FP_main_menu_page(){
 	FP_nav_menu_page();
 	include( SIFProd_PLUGIN_PATH . 'pages/main.php');
+	FP_foot_menu_page();
+}
+
+function FP_sub_menu_page_ai(){
+	FP_nav_menu_page();
+	include( SIFProd_PLUGIN_PATH . 'pages/ai-generator.php');
 	FP_foot_menu_page();
 }
 

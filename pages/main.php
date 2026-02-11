@@ -4,13 +4,21 @@
 if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
-$categories = array('result');
-$categories = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat') ) );
 
-$languages = array('result');
-$languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=Languages') ) );
+// Use Transients for API results
+$categories = get_transient( 'fp_api_categories' );
+if ( false === $categories ) {
+    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat' );
+    $categories = json_decode( wp_remote_retrieve_body( $response ) );
+    set_transient( 'fp_api_categories', $categories, DAY_IN_SECONDS );
+}
 
-// fo_debug( $languages->result );
+$languages = get_transient( 'fp_api_languages' );
+if ( false === $languages ) {
+    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=Languages' );
+    $languages = json_decode( wp_remote_retrieve_body( $response ) );
+    set_transient( 'fp_api_languages', $languages, DAY_IN_SECONDS );
+}
 
 ?>
 
@@ -20,10 +28,13 @@ $languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flash
 
         <div class="FPNavElement">
             <?php echo esc_html__('Languages:','si-flash-products');?>
-            <select class="FP_languages" name="FP_languages" onchange="FP_search_product();">
+            <select class="FP_languages" name="FP_languages">
+                <option value=""> - select - </option>
                 <?php 
-                foreach ($languages->result as $key => $value) {
-                    echo '<option value="'.esc_attr($value->slug).'">'.esc_attr($value->name).'</option>';
+                if ( isset( $languages->result ) && is_array( $languages->result ) ) {
+                    foreach ($languages->result as $key => $value) {
+                        echo '<option value="'.esc_attr($value->slug).'">'.esc_html($value->name).'</option>';
+                    }
                 }
                 ?>
             </select>
@@ -31,11 +42,13 @@ $languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flash
 
         <div class="FPNavElement">
             <?php echo esc_html__('Categories:','si-flash-products');?>
-            <select class="FP_categories" name="FP_categories" onchange="FP_search_product();">
+            <select class="FP_categories" name="FP_categories">
                 <option value=""> - select - </option>
                 <?php 
-                foreach ($categories->result as $key => $value) {
-                    echo '<option value="'.esc_attr($value->slug).'">'.esc_attr($value->name).'</option>';
+                if ( isset( $categories->result ) && is_array( $categories->result ) ) {
+                    foreach ($categories->result as $key => $value) {
+                        echo '<option value="'.esc_attr($value->slug).'">'.esc_html($value->name).'</option>';
+                    }
                 }
                 ?>
             </select>
@@ -43,15 +56,15 @@ $languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flash
 
         <div class="FPNavElement">
             <?php echo esc_html__('Keyword:','si-flash-products');?>
-            <input class="FP_keyword" name="FP_keyword" type="search" placeholder="type a keyword" onkeyup="FP_search_product();">
+            <input class="FP_keyword" name="FP_keyword" type="search" placeholder="<?php esc_attr_e('type a keyword', 'si-flash-products'); ?>">
         </div>
         
 
         <div class="FPNavElement">
             <?php echo esc_html__('Order:','si-flash-products');?>
-            <select class="FP_orderby" name="FP_orderby" onchange="FP_search_product();">
-                <option value="name"> By Name </option>
-                <option value="date"> By Date </option>
+            <select class="FP_orderby" name="FP_orderby">
+                <option value="name"> <?php esc_html_e('By Name', 'si-flash-products'); ?> </option>
+                <option value="date"> <?php esc_html_e('By Date', 'si-flash-products'); ?> </option>
             </select>
         </div>
         
@@ -59,12 +72,12 @@ $languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flash
 
         <div class="FPNavElement">
             <?php echo esc_html__('Limit:','si-flash-products');?>
-            <input class="FP_limit" name="FP_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 500','si-flash-products');?>" min="1" max="500" step="1" value="50" onchange="FP_search_product();" style="width:65px">
+            <input class="FP_limit" name="FP_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 500','si-flash-products');?>" min="1" max="500" step="1" value="50" style="width:65px">
         </div>
 
         <div class="FPNavElement">
             <?php echo esc_html__('Page:','si-flash-products');?>
-            <input class="FP_offset" name="FP_offset" type="number" placeholder="type a number" step="1" value="0" total_pages="0" onchange="FP_search_product();" style="width:65px">
+            <input class="FP_offset" name="FP_offset" type="number" placeholder="<?php esc_attr_e('type a number', 'si-flash-products'); ?>" step="1" value="0" total_pages="0" style="width:65px">
         </div>
 
         <div class="FPNavElement">
@@ -73,7 +86,7 @@ $languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flash
         </div>
 
 
-        <button class="FPNavElement" style="margin-left:auto;" onclick="FP_search_product();"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
+        <button class="FPNavElement FP_search_btn" style="margin-left:auto;"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
     </div>
 
     <div class="FPContainer">
@@ -81,13 +94,13 @@ $languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flash
         <div class="FPCard FPdefaultCard" fp_title="" fp_short_title="" fp_slang_title="" fp_description="" fp_exerp="" fp_categories="" fp_tag="" fp_ingredient="" fp_macro_cat="" fp_allerg="" fp_sticker="" fp_temp="" fp_img="<?php echo wc_placeholder_img_src('300'); ?>" fp_gallery="">
 
             <div class="FPCardHead">
-                <img src="<?php echo wc_placeholder_img_src('300'); ?>" onclick="FP_Open_Detail(jQuery(this).closest('.FPCard'))">
-                <div class="FORapidImport" onclick="FP_Import_product(jQuery(this).closest('.FPCard'));">
+                <img class="FPCardImg" src="<?php echo wc_placeholder_img_src('300'); ?>">
+                <div class="FORapidImport">
                     <span class="dashicons dashicons-plus"></span>
                 </div>
             </div>
 
-            <div class="FPCardFoot" onclick="FP_Open_Detail(jQuery(this).closest('.FPCard'))">
+            <div class="FPCardFoot">
                 <strong class="FPCardTitle">
                     <?php echo esc_html__('Product Title','si-flash-products');?>
                 </strong>
@@ -103,8 +116,8 @@ $languages = json_decode( wp_remote_retrieve_body( wp_remote_get( 'https://flash
 
     <div class="FPDetailSection" style="display:none;">
         <div class="FPDetailHead">
-            <strong><?php echo esc_html__('Product Title','si-flash-products');?></strong>
-            <div onclick="FP_Close_Detail(this)" class="FPClose" style="margin-left:auto;"><?php echo esc_html__('CLOSE','si-flash-products');?></div>
+            <strong class="FPDetailTitle"><?php echo esc_html__('Product Title','si-flash-products');?></strong>
+            <div class="FPClose" style="margin-left:auto;"><?php echo esc_html__('CLOSE','si-flash-products');?></div>
         </div>
         <div class="FPDetailBody">
             <div class="FPDetailBodyImages">
