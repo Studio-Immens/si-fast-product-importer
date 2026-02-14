@@ -9,6 +9,118 @@
  * @link      studioimmens.com
  */
 
+// Generator for local DB - Generates 1000 common products
+function FP_ensure_local_db() {
+    $json_path = SIFProd_PLUGIN_PATH . 'includes/local_products.json';
+    
+    // Generate if file doesn't exist, if count is wrong, if images are old placeholders, or if explicit regeneration is requested
+    $existing_products = file_exists( $json_path ) ? json_decode( file_get_contents( $json_path ), true ) : [];
+    $needs_regen = ! file_exists( $json_path ) || count($existing_products) < 2000 || (isset($existing_products[0]['fp_img']) && strpos($existing_products[0]['fp_img'], 'picsum.photos') !== false);
+    
+    if ( $needs_regen || isset( $_GET['generate_local_db'] ) ) {
+        if ( isset( $_GET['generate_local_db'] ) && ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        $categories_data = [
+            'Elettronica' => ['Smartphone', 'Laptop', 'Cuffie Bluetooth', 'Smartwatch', 'Tablet', 'Fotocamera', 'Monitor 4K', 'Tastiera Meccanica', 'Power Bank', 'Speaker Wireless'],
+            'Casa' => ['Lampada LED', 'Sedia Ergonomica', 'Tavolo in Legno', 'Quadro Moderno', 'Vaso in Ceramica', 'Tappeto Soft', 'Specchio', 'Divano 3 Posti', 'Set Posate', 'Macchina Caffè'],
+            'Abbigliamento' => ['T-shirt Cotone', 'Jeans Slim Fit', 'Felpa con Cappuccio', 'Giacca Invernale', 'Scarpe Sportive', 'Cintura in Pelle', 'Cappello', 'Pantaloni Chino', 'Camicia Oxford'],
+            'Bellezza' => ['Crema Idratante', 'Profumo Luxury', 'Shampoo Bio', 'Siero Viso', 'Maschera Argilla', 'Rossetto Matte', 'Smalto', 'Crema Solare', 'Balsamo'],
+            'Sport' => ['Tappetino Yoga', 'Manubri 5kg', 'Palla da Basket', 'Corda per Saltare', 'Borraccia Termica', 'Zaino Trekking', 'Pesi Caviglie', 'Rullo Massaggi', 'Banda Elastica']
+        ];
+
+        $adjectives = ['Rivoluzionario', 'Professionale', 'Eco-sostenibile', 'Intelligente', 'Classico', 'Moderno', 'Ultra-resistente', 'Essenziale', 'Edizione Limitata', 'Compatto', 'Superiore', 'Elite', 'Definitivo'];
+        
+        $ingredients_list = ['Acqua Termale', 'Estratto di Aloe', 'Olio di Argan', 'Acido Ialuronico', 'Vitamina C', 'Burro di Shea', 'Proteine della Seta'];
+        $allergens_list = ['Glutine', 'Lattosio', 'Frutta a guscio', 'Soia', 'Nichel Free'];
+        
+        // Unsplash mapping for relevant commercial-use images
+        $img_keywords = [
+            'Elettronica'   => 'tech,electronics,gadget',
+            'Casa'          => 'interior,home,furniture',
+            'Abbigliamento' => 'fashion,clothing,apparel',
+            'Bellezza'      => 'beauty,cosmetics,skincare',
+            'Sport'         => 'fitness,sport,gym'
+        ];
+
+        $products = [];
+        for ($i = 1; $i <= 2000; $i++) {
+            $cat_keys = array_keys($categories_data);
+            $category = $cat_keys[array_rand($cat_keys)];
+            $base_name = $categories_data[$category][array_rand($categories_data[$category])];
+            $adj = $adjectives[array_rand($adjectives)];
+            
+            $title = "$base_name $adj " . ($i);
+            $price = rand(15, 800) + (rand(0, 99) / 100);
+            $sale_price = (rand(1, 10) > 7) ? ($price * 0.85) : ''; 
+            
+            // Unsplash Featured URL (More reliable)
+            $kw = $img_keywords[$category] ?? 'product';
+            $main_img = "https://source.unsplash.com/featured/800x800/?" . str_replace(' ', '', $base_name) . ",$kw&sig=$i";
+            $gallery1 = "https://source.unsplash.com/featured/800x800/?" . str_replace(' ', '', $base_name) . ",detail&sig=" . ($i + 2000);
+            $gallery2 = "https://source.unsplash.com/featured/800x800/?" . $kw . ",quality&sig=" . ($i + 4000);
+
+            // Direct Response Style Description
+            $desc = "<h3>Vuoi trasformare il tuo modo di vivere la categoria $category?</h3>";
+            $desc .= "<p>Smetti di accontentarti di soluzioni mediocri. Il nuovo <strong>$title</strong> non è solo un prodotto, è la risposta definitiva che stavi cercando.</p>";
+            $desc .= "<h4>Perché scegliere $title?</h4>";
+            $desc .= "<ul>";
+            $desc .= "<li><strong>Prestazioni Ineguagliabili:</strong> Progettato con tecnologia $adj per superare ogni aspettativa.</li>";
+            $desc .= "<li><strong>Qualità Certificata:</strong> Ogni componente è stato testato per garantire una durata nel tempo senza precedenti.</li>";
+            $desc .= "<li><strong>Design Esclusivo:</strong> Un'estetica che si adatta perfettamente al tuo stile di vita moderno.</li>";
+            $desc .= "</ul>";
+            $desc .= "<p><strong>Non perdere altro tempo.</strong> Le scorte sono limitate e la richiesta è altissima. Assicurati il tuo $title oggi stesso e sperimenta la differenza!</p>";
+
+            // Conditional fields
+            $ing = ($category === 'Bellezza' || rand(1, 10) > 8) ? $ingredients_list[array_rand($ingredients_list)] . ", " . $ingredients_list[array_rand($ingredients_list)] : '';
+            $all = ($category === 'Bellezza' && rand(1, 10) > 7) ? $allergens_list[array_rand($allergens_list)] : '';
+            $stick = (rand(1, 10) > 8) ? "NOVITÀ" : ((rand(1, 10) > 8) ? "BEST SELLER" : '');
+
+            $products[] = [
+                'post_title'      => $title,
+                'post_content'    => $desc,
+                'post_excerpt'    => "Il segreto per ottenere il massimo da $category. Scopri perché $title è la scelta numero uno degli esperti.",
+                'fp_categories'   => $category,
+                'fp_tag'          => strtolower($category) . ", $adj, offerta, esclusivo",
+                'fp_img'          => $main_img,
+                'fp_gallery'      => "$gallery1,$gallery2",
+                'regular_price'   => number_format($price, 2, '.', ''),
+                'sale_price'      => $sale_price ? number_format($sale_price, 2, '.', '') : '',
+                'sku'             => "FP-" . strtoupper(substr($category, 0, 3)) . "-" . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'stock_status'    => 'instock',
+                'stock_qty'       => rand(5, 150),
+                'weight'          => (rand(5, 100) / 10),
+                'length'          => rand(5, 80),
+                'width'           => rand(5, 80),
+                'height'          => rand(2, 40),
+                'is_virtual'      => 'no',
+                'is_downloadable' => 'no',
+                'fp_ingredient'   => $ing,
+                'fp_allerg'       => $all,
+                'fp_sticker'      => $stick,
+                'fp_temp'         => (rand(1, 10) > 9) ? "Conservare in luogo fresco" : '',
+                'attributes'      => [
+                    ['name' => 'Colore', 'value' => 'Nero | Bianco | Grigio | Blu', 'visible' => 1, 'variation' => 0],
+                    ['name' => 'Materiale', 'value' => 'Premium | Eco-friendly', 'visible' => 1, 'variation' => 0]
+                ],
+                'custom_taxonomy' => [
+                    'brand'      => 'FlashBrand',
+                    'materiale'  => 'Materiale ' . $adj
+                ]
+            ];
+        }
+
+        file_put_contents($json_path, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        
+        if ( isset( $_GET['generate_local_db'] ) ) {
+            wp_die('2000 prodotti generati con successo! <a href="' . admin_url() . '">Torna indietro</a>');
+        }
+    }
+}
+add_action('admin_init', 'FP_ensure_local_db');
+
+
 
 
 
@@ -313,28 +425,84 @@ function FP_ajax_search_products() {
     $limit = isset( $_GET['limit'] ) ? intval( $_GET['limit'] ) : 10;
     $offset = isset( $_GET['offset'] ) ? intval( $_GET['offset'] ) : 0;
     $s = isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '';
+    $source = isset( $_GET['source'] ) ? sanitize_key( $_GET['source'] ) : 'all';
 
-    $cache_key = 'fp_search_' . md5( $categories . $languages . $orderby . $limit . $offset . $s );
+    $cache_key = 'fp_search_' . md5( $categories . $languages . $source . $orderby . $limit . $offset . $s );
     $results = get_transient( $cache_key );
 
     if ( false === $results ) {
-        $url = add_query_arg( array(
-            'categories' => $categories,
-            'languages'  => $languages,
-            'orderby'    => $orderby,
-            'limit'      => $limit,
-            'offset'     => $offset,
-            's'          => $s,
-        ), 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/products' );
+        $all_results = array('result' => array(), 'total_results' => 0);
+        
+        // 1. Get Remote Results
+        if ( $source === 'all' || $source === 'remote' ) {
+            $remote_links = FP_get_meta('FP_remote_db_links');
+            $urls = array('https://flashproducts.studioimmens.com/wp-json/flash_products/v1/products');
+            
+            if ( ! empty( $remote_links ) ) {
+                $extra_links = explode( "\n", str_replace( "\r", "", $remote_links ) );
+                foreach ( $extra_links as $link ) {
+                    $link = trim($link);
+                    if ( ! empty( $link ) && filter_var($link, FILTER_VALIDATE_URL) ) {
+                        $urls[] = $link;
+                    }
+                }
+            }
 
-        $response = wp_remote_get( $url );
+            foreach ( $urls as $base_url ) {
+                $url = add_query_arg( array(
+                    'categories' => $categories,
+                    'languages'  => $languages,
+                    'orderby'    => $orderby,
+                    'limit'      => $limit,
+                    'offset'     => $offset,
+                    's'          => $s,
+                ), $base_url );
 
-        if ( is_wp_error( $response ) ) {
-            wp_send_json_error( array( 'message' => $response->get_error_message() ) );
+                $response = wp_remote_get( $url, array('timeout' => 10) );
+
+                if ( ! is_wp_error( $response ) ) {
+                    $data = json_decode( wp_remote_retrieve_body( $response ), true );
+                    if ( isset($data['result']) && is_array($data['result']) ) {
+                        $all_results['result'] = array_merge($all_results['result'], $data['result']);
+                        $all_results['total_results'] += intval($data['total_results'] ?? 0);
+                    }
+                }
+            }
         }
 
-        $results = json_decode( wp_remote_retrieve_body( $response ), true );
-        set_transient( $cache_key, $results, HOUR_IN_SECONDS ); // Cache search results for 1 hour
+        // 2. Get Local JSON Results
+        if ( $source === 'all' || $source === 'local' ) {
+            $local_db_path = SIFProd_PLUGIN_PATH . 'includes/local_products.json';
+            if ( file_exists( $local_db_path ) ) {
+                $local_data = json_decode( file_get_contents( $local_db_path ), true );
+                if ( is_array($local_data) ) {
+                    $filtered_local = array();
+                    foreach ( $local_data as $product ) {
+                        $match = true;
+                        if ( ! empty($s) && stripos($product['post_title'], $s) === false ) {
+                            $match = false;
+                        }
+                        if ( ! empty($categories) && stripos($product['fp_categories'], $categories) === false ) {
+                            $match = false;
+                        }
+                        
+                        if ( $match ) {
+                            $product['source'] = 'local';
+                            $filtered_local[] = $product;
+                        }
+                    }
+
+                    $all_results['total_results'] += count($filtered_local);
+                    
+                    // Apply offset and limit to local results
+                    $paged_local = array_slice($filtered_local, $offset, $limit);
+                    $all_results['result'] = array_merge($all_results['result'], $paged_local);
+                }
+            }
+        }
+
+        $results = $all_results;
+        set_transient( $cache_key, $results, HOUR_IN_SECONDS );
     }
 
     wp_send_json_success( $results );
@@ -378,6 +546,7 @@ function FP_ajax_import_product() {
         'is_virtual'    => isset($product_data['is_virtual']) && $product_data['is_virtual'] === 'yes',
         'is_downloadable' => isset($product_data['is_downloadable']) && $product_data['is_downloadable'] === 'yes',
         'attributes'    => isset($product_data['attributes']) ? $product_data['attributes'] : array(),
+        'custom_taxonomy' => isset($product_data['custom_taxonomy']) ? $product_data['custom_taxonomy'] : array(),
     );
 
     $result = FP_create_woo_product( $sanitized_data );
@@ -652,6 +821,31 @@ function FP_create_woo_product( $data ) {
             $attributes[] = $attribute;
         }
         $product->set_attributes( $attributes );
+    }
+
+    // Handle Custom Taxonomies
+    if ( ! empty( $data['custom_taxonomy'] ) && is_array( $data['custom_taxonomy'] ) ) {
+        foreach ( $data['custom_taxonomy'] as $tax_name => $tax_value ) {
+            if ( empty( $tax_name ) || empty( $tax_value ) ) continue;
+
+            // Ensure taxonomy exists
+            if ( taxonomy_exists( $tax_name ) ) {
+                $terms = array();
+                $values = explode( '|', $tax_value );
+                foreach ( $values as $val ) {
+                    $term = get_term_by( 'name', trim( $val ), $tax_name );
+                    if ( ! $term ) {
+                        $term = wp_insert_term( trim( $val ), $tax_name );
+                    }
+                    if ( ! is_wp_error( $term ) ) {
+                        $terms[] = is_array( $term ) ? $term['term_id'] : $term->term_id;
+                    }
+                }
+                if ( ! empty( $terms ) ) {
+                    wp_set_object_terms( $product->get_id(), $terms, $tax_name );
+                }
+            }
+        }
     }
 
     try {

@@ -6,30 +6,111 @@
         $('.FPDetailSection').slideToggle();
         $('.FPBackGroundSection').show();
 
-        $('.FPDetailTitle').text(card.attr('fp_title'));
+        // Populate basic fields
+        $('.FPDetailTitle').val(card.attr('fp_title'));
 
-        var blocks = ['short_title', 'slang_title', 'description', 'exerpt'];
-        blocks.forEach(function(block) {
-            var val = card.attr('fp_' + block);
-            if (!val || val === '') {
-                $('p[fp-block="' + (block === 'exerpt' ? 'exerpt' : block) + '"]').parent().hide();
+        // Taxonomies and extra fields
+        var fields = [
+            'fp_categories', 'fp_tag', 'fp_ingredient', 'fp_allerg', 
+            'fp_sticker', 'fp_temp', 'sku', 'regular_price', 'sale_price'
+        ];
+
+        fields.forEach(function(field) {
+            var attrKey = field.startsWith('fp_') ? field : 'fp_' + field;
+            var value = card.attr(attrKey) || '';
+            var $input = $('input[fp-edit="' + field + '"]');
+            $input.val(value);
+            
+            // Show/Hide container based on value
+            var $container = $input.closest('.FPDetailBlock');
+            if (value === '') {
+                $container.hide();
             } else {
-                $('p[fp-block="' + (block === 'exerpt' ? 'exerpt' : block) + '"]').parent().show();
-                $('p[fp-block="' + (block === 'exerpt' ? 'exerpt' : block) + '"]').text(val);
+                $container.show();
             }
         });
 
-        FP_Create_Detail_tax_cloud( card, 'fp_macro_cat' );
-        FP_Create_Detail_tax_cloud( card, 'fp_categories' );
-        FP_Create_Detail_tax_cloud( card, 'fp_tag' );
-        FP_Create_Detail_tax_cloud( card, 'fp_ingredient' );
-        FP_Create_Detail_tax_cloud( card, 'fp_allerg' );
-        FP_Create_Detail_tax_cloud( card, 'fp_sticker' );
-        FP_Create_Detail_tax_cloud( card, 'fp_temp' );
+        // Handle textareas (excerpt and content)
+        var textareas = ['post_excerpt', 'post_content'];
+        textareas.forEach(function(field) {
+            var attrKey = field === 'post_excerpt' ? 'fp_exerp' : 'fp_description';
+            var value = card.attr(attrKey) || '';
+            var $textarea = $('textarea[fp-edit="' + field + '"]');
+            $textarea.val(value);
+            
+            var $container = $textarea.closest('.FPDetailBlock');
+            if (value === '') {
+                $container.hide();
+            } else {
+                $container.show();
+            }
+        });
+
+        // Store card reference for import
+        $('.FPDetailSection').data('source-card', card);
 
         $('.FPDetailBodyImages').empty();
         var thumb = card.attr('fp_img');
         $('.FPDetailBodyImages').append( '<img src="'+thumb+'">' );
+    };
+
+    window.FP_Import_Edited_Product = function() {
+        var $modal = $('.FPDetailSection');
+        var $btn = $('.FP_import_edited_btn');
+        var card = $modal.data('source-card');
+
+        if ($btn.hasClass('fp-loading')) return;
+        $btn.addClass('fp-loading').html('<span class="dashicons dashicons-update spin"></span> Importing...');
+
+        var productData = {
+            post_title: $('input[fp-edit="post_title"]').val(),
+            post_content: $('textarea[fp-edit="post_content"]').val(),
+            post_excerpt: $('textarea[fp-edit="post_excerpt"]').val(),
+            fp_categories: $('input[fp-edit="fp_categories"]').val(),
+            fp_tag: $('input[fp-edit="fp_tag"]').val(),
+            fp_img: card.attr('fp_img'),
+            fp_gallery: card.attr('fp_gallery'),
+            regular_price: $('input[fp-edit="regular_price"]').val(),
+            sale_price: $('input[fp-edit="sale_price"]').val(),
+            sku: $('input[fp-edit="sku"]').val(),
+            stock_qty: card.attr('fp_stock_qty'),
+            weight: card.attr('fp_weight'),
+            length: card.attr('fp_length'),
+            width: card.attr('fp_width'),
+            height: card.attr('fp_height'),
+            attributes: card.attr('fp_attributes') ? JSON.parse(card.attr('fp_attributes')) : [],
+            custom_taxonomy: card.attr('fp_custom_taxonomy') ? JSON.parse(card.attr('fp_custom_taxonomy')) : {},
+            // Add specific editable fields to custom taxonomy if they were there
+            fp_ingredient: $('input[fp-edit="fp_ingredient"]').val(),
+            fp_allerg: $('input[fp-edit="fp_allerg"]').val(),
+            fp_sticker: $('input[fp-edit="fp_sticker"]').val(),
+            fp_temp: $('input[fp-edit="fp_temp"]').val()
+        };
+
+        $.ajax({
+            url: fp_ajax.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'fp_import_product',
+                nonce: fp_ajax.nonce,
+                product: productData
+            },
+            success: function(response) {
+                $btn.removeClass('fp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
+                if (response.success) {
+                    FP_Notify(response.data.message, 'success');
+                    FP_Close_Detail();
+                    // Optionally update the card in the UI to reflect changes
+                    card.find('.FPCardTitle').text(productData.post_title);
+                } else {
+                    FP_Notify(response.data.message, 'error');
+                }
+            },
+            error: function() {
+                $btn.removeClass('fp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
+                FP_Notify(fp_ajax.strings.error_import, 'error');
+            }
+        });
     };
 
     window.FP_Close_Detail = function() {
@@ -54,6 +135,41 @@
         }
     };
 
+    window.FP_Import_Bulk = function() {
+        var $selectedCards = $('.FPCard.selected');
+        if ($selectedCards.length === 0) return;
+
+        if (!confirm(fp_ajax.strings.confirm_bulk + ' (' + $selectedCards.length + ')')) return;
+
+        var $btn = $('.FP_bulk_import_btn');
+        var originalText = $btn.text();
+        $btn.prop('disabled', true).text(fp_ajax.strings.importing + '...');
+
+        var importedCount = 0;
+        var totalToImport = $selectedCards.length;
+
+        function importNext(index) {
+            if (index >= totalToImport) {
+                $btn.prop('disabled', false).text(originalText);
+                FP_Notify(importedCount + ' ' + fp_ajax.strings.bulk_success, 'success');
+                $('.bulk-actions').fadeOut();
+                $('#select_all_products').prop('checked', false);
+                $('.FPCard').removeClass('selected').find('.fp-select-product').prop('checked', false);
+                return;
+            }
+
+            var $card = $($selectedCards[index]);
+            var $importBtn = $card.find('.FP_import_btn');
+
+            FP_Import_product($importBtn, function(success) {
+                if (success) importedCount++;
+                importNext(index + 1);
+            });
+        }
+
+        importNext(0);
+    };
+
     window.FP_Import_product = function(btn, callback){
         var card = btn.closest('.FPCard');
         var originalHtml = btn.html();
@@ -68,7 +184,18 @@
             post_excerpt: card.attr('fp_exerp'),
             fp_categories: card.attr('fp_categories'),
             fp_tag: card.attr('fp_tag'),
-            fp_img: card.attr('fp_img')
+            fp_img: card.attr('fp_img'),
+            fp_gallery: card.attr('fp_gallery'),
+            regular_price: card.attr('fp_regular_price'),
+            sale_price: card.attr('fp_sale_price'),
+            sku: card.attr('fp_sku'),
+            stock_qty: card.attr('fp_stock_qty'),
+            weight: card.attr('fp_weight'),
+            length: card.attr('fp_length'),
+            width: card.attr('fp_width'),
+            height: card.attr('fp_height'),
+            attributes: card.attr('fp_attributes') ? JSON.parse(card.attr('fp_attributes')) : [],
+            custom_taxonomy: card.attr('fp_custom_taxonomy') ? JSON.parse(card.attr('fp_custom_taxonomy')) : {}
         };
 
         $.ajax({
@@ -130,19 +257,24 @@
         $('.FPBackGroundSection').hide();
         $('.bulk-actions').fadeOut();
         $('#select_all_products').prop('checked', false);
+        $('.selected-count').text('0');
 
         // Show loading state
         $container.css('opacity', '0.5');
         $found.html('<span class="dashicons dashicons-update spin"></span>');
+
+        var limit = parseInt($(".FP_limit").val()) || 100;
+        var offset = parseInt($(".FP_offset").val()) || 0;
 
         var data = {
             action: 'fp_search_products',
             nonce: fp_ajax.nonce,
             categories: $(".FP_categories").val() || '',
             languages: $(".FP_languages").val() || '',
+            source: $(".FP_source").val() || 'all',
             orderby: $(".FP_orderby").val() || '',
-            limit: $(".FP_limit").val() || '',
-            offset: $(".FP_offset").val() || '',
+            limit: limit,
+            offset: offset,
             s: $(".FP_keyword").val() || ''
         };
 
@@ -155,7 +287,7 @@
                 if (response.success) {
                     var clone = $('.FPdefaultCard').clone();
                     $container.empty().append(clone);
-                    $found.text(response.data.founds);
+                    $found.text(response.data.total_results);
                     FPloopProducts(response.data.result);
                 } else {
                     $found.text(fp_ajax.strings.error);
@@ -188,39 +320,80 @@
 
             copy.find('.FPCardTitle').text( e.post_title );
 
+            // Generic Attributes
             copy.attr('fp_title', e.post_title);
-            copy.attr('fp_short_title', e.short_title);
-            copy.attr('fp_slang_title', e.slang_title);
+            copy.attr('fp_short_title', e.short_title || '');
+            copy.attr('fp_slang_title', e.slang_title || '');
             copy.attr('fp_description', e.post_content);
             copy.attr('fp_exerp', e.post_excerpt);
-            copy.attr('fp_ingredient', e.Ingredienti);
-            copy.attr('fp_allerg', e.Allergeni);
-            copy.attr('fp_sticker', e.Sticker);
-            copy.attr('fp_temp', e.Temperature);
+            copy.attr('fp_ingredient', e.fp_ingredient || e.Ingredienti || '');
+            copy.attr('fp_allerg', e.fp_allerg || e.Allergeni || '');
+            copy.attr('fp_sticker', e.fp_sticker || e.Sticker || '');
+            copy.attr('fp_temp', e.fp_temp || e.Temperature || '');
+            
+            // New WooCommerce Attributes
+            copy.attr('fp_regular_price', e.regular_price || '');
+            copy.attr('fp_sale_price', e.sale_price || '');
+            copy.attr('fp_sku', e.sku || '');
+            copy.attr('fp_stock_qty', e.stock_qty || '');
+            copy.attr('fp_weight', e.weight || '');
+            copy.attr('fp_length', e.length || '');
+            copy.attr('fp_width', e.width || '');
+            copy.attr('fp_height', e.height || '');
+            copy.attr('fp_attributes', e.attributes ? JSON.stringify(e.attributes) : '');
+            copy.attr('fp_custom_taxonomy', e.custom_taxonomy ? JSON.stringify(e.custom_taxonomy) : '');
 
+            // Remote vs Local taxonomies
             if (e.macro_categories) {
-                $(e.macro_categories).each(function(ind,ele){
-                    macro_categories += (macro_categories ? ',' : '') + ele.name;
-                });
+                if (typeof e.macro_categories === 'string') {
+                    macro_categories = e.macro_categories;
+                } else {
+                    $(e.macro_categories).each(function(ind,ele){
+                        macro_categories += (macro_categories ? ',' : '') + ele.name;
+                    });
+                }
                 copy.attr('fp_macro_cat', macro_categories);
             }
-            if (e.product_cat) {
-                $(e.product_cat).each(function(ind,ele){
-                    product_cat += (product_cat ? ',' : '') + ele.name;
-                });
+            
+            if (e.fp_categories || e.product_cat) {
+                var cats = e.fp_categories || e.product_cat;
+                if (typeof cats === 'string') {
+                    product_cat = cats;
+                } else {
+                    $(cats).each(function(ind,ele){
+                        product_cat += (product_cat ? ',' : '') + ele.name;
+                    });
+                }
                 copy.attr('fp_categories', product_cat);
             }
-            if (e.product_tag) {
-                $(e.product_tag).each(function(ind,ele){
-                    product_tag += (product_tag ? ',' : '') + ele.name;
-                });
+
+            if (e.fp_tag || e.product_tag) {
+                var tags = e.fp_tag || e.product_tag;
+                if (typeof tags === 'string') {
+                    product_tag = tags;
+                } else {
+                    $(tags).each(function(ind,ele){
+                        product_tag += (product_tag ? ',' : '') + ele.name;
+                    });
+                }
                 copy.attr('fp_tag', product_tag);
             }
 
-            if (e.thumbnail != '' && e.gallery && e.gallery.length > 0) {
-                var thumbUrl = e.gallery[e.thumbnail] ? e.gallery[e.thumbnail].guid : e.gallery[0].guid;
+            // Image handling
+            var thumbUrl = '';
+            if (e.fp_img) {
+                thumbUrl = e.fp_img;
+            } else if (e.thumbnail != '' && e.gallery && e.gallery.length > 0) {
+                thumbUrl = e.gallery[e.thumbnail] ? e.gallery[e.thumbnail].guid : e.gallery[0].guid;
+            }
+            
+            if (thumbUrl) {
                 copy.find('.FPCardHead img').attr('src', thumbUrl);
                 copy.attr('fp_img', thumbUrl);
+            }
+
+            if (e.fp_gallery) {
+                copy.attr('fp_gallery', e.fp_gallery);
             }
 
             $(".FPContainer").append(copy);
@@ -229,8 +402,28 @@
 
     // Event Listeners
     $(document).ready(function() {
+    
+    // Selection management
+    $(document).on('change', '.fp-select-product', function() {
+        $(this).closest('.FPCard').toggleClass('selected', this.checked);
+        var count = $('.FPCard.selected').length;
+        $('.selected-count').text(count);
+    });
+
+    $('#select_all_products').on('change', function() {
+        var checked = this.checked;
+        $('.FPCard').not('.FPdefaultCard').each(function() {
+            $(this).toggleClass('selected', checked);
+            $(this).find('.fp-select-product').prop('checked', checked);
+        });
+        $('.selected-count').text($('.FPCard.selected').length);
+    });
+
+    $('.FP_bulk_import_btn').on('click', function() {
+        FP_Import_Bulk();
+    });
     // Search on change/keyup
-    $('.FP_languages, .FP_categories, .FP_orderby, .FP_limit, .FP_offset').on('change', function() {
+    $('.FP_languages, .FP_categories, .FP_source, .FP_orderby, .FP_limit, .FP_offset').on('change', function() {
         FP_search_product();
     });
 
@@ -241,6 +434,10 @@
 
     $('.FP_search_btn').on('click', function() {
         FP_search_product();
+    });
+
+    $(document).on('click', '.FP_import_edited_btn', function() {
+        FP_Import_Edited_Product();
     });
 
     // Delegate clicks for dynamically loaded cards

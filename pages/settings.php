@@ -96,6 +96,26 @@ FP_general_setting( array( 'name' => 'FP_default_product_status',
 </div>
 
     <div class="FPFormSeparator">
+        <b> <?php esc_html_e('Remote Databases' , 'si-flash-products'); ?> </b>
+        <span class="dashicons dashicons-arrow-down toggle-board" data-board="remote_databases"></span>
+    </div>
+
+<div class="FPSetting_Board" board="remote_databases" style="display:none;">
+<?php
+
+FP_general_setting( array( 'name' => 'FP_remote_db_links',
+    'default'   => '',
+    'type'      => 'textarea',
+    'class'     => '',
+    'text'      => __('Remote Database Links' , 'si-flash-products'),
+    'info'      => __('Enter one or more remote database URLs, one per line.', 'si-flash-products'),
+    'other'     => 'placeholder="https://example.com/wp-json/flash_products/v1/products"'
+) );
+
+?>
+</div>
+
+    <div class="FPFormSeparator">
         <b> <?php esc_html_e('Import Settings' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down toggle-board" data-board="import_settings"></span>
     </div>

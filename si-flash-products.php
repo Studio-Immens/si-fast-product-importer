@@ -65,6 +65,8 @@ function FP_load_assets( $hook ) {
 		'sku_prefix'    => FP_get_meta('FP_sku_prefix') ?: 'PROD-',
 		'default_stock' => FP_get_meta('FP_default_stock') ?: '10',
 		'strings'       => array(
+			'confirm_bulk'        => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
+			'bulk_success'        => __( 'products imported successfully!', 'si-flash-products' ),
 			'confirm_bulk_import' => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
 			'bulk_import_done'    => __( 'Import completed: %d success, %d failure.', 'si-flash-products' ),
 			'confirm_clear_logs'  => __( 'Are you sure you want to clear all logs?', 'si-flash-products' ),

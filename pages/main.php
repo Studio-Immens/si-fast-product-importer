@@ -10,6 +10,34 @@ $categories = get_transient( 'fp_api_categories' );
 if ( false === $categories ) {
     $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat' );
     $categories = json_decode( wp_remote_retrieve_body( $response ) );
+    
+    // Add Local Categories to the list
+    $local_db_path = SIFProd_PLUGIN_PATH . 'includes/local_products.json';
+    if ( file_exists( $local_db_path ) ) {
+        $local_data = json_decode( file_get_contents( $local_db_path ), true );
+        if ( is_array($local_data) ) {
+            $local_cats = array_unique(array_column($local_data, 'fp_categories'));
+            if ( ! isset($categories->result) ) $categories = (object) array('result' => array());
+            
+            foreach ($local_cats as $cat_name) {
+                // Check if already exists in remote
+                $exists = false;
+                foreach ($categories->result as $remote_cat) {
+                    if ( strtolower($remote_cat->name) === strtolower($cat_name) ) {
+                        $exists = true;
+                        break;
+                    }
+                }
+                if ( ! $exists ) {
+                    $categories->result[] = (object) array(
+                        'name' => $cat_name,
+                        'slug' => sanitize_title($cat_name)
+                    );
+                }
+            }
+        }
+    }
+
     set_transient( 'fp_api_categories', $categories, DAY_IN_SECONDS );
 }
 
@@ -61,6 +89,15 @@ if ( false === $languages ) {
         
 
         <div class="FPNavElement">
+            <?php echo esc_html__('Source:','si-flash-products');?>
+            <select class="FP_source" name="FP_source">
+                <option value="all"> <?php esc_html_e('All Sources', 'si-flash-products'); ?> </option>
+                <option value="local"> <?php esc_html_e('Local JSON DB', 'si-flash-products'); ?> </option>
+                <option value="remote"> <?php esc_html_e('Remote Databases', 'si-flash-products'); ?> </option>
+            </select>
+        </div>
+
+        <div class="FPNavElement">
             <?php echo esc_html__('Order:','si-flash-products');?>
             <select class="FP_orderby" name="FP_orderby">
                 <option value="name"> <?php esc_html_e('By Name', 'si-flash-products'); ?> </option>
@@ -72,7 +109,7 @@ if ( false === $languages ) {
 
         <div class="FPNavElement">
             <?php echo esc_html__('Limit:','si-flash-products');?>
-            <input class="FP_limit" name="FP_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 500','si-flash-products');?>" min="1" max="500" step="1" value="50" style="width:65px">
+            <input class="FP_limit" name="FP_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 1000','si-flash-products');?>" min="1" max="1000" step="1" value="100" style="width:65px">
         </div>
 
         <div class="FPNavElement">
@@ -125,7 +162,7 @@ if ( false === $languages ) {
 
     <div class="FPDetailSection" style="display:none;">
         <div class="FPDetailHead">
-            <strong class="FPDetailTitle"><?php echo esc_html__('Product Title','si-flash-products');?></strong>
+            <input type="text" class="FPDetailTitle editable-title" fp-edit="post_title" value="">
             <div class="FPClose" style="margin-left:auto;"><?php echo esc_html__('CLOSE','si-flash-products');?></div>
         </div>
         <div class="FPDetailBody">
@@ -136,12 +173,12 @@ if ( false === $languages ) {
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Excerpt:','si-flash-products');?></strong>
-                    <p fp-block="exerpt"></p>
+                    <textarea fp-edit="post_excerpt" rows="3"></textarea>
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Description:','si-flash-products');?></strong>
-                    <p fp-block="description"></p>
+                    <textarea fp-edit="post_content" rows="10"></textarea>
                 </div>
 
             </div>
@@ -149,50 +186,56 @@ if ( false === $languages ) {
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Categories:','si-flash-products');?></strong>
-                    <div fp-block="fp_categories">
-                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
-                    </div>
+                    <input type="text" fp-edit="fp_categories" placeholder="cat1, cat2...">
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Tags:','si-flash-products');?></strong>
-                    <div fp-block="fp_tag">
-                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
-                    </div>
+                    <input type="text" fp-edit="fp_tag" placeholder="tag1, tag2...">
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Ingredients:','si-flash-products');?></strong>
-                    <div fp-block="fp_ingredient">
-                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
-                    </div>
+                    <input type="text" fp-edit="fp_ingredient" placeholder="ing1, ing2...">
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Allergens:','si-flash-products');?></strong>
-                    <div fp-block="fp_allerg">
-                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
-                    </div>
+                    <input type="text" fp-edit="fp_allerg" placeholder="all1, all2...">
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Stickers:','si-flash-products');?></strong>
-                    <div fp-block="fp_sticker">
-                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
-                    </div>
+                    <input type="text" fp-edit="fp_sticker" placeholder="sticker1, sticker2...">
                 </div>
 
                 <div class="FPDetailBlock">
                     <strong><?php echo esc_html__('Temperature:','si-flash-products');?></strong>
-                    <div fp-block="fp_temp">
-                        <div class="PFCloud"><?php esc_html_e('No details', 'si-flash-products'); ?></div>
-                    </div>
+                    <input type="text" fp-edit="fp_temp" placeholder="Cold, Hot...">
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('SKU:','si-flash-products');?></strong>
+                    <input type="text" fp-edit="sku" placeholder="PROD-001">
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Regular Price:','si-flash-products');?></strong>
+                    <input type="number" step="0.01" fp-edit="regular_price">
+                </div>
+
+                <div class="FPDetailBlock">
+                    <strong><?php echo esc_html__('Sale Price:','si-flash-products');?></strong>
+                    <input type="number" step="0.01" fp-edit="sale_price">
                 </div>
 
             </div>
         </div>
         <div class="FPDetailFoot">
-
+            <button class="button-primary FP_import_edited_btn">
+                <span class="dashicons dashicons-download"></span>
+                <?php esc_html_e('Import with Edited Values', 'si-flash-products'); ?>
+            </button>
         </div>
     </div>
     <div class="FPBackGroundSection" style="display:none;"></div>
