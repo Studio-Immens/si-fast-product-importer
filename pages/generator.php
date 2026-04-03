@@ -4,6 +4,10 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
 
+if ( ! current_user_can( 'manage_options' ) ) {
+    return;
+}
+
 $categories = get_terms( array(
     'taxonomy'   => 'product_cat',
     'hide_empty' => false,
@@ -13,8 +17,7 @@ $tags = get_terms( array(
     'taxonomy'   => 'product_tag',
     'hide_empty' => false,
 ) );
-
-$api_key = FP_get_meta('FP_gemini_api_key');
+$api_key = sifp_get_setting('FP_gemini_api_key');
 ?>
 
 <div class="FPMainContainer GeneratorSection">
@@ -248,7 +251,7 @@ $api_key = FP_get_meta('FP_gemini_api_key');
                     </button>
 
                     <?php if ( empty($api_key) ) : ?>
-                        <p class="AI_Error"><?php printf( __('Enter the <a href="%s">API Key</a>', 'si-flash-products'), admin_url('admin.php?page=flash_products_settings') ); ?></p>
+                        <p class="AI_Error"><?php printf( wp_kses( __('Enter the <a href="%s">API Key</a>', 'si-flash-products'), array('a' => array('href' => array())) ), esc_url( admin_url('admin.php?page=flash_products_settings') ) ); ?></p>
                     <?php endif; ?>
                 </div>
 

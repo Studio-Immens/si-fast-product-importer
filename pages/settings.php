@@ -5,11 +5,35 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
 
+if ( ! current_user_can( 'manage_options' ) ) {
+    return;
+}
+
 ?>
 
 
 
 <div id="settSection">
+    <div class="FPFormSeparator">
+        <b> <?php esc_html_e('Local Database' , 'si-flash-products'); ?> </b>
+    </div>
+    <div class="FPSetting_Board" style="padding: 20px;">
+        <p><?php esc_html_e('The local database contains 2000 demo products that you can search and import. You can regenerate it if needed.', 'si-flash-products'); ?></p>
+        <?php
+        $upload_dir = wp_upload_dir();
+        $json_path = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
+        if ( file_exists( $json_path ) ) {
+            $size = size_format( filesize( $json_path ) );
+            echo '<p><strong>' . esc_html__('Status:', 'si-flash-products') . '</strong> ' . sprintf( esc_html__('Database file exists (%s)', 'si-flash-products'), $size ) . '</p>';
+        } else {
+            echo '<p><strong>' . esc_html__('Status:', 'si-flash-products') . '</strong> ' . esc_html__('Database file not found.', 'si-flash-products') . '</p>';
+        }
+        ?>
+        <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=flash_products_settings&sifp_regenerate_db=1' ), 'sifp_regenerate_db' ) ); ?>" class="button-secondary">
+            <?php esc_html_e('Regenerate Local Product DB', 'si-flash-products'); ?>
+        </a>
+    </div>
+
 <form id="general" method="post" class="FPForm" style="">
     <button name="update" value="update" class="FPbutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> <?php esc_html_e('UPDATE', 'si-flash-products'); ?> </button>
 
@@ -22,7 +46,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 <?php
 
-FP_general_setting( array( 'name' => 'FP_gemini_api_key',
+sifp_general_setting( array( 'name' => 'FP_gemini_api_key',
     'default'   => '',
     'type'      => 'text',
     'class'     => '',
@@ -30,7 +54,7 @@ FP_general_setting( array( 'name' => 'FP_gemini_api_key',
     'info'      => __('Enter your Google Gemini API Key', 'si-flash-products')
 ) );
 
-FP_general_setting( array( 'name' => 'FP_ai_model',
+sifp_general_setting( array( 'name' => 'FP_ai_model',
     'default'   => 'gemini-2.0-flash',
     'type'      => 'select',
     'options'   => array('gemini-2.0-flash', 'gemini-2.0-flash-latest', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'),
@@ -39,7 +63,7 @@ FP_general_setting( array( 'name' => 'FP_ai_model',
     'info'      => __('Select the Gemini model to use', 'si-flash-products')
 ) );
 
-FP_general_setting( array( 'name' => 'FP_ai_tone',
+sifp_general_setting( array( 'name' => 'FP_ai_tone',
     'default'   => 'Professional and persuasive',
     'type'      => 'text',
     'class'     => '',
@@ -58,7 +82,7 @@ FP_general_setting( array( 'name' => 'FP_ai_tone',
 <div class="FPSetting_Board" board="generator_settings" style="display:none;">
 <?php
 
-FP_general_setting( array( 'name' => 'FP_sku_prefix',
+sifp_general_setting( array( 'name' => 'FP_sku_prefix',
     'default'   => 'PROD-',
     'type'      => 'text',
     'class'     => '',
@@ -66,7 +90,7 @@ FP_general_setting( array( 'name' => 'FP_sku_prefix',
     'info'      => __('Prefix used for automatic SKU generation', 'si-flash-products')
 ) );
 
-FP_general_setting( array( 'name' => 'FP_default_stock',
+sifp_general_setting( array( 'name' => 'FP_default_stock',
     'default'   => '10',
     'type'      => 'number',
     'class'     => '',
@@ -74,7 +98,7 @@ FP_general_setting( array( 'name' => 'FP_default_stock',
     'info'      => __('Default stock quantity if not specified', 'si-flash-products')
 ) );
 
-FP_general_setting( array( 'name' => 'FP_ai_creativity',
+sifp_general_setting( array( 'name' => 'FP_ai_creativity',
     'default'   => '0.7',
     'type'      => 'select',
     'options'   => array('0.2', '0.5', '0.7', '1.0'),
@@ -83,7 +107,7 @@ FP_general_setting( array( 'name' => 'FP_ai_creativity',
     'info'      => __('0.2 = Very precise, 1.0 = Very creative', 'si-flash-products')
 ) );
 
-FP_general_setting( array( 'name' => 'FP_default_product_status',
+sifp_general_setting( array( 'name' => 'FP_default_product_status',
     'default'   => 'publish',
     'type'      => 'select',
     'options'   => array('publish', 'draft', 'pending'),
@@ -103,7 +127,7 @@ FP_general_setting( array( 'name' => 'FP_default_product_status',
 <div class="FPSetting_Board" board="remote_databases" style="display:none;">
 <?php
 
-FP_general_setting( array( 'name' => 'FP_remote_db_links',
+sifp_general_setting( array( 'name' => 'FP_remote_db_links',
     'default'   => '',
     'type'      => 'textarea',
     'class'     => '',
@@ -123,7 +147,7 @@ FP_general_setting( array( 'name' => 'FP_remote_db_links',
 <div class="FPSetting_Board" board="import_settings" style="display:none;">
 <?php
 
-FP_general_setting( array( 'name' => 'FP_menu_order',
+sifp_general_setting( array( 'name' => 'FP_menu_order',
     'default'   => '15',
     'type'      => 'number',
     'class'     => '',
@@ -131,7 +155,7 @@ FP_general_setting( array( 'name' => 'FP_menu_order',
     'info'      => __('Enter the position of the menu panel in the backend', 'si-flash-products')
 ) );
 
-FP_general_setting( array( 'name' => 'FP_default_product_status',
+sifp_general_setting( array( 'name' => 'FP_default_product_status',
     'default'   => 'publish',
     'type'      => 'select',
     'options'   => array('publish', 'draft', 'private'),
@@ -170,7 +194,7 @@ FP_general_setting( array( 'name' => 'FP_default_product_status',
                 </thead>
                 <tbody>
                     <?php
-                    $logs = get_option('fp_error_logs', array());
+                    $logs = get_option('sifp_error_logs', array());
                     if (empty($logs)) {
                         echo '<tr><td colspan="3" style="text-align:center;">' . esc_html__('No logs found.', 'si-flash-products') . '</td></tr>';
                     } else {
@@ -200,8 +224,8 @@ FP_general_setting( array( 'name' => 'FP_default_product_status',
 </div>
 
 <?php
-//FP_debug($_SERVER["SERVER_NAME"].$_SERVER['REQUEST_URI']);
-FP_save_settings( "setting", 'setting' );
+//sifp_debug($_SERVER["SERVER_NAME"].$_SERVER['REQUEST_URI']);
+sifp_save_settings( "setting" );
 
 
 

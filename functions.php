@@ -3,24 +3,33 @@
  * Flash_Products
  *
  * @package   Flash_Products
- * @author    Mauro Arnone <mauro.arnone.ma@gmail.com>
+ * @author    Mauro Arnone
  * @copyright StudioImmens
  * @license   GPL v.3
  * @link      studioimmens.com
  */
 
-// Generator for local DB - Generates 1000 common products
-function FP_ensure_local_db() {
-    $json_path = SIFProd_PLUGIN_PATH . 'includes/local_products.json';
+// Generator for local DB - Generates 2000 common products
+function sifp_ensure_local_db() {
+    $upload_dir = wp_upload_dir();
+    $plugin_upload_dir = $upload_dir['basedir'] . '/si-flash-products';
     
-    // Generate if file doesn't exist, if count is wrong, if images are old placeholders, or if explicit regeneration is requested
-    $existing_products = file_exists( $json_path ) ? json_decode( file_get_contents( $json_path ), true ) : [];
-    $needs_regen = ! file_exists( $json_path ) || count($existing_products) < 2000 || (isset($existing_products[0]['fp_img']) && strpos($existing_products[0]['fp_img'], 'picsum.photos') !== false);
+    if ( ! file_exists( $plugin_upload_dir ) ) {
+        wp_mkdir_p( $plugin_upload_dir );
+    }
+
+    $json_path = $plugin_upload_dir . '/local_products.json';
     
-    if ( $needs_regen || isset( $_GET['generate_local_db'] ) ) {
-        if ( isset( $_GET['generate_local_db'] ) && ! current_user_can( 'manage_options' ) ) {
+    // Generate only if explicit regeneration is requested via settings
+    if ( isset( $_GET['sifp_regenerate_db'] ) ) {
+        check_admin_referer( 'sifp_regenerate_db' );
+        if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
+    } else {
+        // If it doesn't exist, we don't generate it automatically anymore to avoid performance issues
+        return;
+    }
 
         $categories_data = [
             'Elettronica' => ['Smartphone', 'Laptop', 'Cuffie Bluetooth', 'Smartwatch', 'Tablet', 'Fotocamera', 'Monitor 4K', 'Tastiera Meccanica', 'Power Bank', 'Speaker Wireless'],
@@ -35,7 +44,6 @@ function FP_ensure_local_db() {
         $ingredients_list = ['Acqua Termale', 'Estratto di Aloe', 'Olio di Argan', 'Acido Ialuronico', 'Vitamina C', 'Burro di Shea', 'Proteine della Seta'];
         $allergens_list = ['Glutine', 'Lattosio', 'Frutta a guscio', 'Soia', 'Nichel Free'];
         
-        // Unsplash mapping for relevant commercial-use images
         $img_keywords = [
             'Elettronica'   => 'tech,electronics,gadget',
             'Casa'          => 'interior,home,furniture',
@@ -55,24 +63,20 @@ function FP_ensure_local_db() {
             $price = rand(15, 800) + (rand(0, 99) / 100);
             $sale_price = (rand(1, 10) > 7) ? ($price * 0.85) : ''; 
             
-            // Unsplash Featured URL (More reliable)
             $kw = $img_keywords[$category] ?? 'product';
-            $main_img = "https://source.unsplash.com/featured/800x800/?" . str_replace(' ', '', $base_name) . ",$kw&sig=$i";
-            $gallery1 = "https://source.unsplash.com/featured/800x800/?" . str_replace(' ', '', $base_name) . ",detail&sig=" . ($i + 2000);
-            $gallery2 = "https://source.unsplash.com/featured/800x800/?" . $kw . ",quality&sig=" . ($i + 4000);
+            $main_img = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80&sig=$i";
+            $gallery1 = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80&sig=" . ($i + 2000);
+            $gallery2 = "https://images.unsplash.com/photo-1526170315830-ef18a283ac13?auto=format&fit=crop&w=800&q=80&sig=" . ($i + 4000);
 
-            // Direct Response Style Description
-            $desc = "<h3>Vuoi trasformare il tuo modo di vivere la categoria $category?</h3>";
-            $desc .= "<p>Smetti di accontentarti di soluzioni mediocri. Il nuovo <strong>$title</strong> non è solo un prodotto, è la risposta definitiva che stavi cercando.</p>";
-            $desc .= "<h4>Perché scegliere $title?</h4>";
+            $desc = "<h3>" . sprintf(esc_html__('Want to transform how you experience %s?', 'si-flash-products'), esc_html($category)) . "</h3>";
+            $desc .= "<p>" . sprintf(esc_html__('Stop settling for mediocre solutions. The new %s is not just a product, it is the ultimate answer you were looking for.', 'si-flash-products'), "<strong>$title</strong>") . "</p>";
+            $desc .= "<h4>" . sprintf(esc_html__('Why choose %s?', 'si-flash-products'), esc_html($title)) . "</h4>";
             $desc .= "<ul>";
-            $desc .= "<li><strong>Prestazioni Ineguagliabili:</strong> Progettato con tecnologia $adj per superare ogni aspettativa.</li>";
-            $desc .= "<li><strong>Qualità Certificata:</strong> Ogni componente è stato testato per garantire una durata nel tempo senza precedenti.</li>";
-            $desc .= "<li><strong>Design Esclusivo:</strong> Un'estetica che si adatta perfettamente al tuo stile di vita moderno.</li>";
+            $desc .= "<li><strong>" . esc_html__('Unmatched Performance:', 'si-flash-products') . "</strong> " . sprintf(esc_html__('Designed with %s technology to exceed every expectation.', 'si-flash-products'), esc_html($adj)) . "</li>";
+            $desc .= "<li><strong>" . esc_html__('Certified Quality:', 'si-flash-products') . "</strong> " . esc_html__('Every component has been tested to ensure unprecedented durability.', 'si-flash-products') . "</li>";
+            $desc .= "<li><strong>" . esc_html__('Exclusive Design:', 'si-flash-products') . "</strong> " . esc_html__('An aesthetic that fits perfectly with your modern lifestyle.', 'si-flash-products') . "</li>";
             $desc .= "</ul>";
-            $desc .= "<p><strong>Non perdere altro tempo.</strong> Le scorte sono limitate e la richiesta è altissima. Assicurati il tuo $title oggi stesso e sperimenta la differenza!</p>";
 
-            // Conditional fields
             $ing = ($category === 'Bellezza' || rand(1, 10) > 8) ? $ingredients_list[array_rand($ingredients_list)] . ", " . $ingredients_list[array_rand($ingredients_list)] : '';
             $all = ($category === 'Bellezza' && rand(1, 10) > 7) ? $allergens_list[array_rand($allergens_list)] : '';
             $stick = (rand(1, 10) > 8) ? "NOVITÀ" : ((rand(1, 10) > 8) ? "BEST SELLER" : '');
@@ -80,7 +84,7 @@ function FP_ensure_local_db() {
             $products[] = [
                 'post_title'      => $title,
                 'post_content'    => $desc,
-                'post_excerpt'    => "Il segreto per ottenere il massimo da $category. Scopri perché $title è la scelta numero uno degli esperti.",
+                'post_excerpt'    => sprintf(esc_html__('The secret to getting the most out of %s. Find out why %s is the number one choice of experts.', 'si-flash-products'), $category, $title),
                 'fp_categories'   => $category,
                 'fp_tag'          => strtolower($category) . ", $adj, offerta, esclusivo",
                 'fp_img'          => $main_img,
@@ -113,203 +117,39 @@ function FP_ensure_local_db() {
 
         file_put_contents($json_path, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         
-        if ( isset( $_GET['generate_local_db'] ) ) {
-            wp_die('2000 prodotti generati con successo! <a href="' . admin_url() . '">Torna indietro</a>');
+        if ( isset( $_GET['sifp_regenerate_db'] ) ) {
+            wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_regenerated' ) );
+            exit;
         }
     }
 }
-add_action('admin_init', 'FP_ensure_local_db');
+add_action('admin_init', 'sifp_ensure_local_db');
 
-
-
-
-
- /**
- * Fired during plugin activation.
- *
- * This function create flash products meta table, called 'flash_products_meta' in the database.
- *
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
- */
-function FP_create_meta_table( $version = SIFProd_VERSION ){
-	update_option( 'flash_products_meta_table', SIFProd_VERSION );
-    global $wpdb;
-    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-    $table_name = $wpdb->prefix . "flash_products_meta";  //get the database table prefix to create my new table
-
-    $sql = "CREATE TABLE $table_name (
-      id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      meta_key varchar(255),
-      meta_value text,
-      assoc_id varchar(255),
-      assoc_tb varchar(255),
-      PRIMARY KEY  (id),
-      KEY meta_key (meta_key),
-      KEY assoc_id (assoc_id),
-      KEY assoc_tb (assoc_tb)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-
-    dbDelta( $sql );
-
-  $meta_table = get_option( 'flash_products_meta_table' );
-  if ( $meta_table != $version ) {
-    update_option( 'flash_products_meta_table', $version );
-  }
-}
 /**
- * This function retrieve flash products meta_value or entire row from table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
+ * Get a plugin setting
  */
-function FP_get_meta( $meta_key, $type = 'var' ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $meta_key = sanitize_key( $meta_key );
+function sifp_get_setting( $key, $default = '' ) {
+    $settings = get_option( 'sifp_settings', array() );
+    return isset( $settings[$key] ) ? $settings[$key] : $default;
+}
 
-  if ( $type == 'var' ) {
-    $result = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM $table WHERE meta_key = %s", $meta_key ) );
-  } elseif ( $type == 'all' ) {
-    $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE meta_key = %s ORDER BY id", $meta_key ) );
-  } else {
-    $result = $wpdb->get_row( $wpdb->prepare( "SELECT meta_value FROM $table WHERE meta_key = %s", $meta_key ), $type );
-  }
-  return $result;
-}
 /**
- * This function retrieve flash products meta_value or entire results from table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
+ * Update a plugin setting
  */
-function FP_get_meta_by_assoc_id( $assoc_id, $type = 'var' ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $assoc_id = sanitize_text_field( $assoc_id );
+function sifp_update_setting( $key, $value ) {
+    $settings = get_option( 'sifp_settings', array() );
+    $settings[$key] = $value;
+    return update_option( 'sifp_settings', $settings );
+}
 
-  if ( $type == 'var' ) {
-    $result = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM $table WHERE assoc_id = %s", $assoc_id ) );
-  } else {
-    $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE assoc_id = %s", $assoc_id ), $type );
-  }
-  return $result;
-}
-/**
- * This function retrieve flash products meta_value or entire results from table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
- */
-function FP_get_meta_by_assoc_tb( $assoc_tb, $type = 'var' ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $assoc_tb = sanitize_text_field( $assoc_tb );
-
-  if ( $type == 'var' ) {
-    $result = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM $table WHERE assoc_tb = %s", $assoc_tb ) );
-  } else {
-    $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE assoc_tb = %s", $assoc_tb ), $type );
-  }
-  return $result;
-}
-/**
- * This function retrieve flash products meta_value or entire row from table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
- */
-function FP_get_meta_by_id( $id, $type = 'var' ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $id = absint( $id );
-
-  if ( $type == 'var' ) {
-    $result = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM $table WHERE id = %d", $id ) );
-  } else {
-    $result = $wpdb->get_row( $wpdb->prepare( "SELECT meta_value FROM $table WHERE id = %d", $id ), $type );
-  }
-  return $result;
-}
-/**
- * This function insert meta row in the table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
- */
-function FP_insert_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = null ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $result = $wpdb->insert( $table, array( 
-      'meta_key'   => sanitize_key( $meta_key ), 
-      'meta_value' => sanitize_textarea_field( $meta_value ), 
-      'assoc_id'   => sanitize_text_field( $assoc_id ),
-      'assoc_tb'   => sanitize_text_field( $assoc_tb ) 
-  ) );
-  return $result;
-}
-/**
- * This function update meta row in the table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
- */
-function FP_update_meta( $meta_key, $meta_value, $assoc_id = null, $assoc_tb = null ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $meta_key = sanitize_key( $meta_key );
-  $meta = FP_get_meta( $meta_key );
-
-  $data = array( 
-      'meta_value' => sanitize_textarea_field( $meta_value ), 
-      'assoc_id'   => sanitize_text_field( $assoc_id ),
-      'assoc_tb'   => sanitize_text_field( $assoc_tb ) 
-  );
-
-  if ( $meta !== null ) {
-    $result = $wpdb->update( $table, $data, array( 'meta_key' => $meta_key ) );
-  } else {
-    $data['meta_key'] = $meta_key;
-    $result = $wpdb->insert( $table, $data );
-  }
-  return $result;
-}
-/**
- * This function delete meta row from table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
- */
-function FP_delete_meta( $meta_key ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $result = $wpdb->delete( $table, array( 'meta_key' => sanitize_key( $meta_key ) ) );
-  return $result;
-}
-/**
- * This function delete meta row from table 'flash_products_meta'
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
- */
-function FP_delete_meta_by_id( $id ){
-  global $wpdb;
-  $table = $wpdb->prefix . "flash_products_meta";
-  $result = $wpdb->delete( $table, array( 'id' => absint( $id ) ) );
-  return $result;
-}
 /**
  * This is a debug function
- * @since      1.0.0
- * @package    Flash_Products
- * @author     StudioImmens <info@studioimmens.com>
  */
-function FP_debug( $var ){ ?>
+function sifp_debug( $var ){ ?>
 	<pre> <?php var_dump($var); ?> </pre> <?php
 }
 
-function FP_general_setting( $setting = array() ){
+function sifp_general_setting( $setting = array() ){
   if ( ! current_user_can( 'manage_options' ) ) {
     return;
   }
@@ -317,35 +157,32 @@ function FP_general_setting( $setting = array() ){
   $name = ( isset($setting['name']) ) ? sanitize_key($setting['name']) : '';
   $title = ( isset($setting['title']) ) ? sanitize_text_field($setting['title']) : '';
   $default = ( isset($setting['default']) ) ? $setting['default'] : null;
-  $data_default = ( FP_get_meta($name) ) ? FP_get_meta($name) : $default;
+  $data_default = sifp_get_setting($name, $default);
   $options = ( isset($setting['options']) ) ? $setting['options'] : array();
   $type = ( isset($setting['type']) ) ? sanitize_key($setting['type']) : 'text';
   $class = ( isset($setting['class']) ) ? sanitize_html_class($setting['class']) : '';
   $text = ( isset($setting['text']) ) ? sanitize_text_field($setting['text']) : '';
   $info = ( isset($setting['info']) ) ? sanitize_text_field($setting['info']) : '';
-  $other = ( isset($setting['other']) ) ? $setting['other'] : '';
+  
   ?>
 
-  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('Database setting name:', 'si-flash-products').' ( '.esc_attr($name).' )';?>">
+  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('Setting name:', 'si-flash-products').' ( '.esc_attr($name).' )';?>">
       <?php if($title != ''){ ?>
           <strong class="FOtextSettings" style="flex-basis:100%"><?php echo esc_html($title);?></strong>
       <?php }?>
       <p class="FOtextSettings"><?php echo esc_html($text);?></p>
       <?php if($type == 'textarea'){ ?>
-         <textarea name="setting[<?php echo esc_attr($name);?>]" <?php echo $other; //phpcs:ignore ?>><?php echo esc_textarea($data_default);?></textarea>
-      <?php } elseif ($type != 'select') { ?>
-          <input type="<?php echo esc_attr($type); ?>" name="setting[<?php echo esc_attr($name); ?>]" value="<?php echo esc_attr($data_default);?>" <?php echo $other; //phpcs:ignore ?>>
-      <?php } else{ ?>
-          <select name="setting[<?php echo esc_attr($name); ?>]" <?php echo $other; //phpcs:ignore ?>>
-              <?php if ( ! empty($data_default) ) : ?>
-                  <option selected disabled hidden><?php echo esc_html($data_default); ?></option>
-              <?php endif; ?>
+         <textarea name="setting[<?php echo esc_attr($name);?>]"><?php echo esc_textarea($data_default);?></textarea>
+      <?php } elseif ($type == 'select') { ?>
+          <select name="setting[<?php echo esc_attr($name); ?>]">
               <?php if ( is_array($options) && count($options) ) { ?>
                   <?php foreach ($options as $option) { ?>
                       <option value="<?php echo esc_attr($option);?>" <?php selected($data_default, $option); ?>><?php echo esc_html($option);?></option>
                   <?php } ?>
               <?php } ?>
           </select>
+      <?php } else { ?>
+          <input type="<?php echo esc_attr($type); ?>" name="setting[<?php echo esc_attr($name); ?>]" value="<?php echo esc_attr($data_default);?>">
       <?php } ?>
       <?php if ( $default !== null ) { ?>
           <span class="dashicons dashicons-image-rotate pointer" data-default="<?php echo esc_attr($default); ?>"></span>
@@ -355,22 +192,20 @@ function FP_general_setting( $setting = array() ){
   <?php
 }
 
-function FP_save_settings( $args, $assoc_id = '', $debug = false ){
+function sifp_save_settings( $args ){
   if ( isset($_POST["update"]) && current_user_can( 'manage_options' ) ) {
-      if ( !wp_verify_nonce( $_POST['sett_nonce'], 'si-flash-prod-sett' ) ) {
-          return;
+      if ( !isset($_POST['sett_nonce']) || !wp_verify_nonce( $_POST['sett_nonce'], 'si-flash-prod-sett' ) ) {
+          wp_die( esc_html__( 'Security check failed', 'si-flash-products' ) );
       }
-      if ( isset( $_POST[$args] ) ) { 
+      if ( isset( $_POST[$args] ) && is_array( $_POST[$args] ) ) { 
+          $settings = get_option( 'sifp_settings', array() );
           foreach ($_POST[$args] as $key => $value) {
-              if ( isset( $_POST[$args][$key] ) ) {
-                  FP_update_meta( $key, $value, $assoc_id ); 
-              }
+              $settings[sanitize_key($key)] = sanitize_textarea_field($value);
           }
+          update_option( 'sifp_settings', $settings );
       }
-      if ($debug) {
-          FP_debug($_POST);
-      }
-      wp_safe_redirect( $_SERVER['REQUEST_URI'] );
+      
+      wp_safe_redirect( add_query_arg( 'message', 'settings_saved', $_SERVER['REQUEST_URI'] ) );
       exit;
   }
 }
@@ -384,35 +219,35 @@ function FP_save_settings( $args, $assoc_id = '', $debug = false ){
  * @param string $message The message to log
  * @param string $context The context (e.g., 'Gemini API', 'Product Import')
  */
-function FP_log_event( $message, $context = 'General' ) {
-    $logs = get_option( 'fp_error_logs', array() );
+function sifp_log_event( $message, $context = 'General' ) {
+    $logs = get_option( 'sifp_error_logs', array() );
     
     // Add new log entry at the beginning
     array_unshift( $logs, array(
         'timestamp' => current_time( 'mysql' ),
-        'context'   => $context,
-        'message'   => $message
+        'context'   => sanitize_text_field( $context ),
+        'message'   => sanitize_text_field( $message )
     ) );
     
     // Keep only the last 50 logs
     $logs = array_slice( $logs, 0, 50 );
     
-    update_option( 'fp_error_logs', $logs );
+    update_option( 'sifp_error_logs', $logs );
 }
 
-function fp_ajax_clear_logs() {
+function sifp_ajax_clear_logs() {
     check_ajax_referer( 'fp_import_nonce', 'nonce' );
     
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
     }
     
-    delete_option( 'fp_error_logs' );
+    delete_option( 'sifp_error_logs' );
     wp_send_json_success( array( 'message' => __( 'Logs cleared successfully!', 'si-flash-products' ) ) );
 }
-add_action( 'wp_ajax_fp_clear_logs', 'fp_ajax_clear_logs' );
+add_action( 'wp_ajax_fp_clear_logs', 'sifp_ajax_clear_logs' );
 
-function FP_ajax_search_products() {
+function sifp_ajax_search_products() {
     check_ajax_referer( 'fp_import_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -427,7 +262,7 @@ function FP_ajax_search_products() {
     $s = isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '';
     $source = isset( $_GET['source'] ) ? sanitize_key( $_GET['source'] ) : 'all';
 
-    $cache_key = 'fp_search_' . md5( $categories . $languages . $source . $orderby . $limit . $offset . $s );
+    $cache_key = 'sifp_search_' . md5( $categories . $languages . $source . $orderby . $limit . $offset . $s );
     $results = get_transient( $cache_key );
 
     if ( false === $results ) {
@@ -435,7 +270,7 @@ function FP_ajax_search_products() {
         
         // 1. Get Remote Results
         if ( $source === 'all' || $source === 'remote' ) {
-            $remote_links = FP_get_meta('FP_remote_db_links');
+            $remote_links = sifp_get_setting('FP_remote_db_links');
             $urls = array('https://flashproducts.studioimmens.com/wp-json/flash_products/v1/products');
             
             if ( ! empty( $remote_links ) ) {
@@ -472,7 +307,9 @@ function FP_ajax_search_products() {
 
         // 2. Get Local JSON Results
         if ( $source === 'all' || $source === 'local' ) {
-            $local_db_path = SIFProd_PLUGIN_PATH . 'includes/local_products.json';
+            $upload_dir = wp_upload_dir();
+            $local_db_path = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
+            
             if ( file_exists( $local_db_path ) ) {
                 $local_data = json_decode( file_get_contents( $local_db_path ), true );
                 if ( is_array($local_data) ) {
@@ -507,12 +344,12 @@ function FP_ajax_search_products() {
 
     wp_send_json_success( $results );
 }
-add_action( 'wp_ajax_fp_search_products', 'FP_ajax_search_products' );
+add_action( 'wp_ajax_fp_search_products', 'sifp_ajax_search_products' );
 
 /**
  * AJAX Handler for product import
  */
-function FP_ajax_import_product() {
+function sifp_ajax_import_product() {
     check_ajax_referer( 'fp_import_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -549,7 +386,7 @@ function FP_ajax_import_product() {
         'custom_taxonomy' => isset($product_data['custom_taxonomy']) ? $product_data['custom_taxonomy'] : array(),
     );
 
-    $result = FP_create_woo_product( $sanitized_data );
+    $result = sifp_create_woo_product( $sanitized_data );
 
     if ( is_wp_error( $result ) ) {
         wp_send_json_error( array( 'message' => $result->get_error_message() ) );
@@ -557,12 +394,12 @@ function FP_ajax_import_product() {
 
     wp_send_json_success( array( 'message' => __( 'Product imported successfully!', 'si-flash-products' ), 'product_id' => $result ) );
 }
-add_action( 'wp_ajax_fp_import_product', 'FP_ajax_import_product' );
+add_action( 'wp_ajax_fp_import_product', 'sifp_ajax_import_product' );
 
 /**
  * AJAX Handler for AI Generation via Gemini
  */
-function FP_ajax_ai_generate_product() {
+function sifp_ajax_ai_generate_product() {
     check_ajax_referer( 'fp_import_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -576,12 +413,12 @@ function FP_ajax_ai_generate_product() {
         wp_send_json_error( array( 'message' => __( 'Product name is required', 'si-flash-products' ) ) );
     }
 
-    $api_key = FP_get_meta('FP_gemini_api_key');
-    $model = FP_get_meta('FP_ai_model') ?: 'gemini-2.0-flash';
-    $tone = FP_get_meta('FP_ai_tone') ?: 'Professionale e persuasivo';
-    $sku_prefix = FP_get_meta('FP_sku_prefix') ?: 'PROD-';
-    $default_stock = FP_get_meta('FP_default_stock') ?: '10';
-    $temperature = floatval(FP_get_meta('FP_ai_creativity') ?: '0.7');
+    $api_key = sifp_get_setting('FP_gemini_api_key');
+    $model = sifp_get_setting('FP_ai_model') ?: 'gemini-2.0-flash';
+    $tone = sifp_get_setting('FP_ai_tone') ?: 'Professionale e persuasivo';
+    $sku_prefix = sifp_get_setting('FP_sku_prefix') ?: 'PROD-';
+    $default_stock = sifp_get_setting('FP_default_stock') ?: '10';
+    $temperature = floatval(sifp_get_setting('FP_ai_creativity') ?: '0.7');
 
     if ( empty( $api_key ) ) {
         wp_send_json_error( array( 'message' => __( 'API Key missing in settings', 'si-flash-products' ) ) );
@@ -636,7 +473,7 @@ function FP_ajax_ai_generate_product() {
 
     if ( is_wp_error( $response ) ) {
         $error_msg = $response->get_error_message();
-        FP_log_event( $error_msg, 'Gemini API' );
+        sifp_log_event( $error_msg, 'Gemini API' );
         wp_send_json_error( array( 'message' => $error_msg ) );
     }
 
@@ -644,7 +481,7 @@ function FP_ajax_ai_generate_product() {
     
     if ( isset( $res_body['error'] ) ) {
         $error_msg = isset( $res_body['error']['message'] ) ? $res_body['error']['message'] : __( 'Unknown API Error', 'si-flash-products' );
-        FP_log_event( $error_msg, 'Gemini API' );
+        sifp_log_event( $error_msg, 'Gemini API' );
         wp_send_json_error( array( 'message' => $error_msg ) );
     }
 
@@ -672,12 +509,12 @@ function FP_ajax_ai_generate_product() {
 
     wp_send_json_error( array( 'message' => __( 'Error generating AI content. Check your API Key and try again.', 'si-flash-products' ) ) );
 }
-add_action( 'wp_ajax_fp_ai_generate_product', 'FP_ajax_ai_generate_product' );
+add_action( 'wp_ajax_fp_ai_generate_product', 'sifp_ajax_ai_generate_product' );
 
 /**
  * AJAX Handler for Taxonomy Search (Autocomplete)
  */
-function FP_ajax_search_terms() {
+function sifp_ajax_search_terms() {
     check_ajax_referer( 'fp_import_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -711,12 +548,12 @@ function FP_ajax_search_terms() {
 
     wp_send_json_success( $results );
 }
-add_action( 'wp_ajax_fp_search_terms', 'FP_ajax_search_terms' );
+add_action( 'wp_ajax_fp_search_terms', 'sifp_ajax_search_terms' );
 
 /**
  * Create WooCommerce product from remote data
  */
-function FP_create_woo_product( $data ) {
+function sifp_create_woo_product( $data ) {
     if ( ! class_exists( 'WC_Product_Simple' ) ) {
         return new WP_Error( 'wc_missing', __( 'WooCommerce not active', 'si-flash-products' ) );
     }
@@ -728,36 +565,36 @@ function FP_create_woo_product( $data ) {
     }
 
     $product = new WC_Product_Simple();
-    $product->set_name( $data['post_title'] );
-    $product->set_description( $data['post_content'] );
-    $product->set_short_description( $data['post_excerpt'] );
+    $product->set_name( sanitize_text_field( $data['post_title'] ) );
+    $product->set_description( wp_kses_post( $data['post_content'] ) );
+    $product->set_short_description( wp_kses_post( $data['post_excerpt'] ) );
     
     // Product Type
-    $product->set_virtual( $data['is_virtual'] );
-    $product->set_downloadable( $data['is_downloadable'] );
+    $product->set_virtual( 'yes' === $data['is_virtual'] );
+    $product->set_downloadable( 'yes' === $data['is_downloadable'] );
     
     // WooCommerce Base Fields
-    if ( ! empty( $data['regular_price'] ) ) $product->set_regular_price( $data['regular_price'] );
-    if ( ! empty( $data['sale_price'] ) ) $product->set_sale_price( $data['sale_price'] );
-    if ( ! empty( $data['sku'] ) ) $product->set_sku( $data['sku'] );
+    if ( ! empty( $data['regular_price'] ) ) $product->set_regular_price( wc_format_decimal( $data['regular_price'] ) );
+    if ( ! empty( $data['sale_price'] ) ) $product->set_sale_price( wc_format_decimal( $data['sale_price'] ) );
+    if ( ! empty( $data['sku'] ) ) $product->set_sku( sanitize_text_field( $data['sku'] ) );
     
     if ( ! empty( $data['stock_status'] ) ) {
-        $product->set_stock_status( $data['stock_status'] );
+        $product->set_stock_status( sanitize_key( $data['stock_status'] ) );
     }
     
     if ( isset( $data['stock_qty'] ) ) {
         $product->set_manage_stock( true );
-        $product->set_stock_quantity( $data['stock_qty'] );
+        $product->set_stock_quantity( intval( $data['stock_qty'] ) );
     }
 
-    if ( ! empty( $data['weight'] ) ) $product->set_weight( $data['weight'] );
-    if ( ! empty( $data['length'] ) ) $product->set_length( $data['length'] );
-    if ( ! empty( $data['width'] ) ) $product->set_width( $data['width'] );
-    if ( ! empty( $data['height'] ) ) $product->set_height( $data['height'] );
+    if ( ! empty( $data['weight'] ) ) $product->set_weight( wc_format_decimal( $data['weight'] ) );
+    if ( ! empty( $data['length'] ) ) $product->set_length( wc_format_decimal( $data['length'] ) );
+    if ( ! empty( $data['width'] ) ) $product->set_width( wc_format_decimal( $data['width'] ) );
+    if ( ! empty( $data['height'] ) ) $product->set_height( wc_format_decimal( $data['height'] ) );
     
     // Get default status from settings
-    $default_status = FP_get_meta('FP_default_product_status');
-    $product->set_status( $default_status ? $default_status : 'publish' );
+    $default_status = sifp_get_setting('FP_default_product_status', 'publish');
+    $product->set_status( sanitize_key( $default_status ) );
     
     // Set categories
     if ( ! empty( $data['fp_categories'] ) ) {
@@ -784,7 +621,7 @@ function FP_create_woo_product( $data ) {
 
     // Handle Image
     if ( ! empty( $data['fp_img'] ) ) {
-        $image_id = FP_sideload_image( $data['fp_img'], $data['post_title'] );
+        $image_id = sifp_sideload_image( $data['fp_img'], $data['post_title'] );
         if ( ! is_wp_error( $image_id ) ) {
             $product->set_image_id( $image_id );
         }
@@ -796,7 +633,7 @@ function FP_create_woo_product( $data ) {
         $gallery_ids = array();
         foreach ( $gallery_urls as $g_url ) {
             if ( empty( $g_url ) ) continue;
-            $g_id = FP_sideload_image( trim( $g_url ), $data['post_title'] . ' Gallery' );
+            $g_id = sifp_sideload_image( trim( $g_url ), $data['post_title'] . ' Gallery' );
             if ( ! is_wp_error( $g_id ) ) {
                 $gallery_ids[] = $g_id;
             }
@@ -828,7 +665,7 @@ function FP_create_woo_product( $data ) {
         foreach ( $data['custom_taxonomy'] as $tax_name => $tax_value ) {
             if ( empty( $tax_name ) || empty( $tax_value ) ) continue;
 
-            // Ensure taxonomy exists
+            $tax_name = sanitize_key( $tax_name );
             if ( taxonomy_exists( $tax_name ) ) {
                 $terms = array();
                 $values = explode( '|', $tax_value );
@@ -856,7 +693,7 @@ function FP_create_woo_product( $data ) {
         return $product_id;
     } catch ( Exception $e ) {
         $error_msg = 'Failed to create product "' . $data['post_title'] . '": ' . $e->getMessage();
-        FP_log_event( $error_msg, 'Product Creation' );
+        sifp_log_event( $error_msg, 'Product Creation' );
         return new WP_Error( 'save_error', $error_msg );
     }
 }
@@ -864,13 +701,11 @@ function FP_create_woo_product( $data ) {
 /**
  * Sideload image from URL to Media Library
  */
-function FP_sideload_image( $url, $title ) {
-    // Se l'URL è già un ID (caso del media uploader di WP)
+function sifp_sideload_image( $url, $title ) {
     if ( is_numeric( $url ) ) {
         return (int) $url;
     }
 
-    // Se l'URL fa parte della nostra libreria media, proviamo a trovare l'ID
     $attachment_id = attachment_url_to_postid( $url );
     if ( $attachment_id ) {
         return $attachment_id;
@@ -883,10 +718,9 @@ function FP_sideload_image( $url, $title ) {
     $url = esc_url_raw( $url );
     $filename = basename( $url );
 
-    // 1. Check if we already sideloaded this exact URL
     global $wpdb;
     $attachment_id = $wpdb->get_var( $wpdb->prepare(
-        "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_fp_source_url' AND meta_value = %s",
+        "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_sifp_source_url' AND meta_value = %s",
         $url
     ) );
 
@@ -894,42 +728,36 @@ function FP_sideload_image( $url, $title ) {
         return (int) $attachment_id;
     }
 
-    // 2. Fallback: Check if image already exists in media library by filename
     $attachment_id = $wpdb->get_var( $wpdb->prepare(
         "SELECT post_id FROM $wpdb->postmeta WHERE meta_key = '_wp_attached_file' AND meta_value LIKE %s",
         '%' . $filename
     ) );
 
     if ( $attachment_id ) {
-        // Also tag it with the source URL for future lookups
-        update_post_meta( $attachment_id, '_fp_source_url', $url );
+        update_post_meta( $attachment_id, '_sifp_source_url', $url );
         return (int) $attachment_id;
     }
 
-    $desc = $title;
+    $desc = sanitize_text_field( $title );
     $file_array = array();
 
-    // Download file to temp location
     $tmp = download_url( $url );
 
     if ( is_wp_error( $tmp ) ) {
-        FP_log_event( 'Failed to download image from ' . $url . ' - ' . $tmp->get_error_message(), 'Image Sideload' );
+        sifp_log_event( 'Failed to download image from ' . $url . ' - ' . $tmp->get_error_message(), 'Image Sideload' );
         return $tmp;
     }
 
     $file_array['name'] = $filename;
     $file_array['tmp_name'] = $tmp;
 
-    // Do the job
     $id = media_handle_sideload( $file_array, 0, $desc );
 
-    // If error, unlink
     if ( is_wp_error( $id ) ) {
         @unlink( $file_array['tmp_name'] );
-        FP_log_event( 'Failed to sideload image ' . $filename . ' - ' . $id->get_error_message(), 'Image Sideload' );
+        sifp_log_event( 'Failed to sideload image ' . $filename . ' - ' . $id->get_error_message(), 'Image Sideload' );
     } else {
-        // Success! Store source URL for future reference
-        update_post_meta( $id, '_fp_source_url', $url );
+        update_post_meta( $id, '_sifp_source_url', $url );
     }
 
     return $id;

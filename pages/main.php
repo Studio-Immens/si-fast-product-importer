@@ -5,6 +5,10 @@ if ( !defined( 'ABSPATH' ) ) {
 	die( 'We\'re sorry, but you can not directly access this file.' );
 }
 
+if ( ! current_user_can( 'manage_options' ) ) {
+    return;
+}
+
 // Use Transients for API results
 $categories = get_transient( 'fp_api_categories' );
 if ( false === $categories ) {
@@ -12,7 +16,8 @@ if ( false === $categories ) {
     $categories = json_decode( wp_remote_retrieve_body( $response ) );
     
     // Add Local Categories to the list
-    $local_db_path = SIFProd_PLUGIN_PATH . 'includes/local_products.json';
+    $upload_dir = wp_upload_dir();
+    $local_db_path = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
     if ( file_exists( $local_db_path ) ) {
         $local_data = json_decode( file_get_contents( $local_db_path ), true );
         if ( is_array($local_data) ) {
@@ -134,13 +139,13 @@ if ( false === $languages ) {
 
     <div class="FPContainer">
 
-        <div class="FPCard FPdefaultCard" fp_title="" fp_short_title="" fp_slang_title="" fp_description="" fp_exerp="" fp_categories="" fp_tag="" fp_ingredient="" fp_macro_cat="" fp_allerg="" fp_sticker="" fp_temp="" fp_img="<?php echo wc_placeholder_img_src('300'); ?>" fp_gallery="">
+        <div class="FPCard FPdefaultCard" fp_title="" fp_short_title="" fp_slang_title="" fp_description="" fp_exerp="" fp_categories="" fp_tag="" fp_ingredient="" fp_macro_cat="" fp_allerg="" fp_sticker="" fp_temp="" fp_img="<?php echo esc_url( wc_placeholder_img_src('300') ); ?>" fp_gallery="">
 
             <div class="FPCardHead">
                 <div class="FPCardSelection">
                     <input type="checkbox" class="fp-product-select">
                 </div>
-                <img class="FPCardImg" src="<?php echo wc_placeholder_img_src('300'); ?>">
+                <img class="FPCardImg" src="<?php echo esc_url( wc_placeholder_img_src('300') ); ?>">
                 <div class="FORapidImport">
                     <span class="dashicons dashicons-plus"></span>
                 </div>

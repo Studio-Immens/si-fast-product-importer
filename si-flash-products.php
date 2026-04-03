@@ -24,10 +24,10 @@ define( 'SIFProd_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 include_once ABSPATH . 'wp-admin/includes/plugin.php';
 if ( !is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
-	add_action( 'admin_notices', 'FP_admin_notice_woocommerce_plugin_error' );
+	add_action( 'admin_notices', 'sifp_admin_notice_woocommerce_plugin_error' );
 	return;
 }
-function FP_admin_notice_woocommerce_plugin_error() {
+function sifp_admin_notice_woocommerce_plugin_error() {
 	?>
 		<div class="notice notice-error">
 			<p><?php esc_html_e( 'ERROR! Flash Products needs the Woocommerce Plugin installed and active to work properly', 'si-flash-products' ); ?></p>
@@ -35,17 +35,17 @@ function FP_admin_notice_woocommerce_plugin_error() {
 	<?php
 }
 
-function FProd_init(){
+function sifp_init(){
 	load_plugin_textdomain( 'si-flash-products', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-	FP_load_dependencies();
+	sifp_load_dependencies();
 }
-FProd_init();
+sifp_init();
 
-function FP_load_dependencies() {
+function sifp_load_dependencies() {
 	require_once dirname( __FILE__ ) . '/functions.php';
 }
 
-function FP_load_assets( $hook ) {
+function sifp_load_assets( $hook ) {
 	// Carica gli asset solo nelle pagine del plugin
 	if ( strpos( $hook, 'flash_products' ) === false ) {
 		return;
@@ -62,8 +62,8 @@ function FP_load_assets( $hook ) {
 	wp_localize_script( 'Flash-Products-functions-js', 'fp_ajax', array(
 		'ajax_url'      => admin_url( 'admin-ajax.php' ),
 		'nonce'         => wp_create_nonce( 'fp_import_nonce' ),
-		'sku_prefix'    => FP_get_meta('FP_sku_prefix') ?: 'PROD-',
-		'default_stock' => FP_get_meta('FP_default_stock') ?: '10',
+		'sku_prefix'    => sifp_get_setting('FP_sku_prefix', 'PROD-'),
+		'default_stock' => sifp_get_setting('FP_default_stock', '10'),
 		'strings'       => array(
 			'confirm_bulk'        => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
 			'bulk_success'        => __( 'products imported successfully!', 'si-flash-products' ),
@@ -88,20 +88,11 @@ function FP_load_assets( $hook ) {
 		)
 	) );
 }
-add_action( 'admin_enqueue_scripts', 'FP_load_assets' );
-
-// Rimosse le vecchie funzioni di caricamento asset non ottimizzate
-// add_action( 'wp_enqueue_scripts', 'FP_load_style' );
-// add_action( 'admin_enqueue_scripts', 'FP_load_style' );
-// add_action( 'wp_enqueue_scripts', 'FP_load_animation' );
-// add_action( 'admin_enqueue_scripts', 'FP_load_animation' );
-
-
-
+add_action( 'admin_enqueue_scripts', 'sifp_load_assets' );
 
 register_activation_hook( __FILE__, 'activate_flash_products' );
 function activate_flash_products() {
-	FP_create_meta_table();
+	// No longer needs custom table creation
 }
 
 register_deactivation_hook( __FILE__, 'deactivate_flash_products' );
@@ -109,38 +100,37 @@ function deactivate_flash_products() {
 
 }
 
-function FP_menu_page(){
+function sifp_menu_page(){
     $menu_slug = 'flash_products';
-    $position = (FP_get_meta( 'FP_menu_order') != '')?FP_get_meta( 'FP_menu_order') : '15';
+    $position = sifp_get_setting('FP_menu_order', '15');
 
     $link = SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-20.png';
 
-    add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts','si-flash-products'), 'manage_options', $menu_slug, 'FP_main_menu_page', $link, $position);
-    add_submenu_page( $menu_slug, 'flash_products_generator', esc_html__( 'Generator', 'si-flash-products' ), 'manage_options', $menu_slug.'_generator', 'FP_sub_menu_page_generator' );
-    add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'si-flash-products' ), 'manage_options', $menu_slug.'_settings', 'FP_sub_menu_page_settings' );
+    add_menu_page( 'FlashProducts', esc_html__( 'FlashProducts','si-flash-products'), 'manage_options', $menu_slug, 'sifp_main_menu_page', $link, $position);
+    add_submenu_page( $menu_slug, 'flash_products_generator', esc_html__( 'Generator', 'si-flash-products' ), 'manage_options', $menu_slug.'_generator', 'sifp_sub_menu_page_generator' );
+    add_submenu_page( $menu_slug, 'flash_products_settings', esc_html__( 'Settings', 'si-flash-products' ), 'manage_options', $menu_slug.'_settings', 'sifp_sub_menu_page_settings' );
 }
-add_action( 'admin_menu', 'FP_menu_page' );
+add_action( 'admin_menu', 'sifp_menu_page' );
 
-function FP_head_menu_page(){
+function sifp_head_menu_page(){
     ?>
     <div id="FPadminContent">
     <h1 style="margin:30px 0px;display:flex;"> 
         <img src="<?php echo SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-512.png' ?>" width="50" height="50" alt="light logo">
         Flash Products 
-        <!-- <button class="FPzero FPbutton" onclick="FPtutorialPage();" style="margin: 0px 20px 0px auto!important;padding: 0px 10px!important;"> tutorial </button>  -->
     </h1>
     <?php
 
 }
 
-function FP_nav_menu_page(){
+function sifp_nav_menu_page(){
     $color1 = 'var(--fp-main-color)';
     $color2 = 'var(--fp-bg3-color)';
-    $FlashOrder_color = ( $_REQUEST['page'] == 'flash_products' )? $color1 : $color2;//phpcs:ignore
-    $Generator_color = ( $_REQUEST['page'] == 'flash_products_generator' )? $color1 : $color2;//phpcs:ignore
-    $Settings_color = ( $_REQUEST['page'] == 'flash_products_settings' )? $color1 : $color2;//phpcs:ignore
-    FP_head_menu_page();
-	// FP_debug($_REQUEST['page']);
+    $page = isset($_REQUEST['page']) ? sanitize_key($_REQUEST['page']) : '';
+    $FlashOrder_color = ( $page == 'flash_products' )? $color1 : $color2;
+    $Generator_color = ( $page == 'flash_products_generator' )? $color1 : $color2;
+    $Settings_color = ( $page == 'flash_products_settings' )? $color1 : $color2;
+    sifp_head_menu_page();
     ?>
     <nav class="FPMainNav">
         <a href="admin.php?page=flash_products" class="FPMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
@@ -153,31 +143,31 @@ function FP_nav_menu_page(){
     <?php
 }
 
-function FP_foot_menu_page( $debug = false ){
+function sifp_foot_menu_page( $debug = false ){
     ?>
     </div>
     <?php
     if ( $debug ) {
-        FP_debug( $_POST );//phpcs:ignore
+        sifp_debug( $_POST );
     }
 }
 
-function FP_main_menu_page(){
-	FP_nav_menu_page();
+function sifp_main_menu_page(){
+	sifp_nav_menu_page();
 	include( SIFProd_PLUGIN_PATH . 'pages/main.php');
-	FP_foot_menu_page();
+	sifp_foot_menu_page();
 }
 
-function FP_sub_menu_page_generator(){
-	FP_nav_menu_page();
+function sifp_sub_menu_page_generator(){
+	sifp_nav_menu_page();
 	include( SIFProd_PLUGIN_PATH . 'pages/generator.php');
-	FP_foot_menu_page();
+	sifp_foot_menu_page();
 }
 
-function FP_sub_menu_page_settings(){
-	FP_nav_menu_page();
+function sifp_sub_menu_page_settings(){
+	sifp_nav_menu_page();
 	include( SIFProd_PLUGIN_PATH . 'pages/settings.php');
-	FP_foot_menu_page();
+	sifp_foot_menu_page();
 }
 
 
