@@ -39,7 +39,7 @@ function sifp_init(){
 	load_plugin_textdomain( 'si-flash-products', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	sifp_load_dependencies();
 }
-sifp_init();
+add_action( 'plugins_loaded', 'sifp_init' );
 
 function sifp_load_dependencies() {
 	require_once dirname( __FILE__ ) . '/functions.php';
@@ -59,11 +59,11 @@ function sifp_load_assets( $hook ) {
 	wp_enqueue_script( 'Flash-Products-functions-js', SIFProd_PLUGIN_URL . '/functions.js', array( 'jquery' ), SIFProd_VERSION, true );
 
 	// Localizzazione per AJAX e Settings
-	wp_localize_script( 'Flash-Products-functions-js', 'fp_ajax', array(
+	wp_localize_script( 'Flash-Products-functions-js', 'sifp_ajax', array(
 		'ajax_url'      => admin_url( 'admin-ajax.php' ),
 		'nonce'         => wp_create_nonce( 'fp_import_nonce' ),
-		'sku_prefix'    => sifp_get_setting('FP_sku_prefix', 'PROD-'),
-		'default_stock' => sifp_get_setting('FP_default_stock', '10'),
+		'sku_prefix'    => sifp_get_setting('sifp_sku_prefix', 'PROD-'),
+		'default_stock' => sifp_get_setting('sifp_default_stock', '10'),
 		'strings'       => array(
 			'confirm_bulk'        => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
 			'bulk_success'        => __( 'products imported successfully!', 'si-flash-products' ),
@@ -102,7 +102,7 @@ function deactivate_flash_products() {
 
 function sifp_menu_page(){
     $menu_slug = 'flash_products';
-    $position = sifp_get_setting('FP_menu_order', '15');
+    $position = sifp_get_setting('sifp_menu_order', '15');
 
     $link = SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-20.png';
 
@@ -114,7 +114,7 @@ add_action( 'admin_menu', 'sifp_menu_page' );
 
 function sifp_head_menu_page(){
     ?>
-    <div id="FPadminContent">
+    <div id="sifp-admin-content">
     <h1 style="margin:30px 0px;display:flex;"> 
         <img src="<?php echo SIFProd_PLUGIN_URL.'/includes/img/flash-products-logo-512.png' ?>" width="50" height="50" alt="light logo">
         Flash Products 
@@ -124,32 +124,29 @@ function sifp_head_menu_page(){
 }
 
 function sifp_nav_menu_page(){
-    $color1 = 'var(--fp-main-color)';
-    $color2 = 'var(--fp-bg3-color)';
+    $color1 = 'var(--fp-primary)';
+    $color2 = 'var(--fp-bg-nav)';
     $page = isset($_REQUEST['page']) ? sanitize_key($_REQUEST['page']) : '';
-    $FlashOrder_color = ( $page == 'flash_products' )? $color1 : $color2;
-    $Generator_color = ( $page == 'flash_products_generator' )? $color1 : $color2;
-    $Settings_color = ( $page == 'flash_products_settings' )? $color1 : $color2;
+    $sifp_main_color = ( $page == 'flash_products' )? $color1 : $color2;
+    $sifp_generator_color = ( $page == 'flash_products_generator' )? $color1 : $color2;
+    $sifp_settings_color = ( $page == 'flash_products_settings' )? $color1 : $color2;
     sifp_head_menu_page();
     ?>
-    <nav class="FPMainNav">
-        <a href="admin.php?page=flash_products" class="FPMainNavEl" style="background-color: <?php echo esc_attr($FlashOrder_color); ?>;">
+    <nav class="sifp-main-nav">
+        <a href="admin.php?page=flash_products" class="sifp-main-nav-el" style="background-color: <?php echo esc_attr($sifp_main_color); ?>;">
         <?php esc_html_e( 'FlashProducts', 'si-flash-products' ); ?></a>
-        <a href="admin.php?page=flash_products_generator" class="FPMainNavEl" style="background-color: <?php echo esc_attr($Generator_color); ?>;">
+        <a href="admin.php?page=flash_products_generator" class="sifp-main-nav-el" style="background-color: <?php echo esc_attr($sifp_generator_color); ?>;">
         <?php esc_html_e( 'Generator', 'si-flash-products' ); ?></a>
-        <a href="admin.php?page=flash_products_settings" class="FPMainNavEl" style="background-color: <?php echo esc_attr($Settings_color); ?>;">
+        <a href="admin.php?page=flash_products_settings" class="sifp-main-nav-el" style="background-color: <?php echo esc_attr($sifp_settings_color); ?>;">
         <?php esc_html_e( 'Settings', 'si-flash-products' ); ?></a>
     </nav>
     <?php
 }
 
-function sifp_foot_menu_page( $debug = false ){
+function sifp_foot_menu_page(){
     ?>
     </div>
     <?php
-    if ( $debug ) {
-        sifp_debug( $_POST );
-    }
 }
 
 function sifp_main_menu_page(){

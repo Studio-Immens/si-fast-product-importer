@@ -13,11 +13,11 @@ if ( ! current_user_can( 'manage_options' ) ) {
 
 
 
-<div id="settSection">
-    <div class="FPFormSeparator">
+<div id="sifp-settings-section">
+    <div class="sifp-form-separator">
         <b> <?php esc_html_e('Local Database' , 'si-flash-products'); ?> </b>
     </div>
-    <div class="FPSetting_Board" style="padding: 20px;">
+    <div class="sifp-setting-board" style="padding: 20px;">
         <p><?php esc_html_e('The local database contains 2000 demo products that you can search and import. You can regenerate it if needed.', 'si-flash-products'); ?></p>
         <?php
         $upload_dir = wp_upload_dir();
@@ -34,19 +34,19 @@ if ( ! current_user_can( 'manage_options' ) ) {
         </a>
     </div>
 
-<form id="general" method="post" class="FPForm" style="">
-    <button name="update" value="update" class="FPbutton pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> <?php esc_html_e('UPDATE', 'si-flash-products'); ?> </button>
+<form id="general" method="post" class="sifp-form" style="">
+    <button name="update" value="update" class="sifp-button pointer" style="position:sticky;margin: 10px 10px 10px auto;top:45px;"> <?php esc_html_e('UPDATE', 'si-flash-products'); ?> </button>
 
-    <div class="FPFormSeparator">
+    <div class="sifp-form-separator">
         <b> <?php esc_html_e('Global Settings' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down toggle-board" data-board="global"></span>
     </div>
 
-<!-- global --><div class="FPSetting_Board" board="global">
+<!-- global --><div class="sifp-setting-board" board="global">
 
 <?php
 
-sifp_general_setting( array( 'name' => 'FP_gemini_api_key',
+sifp_general_setting( array( 'name' => 'sifp_gemini_api_key',
     'default'   => '',
     'type'      => 'text',
     'class'     => '',
@@ -54,7 +54,7 @@ sifp_general_setting( array( 'name' => 'FP_gemini_api_key',
     'info'      => __('Enter your Google Gemini API Key', 'si-flash-products')
 ) );
 
-sifp_general_setting( array( 'name' => 'FP_ai_model',
+sifp_general_setting( array( 'name' => 'sifp_ai_model',
     'default'   => 'gemini-2.0-flash',
     'type'      => 'select',
     'options'   => array('gemini-2.0-flash', 'gemini-2.0-flash-latest', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'),
@@ -63,7 +63,7 @@ sifp_general_setting( array( 'name' => 'FP_ai_model',
     'info'      => __('Select the Gemini model to use', 'si-flash-products')
 ) );
 
-sifp_general_setting( array( 'name' => 'FP_ai_tone',
+sifp_general_setting( array( 'name' => 'sifp_ai_tone',
     'default'   => 'Professional and persuasive',
     'type'      => 'text',
     'class'     => '',
@@ -74,15 +74,15 @@ sifp_general_setting( array( 'name' => 'FP_ai_tone',
 ?>
 </div>
 
-    <div class="FPFormSeparator">
+    <div class="sifp-form-separator">
         <b> <?php esc_html_e('Generator Settings' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down toggle-board" data-board="generator_settings"></span>
     </div>
 
-<div class="FPSetting_Board" board="generator_settings" style="display:none;">
+<div class="sifp-setting-board" board="generator_settings" style="display:none;">
 <?php
 
-sifp_general_setting( array( 'name' => 'FP_sku_prefix',
+sifp_general_setting( array( 'name' => 'sifp_sku_prefix',
     'default'   => 'PROD-',
     'type'      => 'text',
     'class'     => '',
@@ -90,7 +90,7 @@ sifp_general_setting( array( 'name' => 'FP_sku_prefix',
     'info'      => __('Prefix used for automatic SKU generation', 'si-flash-products')
 ) );
 
-sifp_general_setting( array( 'name' => 'FP_default_stock',
+sifp_general_setting( array( 'name' => 'sifp_default_stock',
     'default'   => '10',
     'type'      => 'number',
     'class'     => '',
@@ -98,7 +98,7 @@ sifp_general_setting( array( 'name' => 'FP_default_stock',
     'info'      => __('Default stock quantity if not specified', 'si-flash-products')
 ) );
 
-sifp_general_setting( array( 'name' => 'FP_ai_creativity',
+sifp_general_setting( array( 'name' => 'sifp_ai_creativity',
     'default'   => '0.7',
     'type'      => 'select',
     'options'   => array('0.2', '0.5', '0.7', '1.0'),
@@ -107,7 +107,7 @@ sifp_general_setting( array( 'name' => 'FP_ai_creativity',
     'info'      => __('0.2 = Very precise, 1.0 = Very creative', 'si-flash-products')
 ) );
 
-sifp_general_setting( array( 'name' => 'FP_default_product_status',
+sifp_general_setting( array( 'name' => 'sifp_default_product_status',
     'default'   => 'publish',
     'type'      => 'select',
     'options'   => array('publish', 'draft', 'pending'),
@@ -119,15 +119,15 @@ sifp_general_setting( array( 'name' => 'FP_default_product_status',
 ?>
 </div>
 
-    <div class="FPFormSeparator">
+    <div class="sifp-form-separator">
         <b> <?php esc_html_e('Remote Databases' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down toggle-board" data-board="remote_databases"></span>
     </div>
 
-<div class="FPSetting_Board" board="remote_databases" style="display:none;">
+<div class="sifp-setting-board" board="remote_databases" style="display:none;">
 <?php
 
-sifp_general_setting( array( 'name' => 'FP_remote_db_links',
+sifp_general_setting( array( 'name' => 'sifp_remote_db_links',
     'default'   => '',
     'type'      => 'textarea',
     'class'     => '',
@@ -139,15 +139,15 @@ sifp_general_setting( array( 'name' => 'FP_remote_db_links',
 ?>
 </div>
 
-    <div class="FPFormSeparator">
+    <div class="sifp-form-separator">
         <b> <?php esc_html_e('Import Settings' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down toggle-board" data-board="import_settings"></span>
     </div>
 
-<div class="FPSetting_Board" board="import_settings" style="display:none;">
+<div class="sifp-setting-board" board="import_settings" style="display:none;">
 <?php
 
-sifp_general_setting( array( 'name' => 'FP_menu_order',
+sifp_general_setting( array( 'name' => 'sifp_menu_order',
     'default'   => '15',
     'type'      => 'number',
     'class'     => '',
@@ -155,7 +155,7 @@ sifp_general_setting( array( 'name' => 'FP_menu_order',
     'info'      => __('Enter the position of the menu panel in the backend', 'si-flash-products')
 ) );
 
-sifp_general_setting( array( 'name' => 'FP_default_product_status',
+sifp_general_setting( array( 'name' => 'sifp_default_import_status',
     'default'   => 'publish',
     'type'      => 'select',
     'options'   => array('publish', 'draft', 'private'),
@@ -167,23 +167,23 @@ sifp_general_setting( array( 'name' => 'FP_default_product_status',
 ?>
 </div>
 
-    <div class="FPFormSeparator">
+    <div class="sifp-form-separator">
         <b> <?php esc_html_e('Advanced Settings' , 'si-flash-products'); ?> </b>
         <span class="dashicons dashicons-arrow-down toggle-board" data-board="page_manage_order"></span>
     </div>
 
-<!-- page_manage_order --><div class="FPSetting_Board" board="page_manage_order" style="display:none;">
-    <div class="FPFormCategory">
+<!-- page_manage_order --><div class="sifp-setting-board" board="page_manage_order" style="display:none;">
+    <div class="sifp-form-category">
         <b> <?php esc_html_e('Error Logs' , 'si-flash-products'); ?> </b>
     </div>
-    <div class="FPLogSection" style="padding: 20px;">
-        <div class="FPLogHeader" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <div class="sifp-log-section" style="padding: 20px;">
+        <div class="sifp-log-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <span><?php esc_html_e('Last 50 events logged by the plugin', 'si-flash-products'); ?></span>
-            <button type="button" class="FPbutton clear-logs-btn" style="background-color: var(--fp-error); font-size: 11px; padding: 5px 10px;">
+            <button type="button" class="sifp-button clear-logs-btn" style="background-color: var(--fp-error); font-size: 11px; padding: 5px 10px;">
                 <span class="dashicons dashicons-trash" style="font-size: 14px; width: 14px; height: 14px;"></span> <?php esc_html_e('Clear Logs', 'si-flash-products'); ?>
             </button>
         </div>
-        <div class="FPLogTableContainer" style="max-height: 400px; overflow-y: auto; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
+        <div class="sifp-log-table-container" style="max-height: 400px; overflow-y: auto; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
             <table class="wp-list-table widefat fixed striped" style="border: none;">
                 <thead>
                     <tr>
@@ -213,18 +213,17 @@ sifp_general_setting( array( 'name' => 'FP_default_product_status',
     </div>
 </div>
 
-    <button name="update" value="update" class="FPbutton pointer" style="margin: 10px auto;"><?php esc_html_e('UPDATE', 'si-flash-products'); ?></button>
+    <button name="update" value="update" class="sifp-button pointer" style="margin: 10px auto;"><?php esc_html_e('UPDATE', 'si-flash-products'); ?></button>
 
     <input type="hidden" name="sett_nonce" value="<?php echo wp_create_nonce('si-flash-prod-sett'); ?>">
 
 </form>
 
-<?php do_action('fp_settings_sections_end'); ?>
+<?php do_action('sifp_settings_sections_end'); ?>
 
 </div>
 
 <?php
-//sifp_debug($_SERVER["SERVER_NAME"].$_SERVER['REQUEST_URI']);
 sifp_save_settings( "setting" );
 
 

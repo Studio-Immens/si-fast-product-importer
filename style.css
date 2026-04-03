@@ -35,7 +35,7 @@
 }
 
 /* Reset & Globali */
-#FPadminContent {
+#sifp-admin-content {
     margin: 20px;
     padding: 30px;
     background-color: var(--fp-bg-main);
@@ -46,7 +46,7 @@
     line-height: 1.6;
 }
 
-#FPadminContent h1 {
+#sifp-admin-content h1 {
     font-size: 28px;
     font-weight: 700;
     letter-spacing: -0.5px;
@@ -56,30 +56,30 @@
     gap: 15px;
 }
 
-#FPadminContent h1 img {
+#sifp-admin-content h1 img {
     padding: 0;
     margin: 0;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 /* Scrollbar Moderna */
-#FPadminContent::-webkit-scrollbar {
+#sifp-admin-content::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
-#FPadminContent::-webkit-scrollbar-track {
+#sifp-admin-content::-webkit-scrollbar-track {
     background: var(--fp-bg-nav);
 }
-#FPadminContent::-webkit-scrollbar-thumb {
+#sifp-admin-content::-webkit-scrollbar-thumb {
     background: #444;
     border-radius: 10px;
 }
-#FPadminContent::-webkit-scrollbar-thumb:hover {
+#sifp-admin-content::-webkit-scrollbar-thumb:hover {
     background: var(--fp-primary);
 }
 
 /* Navigazione */
-.FPMainNav {
+.sifp-main-nav {
     margin: 0 0 40px 0;
     background-color: var(--fp-bg-nav);
     padding: 10px;
@@ -88,7 +88,7 @@
     gap: 5px;
 }
 
-.FPMainNavEl {
+.sifp-main-nav-el {
     margin: 0;
     padding: 12px 24px;
     border-radius: var(--fp-radius);
@@ -99,13 +99,13 @@
     background-color: transparent;
 }
 
-.FPMainNavEl:hover {
+.sifp-main-nav-el:hover {
     color: var(--fp-text);
     background-color: var(--fp-bg-hover) !important;
 }
 
 /* Bottoni Moderni */
-.FPbutton, .FP_search_btn, .AI_Generate_Btn, .AI_Import_Btn {
+.sifp-button, .sifp-search-btn, .sifp-button--ai-generate, .sifp-button--ai-import {
     background: var(--fp-primary) !important;
     color: #fff !important;
     border: none !important;
@@ -124,14 +124,14 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }
 
-.FPbutton:hover, .FP_search_btn:hover {
+.sifp-button:hover, .sifp-search-btn:hover {
     background: var(--fp-primary-dark) !important;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
 }
 
 /* Navbar Filtri */
-.FPNavBar {
+.sifp-navbar {
     background-color: var(--fp-bg-card);
     padding: 20px;
     border-radius: var(--fp-radius);
@@ -143,7 +143,7 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-.FPNavElement {
+.sifp-nav-element {
     background-color: transparent;
     padding: 0;
     margin: 0;
@@ -155,7 +155,7 @@
     color: var(--fp-text-muted);
 }
 
-.FPNavElement select, .FPNavElement input {
+.sifp-nav-element select, .sifp-nav-element input {
     background-color: var(--fp-bg-input) !important;
     color: var(--fp-text) !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
@@ -165,14 +165,14 @@
     transition: var(--fp-transition);
 }
 
-.FPNavElement select:focus, .FPNavElement input:focus {
+.sifp-nav-element select:focus, .sifp-nav-element input:focus {
     border-color: var(--fp-primary) !important;
     outline: none !important;
     box-shadow: 0 0 0 2px rgba(15, 156, 192, 0.2) !important;
 }
 
 /* Cards Grid */
-.FPContainer {
+.sifp-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
@@ -180,11 +180,11 @@
     padding: 10px 0;
 }
 
-.FPdefaultCard {
+.sifp-default-card {
     display: none !important;
 }
 
-.FPCard {
+.sifp-card {
     background-color: var(--fp-bg-card);
     border-radius: var(--fp-radius-lg);
     overflow: hidden;
@@ -196,26 +196,26 @@
     height: 100%;
 }
 
-.FPCard:hover {
+.sifp-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--fp-shadow-hover);
     border-color: var(--fp-primary);
 }
 
-.FPCardHead {
+.sifp-card-head {
     position: relative;
     height: 220px;
     background-color: #000;
 }
 
-.FPCardHead img {
+.sifp-card-head img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: var(--fp-transition);
 }
 
-.FPCardSelection {
+.sifp-card-selection {
     position: absolute;
     top: 15px;
     left: 15px;
@@ -228,7 +228,7 @@
     justify-content: center;
 }
 
-.FPCardSelection input[type="checkbox"] {
+.sifp-card-selection input[type="checkbox"] {
     width: 20px !important;
     height: 20px !important;
     margin: 0 !important;
@@ -251,37 +251,37 @@
     cursor: pointer;
 }
 
-.FP_bulk_import_btn {
+.sifp-bulk-import-btn {
     padding: 8px 16px !important;
     font-size: 12px !important;
 }
 
-.FP_bulk_import_btn:disabled {
+.sifp-bulk-import-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.FPCard.selected {
+.sifp-card.selected {
     border-color: var(--fp-primary);
     box-shadow: 0 0 0 2px var(--fp-primary);
 }
 
-.FPCard.selected .FPCardSelection {
+.sifp-card.selected .sifp-card-selection {
     background: var(--fp-primary);
 }
 
-.FPCard:hover .FPCardHead img {
+.sifp-card:hover .sifp-card-head img {
     transform: scale(1.05);
 }
 
-.FPCardFoot {
+.sifp-card-foot {
     padding: 20px;
     background: transparent;
     position: relative;
     height: auto;
 }
 
-.FPCardTitle {
+.sifp-card-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--fp-text);
@@ -292,7 +292,7 @@
     overflow: hidden;
 }
 
-.FORapidImport {
+.sifp-rapid-import {
     position: absolute;
     top: 15px;
     right: 15px;
@@ -309,19 +309,19 @@
     transition: var(--fp-transition);
 }
 
-.FORapidImport:hover {
+.sifp-rapid-import:hover {
     background: var(--fp-accent);
     transform: rotate(90deg) scale(1.1);
 }
 
-/* Generator UI Style - Immens Style */
-.GeneratorSection {
+/* Generator UI Style - Modern BEM */
+.sifp-generator-section {
     padding: 30px;
     max-width: 1400px;
     margin: 0 auto;
 }
 
-.GeneratorHeader {
+.sifp-generator-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -330,25 +330,25 @@
     padding-bottom: 20px;
 }
 
-.TitleGroup h2 {
+.sifp-generator-header__title-group h2 {
     font-size: 2.5rem;
     margin: 0;
     color: #fff;
     font-weight: 800;
 }
 
-.TitleGroup p {
+.sifp-generator-header__title-group p {
     color: var(--fp-text-muted);
     margin: 5px 0 0 0;
     font-size: 1.1rem;
 }
 
-.GeneratorPresets {
+.sifp-generator-header__presets {
     display: flex;
     gap: 10px;
 }
 
-.PresetBtn {
+.sifp-button--preset {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
     color: #fff;
@@ -359,17 +359,17 @@
     font-size: 0.9rem;
 }
 
-.PresetBtn:hover {
+.sifp-button--preset:hover {
     background: var(--fp-primary);
     border-color: var(--fp-primary);
 }
 
-.TaxonomySelector {
+.sifp-taxonomy-selector {
     position: relative;
     width: 100%;
 }
 
-.AutocompleteResults {
+.sifp-autocomplete-results {
     position: absolute;
     top: 100%;
     left: 0;
@@ -385,7 +385,7 @@
     display: none;
 }
 
-.autocomplete-item {
+.sifp-autocomplete-results__item {
     padding: 10px 15px;
     cursor: pointer;
     color: var(--fp-text-light);
@@ -393,17 +393,17 @@
     transition: all 0.2s ease;
 }
 
-.autocomplete-item:last-child {
+.sifp-autocomplete-results__item:last-child {
     border-bottom: none;
 }
 
-.autocomplete-item:hover {
+.sifp-autocomplete-results__item:hover {
     background: var(--fp-primary);
     color: #fff;
 }
 
 /* Notices */
-.fp-notice {
+.sifp-notice {
     padding: 15px 20px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -413,25 +413,25 @@
     font-weight: 500;
 }
 
-.fp-notice-success {
+.sifp-notice--success {
     background: rgba(46, 213, 115, 0.1);
     color: #2ed573;
     border: 1px solid rgba(46, 213, 115, 0.2);
 }
 
-.fp-notice-error {
+.sifp-notice--error {
     background: rgba(255, 71, 87, 0.1);
     color: #ff4757;
     border: 1px solid rgba(255, 71, 87, 0.2);
 }
 
-.GeneratorLayout {
+.sifp-generator-layout {
     display: grid;
     grid-template-columns: 1fr 350px;
     gap: 40px;
 }
 
-.GeneratorCard {
+.sifp-generator-card {
     background: var(--fp-bg-card);
     border-radius: 16px;
     margin-bottom: 30px;
@@ -439,7 +439,7 @@
     overflow: hidden;
 }
 
-.CardHead {
+.sifp-generator-card__head {
     padding: 20px 25px;
     background: rgba(255,255,255,0.02);
     border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -448,28 +448,28 @@
     gap: 12px;
 }
 
-.CardHead h3 {
+.sifp-generator-card__head h3 {
     margin: 0;
     font-size: 1.1rem;
     color: #fff;
 }
 
-.CardHead .dashicons {
+.sifp-generator-card__head .dashicons {
     color: var(--fp-primary);
 }
 
-.CardBody {
+.sifp-generator-card__body {
     padding: 25px;
 }
 
-.CardBody.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.CardBody.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+.sifp-generator-card__body.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.sifp-generator-card__body.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
 
-.FormField {
+.sifp-form-field {
     margin-bottom: 20px;
 }
 
-.FormField label {
+.sifp-form-field label {
     display: block;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -479,7 +479,7 @@
     font-weight: 600;
 }
 
-.FormField input, .FormField select, .FormField textarea {
+.sifp-form-field input, .sifp-form-field select, .sifp-form-field textarea {
     width: 100%;
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(255,255,255,0.15);
@@ -489,18 +489,18 @@
     transition: var(--fp-transition);
 }
 
-.FormField input::placeholder, .FormField textarea::placeholder {
+.sifp-form-field input::placeholder, .sifp-form-field textarea::placeholder {
     color: var(--fp-placeholder);
 }
 
-.FormField input:focus {
+.sifp-form-field input:focus {
     border-color: var(--fp-primary);
     box-shadow: 0 0 0 3px rgba(15, 156, 192, 0.2);
     outline: none;
 }
 
 /* AI Sidebar */
-.AICard {
+.sifp-ai-card {
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
     border-radius: 20px;
     padding: 30px;
@@ -508,19 +508,19 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.AICard.sticky {
+.sifp-ai-card.sticky {
     position: sticky;
     top: 50px;
 }
 
-.AICardHead {
+.sifp-ai-card__head {
     display: flex;
     align-items: center;
     gap: 15px;
     margin-bottom: 30px;
 }
 
-.AI_Logo {
+.sifp-ai-card__logo {
     width: 50px;
     height: 50px;
     background: var(--fp-primary);
@@ -530,20 +530,20 @@
     justify-content: center;
 }
 
-.AI_Logo .dashicons {
+.sifp-ai-card__logo .dashicons {
     font-size: 30px;
     width: 30px;
     height: 30px;
     color: #fff;
 }
 
-.AI_Title h4 {
+.sifp-ai-card__title h4 {
     margin: 0;
     font-size: 1.2rem;
     color: #fff;
 }
 
-.AI_Badge {
+.sifp-ai-card__badge {
     font-size: 0.7rem;
     background: rgba(255,255,255,0.15);
     padding: 2px 10px;
@@ -552,7 +552,7 @@
     font-weight: 600;
 }
 
-.AI_Generate_Btn {
+.sifp-button--ai-generate {
     width: 100%;
     margin-top: 10px;
     background: var(--fp-primary) !important;
@@ -566,7 +566,7 @@
     text-transform: uppercase;
 }
 
-.AI_Import_Btn {
+.sifp-button--ai-import {
     background: var(--fp-accent) !important;
     padding: 18px !important;
     border-radius: 12px !important;
@@ -575,27 +575,27 @@
     margin-top: 30px;
 }
 
-.AI_Clear_Btn.ghost {
+.sifp-button--ai-clear.ghost {
     background: transparent !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
     margin-top: 10px;
     width: 100%;
 }
 
-.AI_Error {
+.sifp-ai-card__error {
     color: var(--fp-error-color);
     font-size: 0.8rem;
     margin-top: 10px;
     text-align: center;
 }
 
-.ImageInputGroup {
+.sifp-image-input-group {
     display: flex;
     gap: 15px;
     align-items: center;
 }
 
-#select_image_btn {
+#sifp-select-image-btn {
     white-space: nowrap;
     height: 44px;
     padding: 0 20px;
@@ -606,12 +606,12 @@
     border: 1px solid rgba(255,255,255,0.15);
 }
 
-#select_image_btn:hover {
+#sifp-select-image-btn:hover {
     background: var(--fp-primary);
     border-color: var(--fp-primary);
 }
 
-.ImagePreview {
+.sifp-image-preview {
     width: 60px;
     height: 60px;
     border-radius: 8px;
@@ -623,13 +623,13 @@
 }
 
 /* Taxonomy Badges */
-.TaxonomySelector {
+.sifp-taxonomy-selector {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.QuickSelect {
+.sifp-quick-select {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -641,7 +641,7 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 
-.tax-badge {
+.sifp-tax-badge {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
     color: var(--fp-text-muted);
@@ -652,26 +652,26 @@
     transition: var(--fp-transition);
 }
 
-.tax-badge:hover, .tax-badge.active {
+.sifp-tax-badge:hover, .sifp-tax-badge.active {
     background: var(--fp-primary);
     color: #fff;
     border-color: var(--fp-primary);
 }
 
 /* Gallery Grid */
-.GalleryInputGroup {
+.sifp-gallery-input-group {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.GalleryPreviewGrid {
+.sifp-gallery-preview-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 10px;
 }
 
-.gallery-item {
+.sifp-gallery-item {
     position: relative;
     aspect-ratio: 1;
     border-radius: 8px;
@@ -679,13 +679,13 @@
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-.gallery-item img {
+.sifp-gallery-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.remove-gallery-item {
+.sifp-gallery-item__remove {
     position: absolute;
     top: 2px;
     right: 2px;
@@ -702,17 +702,17 @@
     opacity: 0.8;
 }
 
-.remove-gallery-item:hover {
+.sifp-gallery-item__remove:hover {
     opacity: 1;
 }
 
-.CheckboxGroup {
+.sifp-checkbox-group {
     display: flex;
     gap: 20px;
     padding: 10px 0;
 }
 
-.checkbox-label {
+.sifp-checkbox-label {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -723,19 +723,19 @@
     letter-spacing: 0 !important;
 }
 
-.checkbox-label input {
+.sifp-checkbox-label input {
     width: 18px !important;
     height: 18px !important;
     margin: 0 !important;
 }
 
 @media (max-width: 1100px) {
-    .GeneratorLayout { grid-template-columns: 1fr; }
-    .AICard.sticky { position: static; }
+    .sifp-generator-layout { grid-template-columns: 1fr; }
+    .sifp-ai-card.sticky { position: static; }
 }
 
 /* Modali e Dettagli */
-.FPDetailSection {
+.sifp-detail-section {
     background-color: var(--fp-bg-main) !important;
     border: none !important;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6) !important;
@@ -751,7 +751,7 @@
     overflow-y: auto !important;
 }
 
-.FPBackGroundSection {
+.sifp-modal-overlay {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -762,7 +762,7 @@
     z-index: 100000 !important;
 }
 
-.FPDetailHead {
+.sifp-detail-section__head {
     display: flex;
     align-items: center;
     padding: 20px 30px;
@@ -770,7 +770,7 @@
     background-color: rgba(0,0,0,0.2);
 }
 
-.FPDetailTitle.editable-title {
+.sifp-detail-section__title.editable-title {
     background: transparent !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
     color: var(--fp-primary) !important;
@@ -782,14 +782,14 @@
     transition: var(--fp-transition) !important;
 }
 
-.FPDetailTitle.editable-title:focus {
+.sifp-detail-section__title.editable-title:focus {
     border-color: var(--fp-primary) !important;
     background: rgba(255,255,255,0.05) !important;
     outline: none !important;
     box-shadow: 0 0 10px rgba(15, 156, 192, 0.2) !important;
 }
 
-.FPClose {
+.sifp-button--close {
     cursor: pointer !important;
     background: var(--fp-bg-input) !important;
     padding: 8px 16px !important;
@@ -799,30 +799,30 @@
     transition: var(--fp-transition) !important;
 }
 
-.FPClose:hover {
+.sifp-button--close:hover {
     background: var(--fp-error) !important;
 }
 
-.FPDetailBody {
+.sifp-detail-section__body {
     padding: 30px !important;
     display: grid !important;
     grid-template-columns: 350px 1fr 1fr !important;
     gap: 30px !important;
 }
 
-.FPDetailBodyImages img {
+.sifp-detail-section__images img {
     width: 100% !important;
     border-radius: 12px !important;
     box-shadow: var(--fp-shadow) !important;
 }
 
-.FPDetailBlock {
+.sifp-detail-section__block {
     margin-bottom: 25px !important;
 }
 
-.FPDetailBlock input[type="text"],
-.FPDetailBlock input[type="number"],
-.FPDetailBlock textarea {
+.sifp-detail-section__block input[type="text"],
+.sifp-detail-section__block input[type="number"],
+.sifp-detail-section__block textarea {
     width: 100% !important;
     background: rgba(255,255,255,0.05) !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
@@ -834,27 +834,27 @@
     transition: var(--fp-transition) !important;
 }
 
-.FPDetailBlock input:focus,
-.FPDetailBlock textarea:focus {
+.sifp-detail-section__block input:focus,
+.sifp-detail-section__block textarea:focus {
     border-color: var(--fp-primary) !important;
     background: rgba(255,255,255,0.08) !important;
     outline: none !important;
 }
 
-.FPDetailBlock strong {
+.sifp-detail-section__block strong {
     color: var(--fp-primary);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-.FPDetailBlock p {
+.sifp-detail-section__block p {
     color: var(--fp-text-muted) !important;
     font-size: 14px !important;
     margin: 0 !important;
 }
 
-.FPDetailFoot {
+.sifp-detail-section__foot {
     padding: 25px 30px;
     border-top: 1px solid rgba(255,255,255,0.1);
     display: flex;
@@ -862,7 +862,7 @@
     background-color: rgba(0,0,0,0.2);
 }
 
-.FP_import_edited_btn {
+.sifp-button--import-edited {
     padding: 12px 25px !important;
     font-weight: 600 !important;
     display: flex !important;
@@ -874,18 +874,18 @@
     box-shadow: 0 4px 15px rgba(15, 156, 192, 0.3) !important;
 }
 
-.FP_import_edited_btn:hover {
+.sifp-button--import-edited:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 6px 20px rgba(15, 156, 192, 0.4) !important;
 }
 
 @media (max-width: 900px) {
-    .FPDetailBody {
+    .sifp-detail-section__body {
         grid-template-columns: 1fr !important;
     }
 }
 
-.FPWooInfoGrid {
+.sifp-woo-info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 15px;
@@ -895,25 +895,25 @@
     margin-top: 20px;
 }
 
-.FPWooItem {
+.sifp-woo-info-grid__item {
     font-size: 13px;
     color: var(--fp-text-dim);
 }
 
-.FPWooItem strong {
+.sifp-woo-info-grid__item strong {
     display: block;
     color: var(--fp-primary);
     margin-bottom: 3px;
 }
 
-.FP_tax_clouds {
+.sifp-tax-clouds {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 10px;
 }
 
-.PFCloud {
+.sifp-tax-cloud {
     background-color: rgba(15, 156, 192, 0.1) !important;
     color: var(--fp-primary) !important;
     border: 1px solid rgba(15, 156, 192, 0.2);
@@ -924,12 +924,12 @@
 }
 
 /* Settings Page */
-.FPForm {
+.sifp-form {
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.FPFormSeparator {
+.sifp-form__separator {
     background: linear-gradient(90deg, var(--fp-bg-nav), transparent) !important;
     padding: 15px 25px !important;
     border-radius: var(--fp-radius) !important;

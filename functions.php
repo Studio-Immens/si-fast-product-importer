@@ -1,8 +1,8 @@
 <?php
 /**
- * Flash_Products
+ * Core functions and AJAX handlers
  *
- * @package   Flash_Products
+ * @package   si-flash-products
  * @author    Mauro Arnone
  * @copyright StudioImmens
  * @license   GPL v.3
@@ -142,12 +142,6 @@ function sifp_update_setting( $key, $value ) {
     return update_option( 'sifp_settings', $settings );
 }
 
-/**
- * This is a debug function
- */
-function sifp_debug( $var ){ ?>
-	<pre> <?php var_dump($var); ?> </pre> <?php
-}
 
 function sifp_general_setting( $setting = array() ){
   if ( ! current_user_can( 'manage_options' ) ) {
@@ -236,7 +230,7 @@ function sifp_log_event( $message, $context = 'General' ) {
 }
 
 function sifp_ajax_clear_logs() {
-    check_ajax_referer( 'fp_import_nonce', 'nonce' );
+    check_ajax_referer( 'sifp_nonce', 'nonce' );
     
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
@@ -245,10 +239,10 @@ function sifp_ajax_clear_logs() {
     delete_option( 'sifp_error_logs' );
     wp_send_json_success( array( 'message' => __( 'Logs cleared successfully!', 'si-flash-products' ) ) );
 }
-add_action( 'wp_ajax_fp_clear_logs', 'sifp_ajax_clear_logs' );
+add_action( 'wp_ajax_sifp_clear_logs', 'sifp_ajax_clear_logs' );
 
 function sifp_ajax_search_products() {
-    check_ajax_referer( 'fp_import_nonce', 'nonce' );
+    check_ajax_referer( 'sifp_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
@@ -270,7 +264,7 @@ function sifp_ajax_search_products() {
         
         // 1. Get Remote Results
         if ( $source === 'all' || $source === 'remote' ) {
-            $remote_links = sifp_get_setting('FP_remote_db_links');
+            $remote_links = sifp_get_setting('sifp_remote_db_links');
             $urls = array('https://flashproducts.studioimmens.com/wp-json/flash_products/v1/products');
             
             if ( ! empty( $remote_links ) ) {
@@ -350,7 +344,7 @@ add_action( 'wp_ajax_fp_search_products', 'sifp_ajax_search_products' );
  * AJAX Handler for product import
  */
 function sifp_ajax_import_product() {
-    check_ajax_referer( 'fp_import_nonce', 'nonce' );
+    check_ajax_referer( 'sifp_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
@@ -362,28 +356,49 @@ function sifp_ajax_import_product() {
         wp_send_json_error( array( 'message' => __( 'No product data received', 'si-flash-products' ) ) );
     }
 
+    // Sanitize attributes
+    $sanitized_attributes = array();
+    if ( isset( $product_data['attributes'] ) && is_array( $product_data['attributes'] ) ) {
+        foreach ( $product_data['attributes'] as $attr ) {
+            $sanitized_attributes[] = array(
+                'name'      => sanitize_text_field( $attr['name'] ?? '' ),
+                'value'     => sanitize_text_field( $attr['value'] ?? '' ),
+                'visible'   => isset( $attr['visible'] ) ? (int) $attr['visible'] : 1,
+                'variation' => isset( $attr['variation'] ) ? (int) $attr['variation'] : 0,
+            );
+        }
+    }
+
+    // Sanitize custom taxonomy
+    $sanitized_taxonomy = array();
+    if ( isset( $product_data['custom_taxonomy'] ) && is_array( $product_data['custom_taxonomy'] ) ) {
+        foreach ( $product_data['custom_taxonomy'] as $tax => $val ) {
+            $sanitized_taxonomy[sanitize_key( $tax )] = sanitize_text_field( $val );
+        }
+    }
+
     // Sanitize product data
     $sanitized_data = array(
-        'post_title'    => sanitize_text_field( $product_data['post_title'] ),
-        'post_content'  => wp_kses_post( $product_data['post_content'] ),
-        'post_excerpt'  => wp_kses_post( $product_data['post_excerpt'] ),
-        'fp_categories' => sanitize_text_field( $product_data['fp_categories'] ),
-        'fp_tag'        => sanitize_text_field( $product_data['fp_tag'] ),
-        'fp_img'        => esc_url_raw( $product_data['fp_img'] ),
-        'fp_gallery'    => implode(',', array_filter(array_map('esc_url_raw', explode(',', $product_data['fp_gallery'] ?? '')))),
-        'regular_price' => wc_format_decimal( $product_data['regular_price'] ),
-        'sale_price'    => wc_format_decimal( $product_data['sale_price'] ),
-        'sku'           => sanitize_text_field( $product_data['sku'] ),
-        'stock_status'  => sanitize_text_field( $product_data['stock_status'] ),
-        'stock_qty'     => intval( $product_data['stock_qty'] ),
-        'weight'        => sanitize_text_field( $product_data['weight'] ),
-        'length'        => sanitize_text_field( $product_data['length'] ),
-        'width'         => sanitize_text_field( $product_data['width'] ),
-        'height'        => sanitize_text_field( $product_data['height'] ),
-        'is_virtual'    => isset($product_data['is_virtual']) && $product_data['is_virtual'] === 'yes',
-        'is_downloadable' => isset($product_data['is_downloadable']) && $product_data['is_downloadable'] === 'yes',
-        'attributes'    => isset($product_data['attributes']) ? $product_data['attributes'] : array(),
-        'custom_taxonomy' => isset($product_data['custom_taxonomy']) ? $product_data['custom_taxonomy'] : array(),
+        'post_title'      => sanitize_text_field( $product_data['post_title'] ),
+        'post_content'    => wp_kses_post( $product_data['post_content'] ),
+        'post_excerpt'    => wp_kses_post( $product_data['post_excerpt'] ),
+        'fp_categories'   => sanitize_text_field( $product_data['fp_categories'] ?? '' ),
+        'fp_tag'          => sanitize_text_field( $product_data['fp_tag'] ?? '' ),
+        'fp_img'          => esc_url_raw( $product_data['fp_img'] ?? '' ),
+        'fp_gallery'      => implode( ',', array_filter( array_map( 'esc_url_raw', explode( ',', $product_data['fp_gallery'] ?? '' ) ) ) ),
+        'regular_price'   => wc_format_decimal( $product_data['regular_price'] ?? '' ),
+        'sale_price'      => wc_format_decimal( $product_data['sale_price'] ?? '' ),
+        'sku'             => sanitize_text_field( $product_data['sku'] ?? '' ),
+        'stock_status'    => sanitize_text_field( $product_data['stock_status'] ?? 'instock' ),
+        'stock_qty'       => intval( $product_data['stock_qty'] ?? 0 ),
+        'weight'          => sanitize_text_field( $product_data['weight'] ?? '' ),
+        'length'          => sanitize_text_field( $product_data['length'] ?? '' ),
+        'width'           => sanitize_text_field( $product_data['width'] ?? '' ),
+        'height'          => sanitize_text_field( $product_data['height'] ?? '' ),
+        'is_virtual'      => isset( $product_data['is_virtual'] ) && $product_data['is_virtual'] === 'yes',
+        'is_downloadable' => isset( $product_data['is_downloadable'] ) && $product_data['is_downloadable'] === 'yes',
+        'attributes'      => $sanitized_attributes,
+        'custom_taxonomy' => $sanitized_taxonomy,
     );
 
     $result = sifp_create_woo_product( $sanitized_data );
@@ -394,13 +409,13 @@ function sifp_ajax_import_product() {
 
     wp_send_json_success( array( 'message' => __( 'Product imported successfully!', 'si-flash-products' ), 'product_id' => $result ) );
 }
-add_action( 'wp_ajax_fp_import_product', 'sifp_ajax_import_product' );
+add_action( 'wp_ajax_sifp_import_product', 'sifp_ajax_import_product' );
 
 /**
  * AJAX Handler for AI Generation via Gemini
  */
 function sifp_ajax_ai_generate_product() {
-    check_ajax_referer( 'fp_import_nonce', 'nonce' );
+    check_ajax_referer( 'sifp_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
@@ -413,12 +428,12 @@ function sifp_ajax_ai_generate_product() {
         wp_send_json_error( array( 'message' => __( 'Product name is required', 'si-flash-products' ) ) );
     }
 
-    $api_key = sifp_get_setting('FP_gemini_api_key');
-    $model = sifp_get_setting('FP_ai_model') ?: 'gemini-2.0-flash';
-    $tone = sifp_get_setting('FP_ai_tone') ?: 'Professionale e persuasivo';
-    $sku_prefix = sifp_get_setting('FP_sku_prefix') ?: 'PROD-';
-    $default_stock = sifp_get_setting('FP_default_stock') ?: '10';
-    $temperature = floatval(sifp_get_setting('FP_ai_creativity') ?: '0.7');
+    $api_key = sifp_get_setting('sifp_gemini_api_key');
+    $model = sifp_get_setting('sifp_ai_model') ?: 'gemini-2.0-flash';
+    $tone = sifp_get_setting('sifp_ai_tone') ?: 'Professionale e persuasivo';
+    $sku_prefix = sifp_get_setting('sifp_sku_prefix') ?: 'PROD-';
+    $default_stock = sifp_get_setting('sifp_default_stock') ?: '10';
+    $temperature = floatval(sifp_get_setting('sifp_ai_creativity') ?: '0.7');
 
     if ( empty( $api_key ) ) {
         wp_send_json_error( array( 'message' => __( 'API Key missing in settings', 'si-flash-products' ) ) );
@@ -509,13 +524,13 @@ function sifp_ajax_ai_generate_product() {
 
     wp_send_json_error( array( 'message' => __( 'Error generating AI content. Check your API Key and try again.', 'si-flash-products' ) ) );
 }
-add_action( 'wp_ajax_fp_ai_generate_product', 'sifp_ajax_ai_generate_product' );
+add_action( 'wp_ajax_sifp_ai_generate_product', 'sifp_ajax_ai_generate_product' );
 
 /**
  * AJAX Handler for Taxonomy Search (Autocomplete)
  */
 function sifp_ajax_search_terms() {
-    check_ajax_referer( 'fp_import_nonce', 'nonce' );
+    check_ajax_referer( 'sifp_nonce', 'nonce' );
 
     if ( ! current_user_can( 'manage_options' ) ) {
         wp_send_json_error( array( 'message' => __( 'Insufficient permissions', 'si-flash-products' ) ) );
@@ -548,7 +563,7 @@ function sifp_ajax_search_terms() {
 
     wp_send_json_success( $results );
 }
-add_action( 'wp_ajax_fp_search_terms', 'sifp_ajax_search_terms' );
+add_action( 'wp_ajax_sifp_search_terms', 'sifp_ajax_search_terms' );
 
 /**
  * Create WooCommerce product from remote data
@@ -593,7 +608,7 @@ function sifp_create_woo_product( $data ) {
     if ( ! empty( $data['height'] ) ) $product->set_height( wc_format_decimal( $data['height'] ) );
     
     // Get default status from settings
-    $default_status = sifp_get_setting('FP_default_product_status', 'publish');
+    $default_status = sifp_get_setting('sifp_default_product_status', 'publish');
     $product->set_status( sanitize_key( $default_status ) );
     
     // Set categories

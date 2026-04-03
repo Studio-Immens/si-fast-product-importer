@@ -2,12 +2,12 @@
 (function($) {
     'use strict';
 
-    window.FP_Open_Detail = function(card) {
-        $('.FPDetailSection').slideToggle();
-        $('.FPBackGroundSection').show();
+    window.sifp_open_detail = function(card) {
+        $('.sifp-detail-section').slideToggle();
+        $('.sifp-background-section').show();
 
         // Populate basic fields
-        $('.FPDetailTitle').val(card.attr('fp_title'));
+        $('.sifp-detail-title').val(card.attr('fp_title'));
 
         // Taxonomies and extra fields
         var fields = [
@@ -22,7 +22,7 @@
             $input.val(value);
             
             // Show/Hide container based on value
-            var $container = $input.closest('.FPDetailBlock');
+            var $container = $input.closest('.sifp-detail-block');
             if (value === '') {
                 $container.hide();
             } else {
@@ -38,7 +38,7 @@
             var $textarea = $('textarea[fp-edit="' + field + '"]');
             $textarea.val(value);
             
-            var $container = $textarea.closest('.FPDetailBlock');
+            var $container = $textarea.closest('.sifp-detail-block');
             if (value === '') {
                 $container.hide();
             } else {
@@ -47,16 +47,16 @@
         });
 
         // Store card reference for import
-        $('.FPDetailSection').data('source-card', card);
+        $('.sifp-detail-section').data('source-card', card);
 
-        $('.FPDetailBodyImages').empty();
+        $('.sifp-detail-body-images').empty();
         var thumb = card.attr('fp_img');
-        $('.FPDetailBodyImages').append( '<img src="'+thumb+'">' );
+        $('.sifp-detail-body-images').append( '<img src="'+thumb+'">' );
     };
 
-    window.FP_Import_Edited_Product = function() {
-        var $modal = $('.FPDetailSection');
-        var $btn = $('.FP_import_edited_btn');
+    window.sifp_import_edited_product = function() {
+        var $modal = $('.sifp-detail-section');
+        var $btn = $('.sifp-import-edited-btn');
         var card = $modal.data('source-card');
 
         if ($btn.hasClass('fp-loading')) return;
@@ -88,37 +88,37 @@
         };
 
         $.ajax({
-            url: fp_ajax.ajax_url,
+            url: sifp_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'fp_import_product',
-                nonce: fp_ajax.nonce,
+                action: 'sifp_import_product',
+                nonce: sifp_ajax.nonce,
                 product: productData
             },
             success: function(response) {
                 $btn.removeClass('fp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
                 if (response.success) {
-                    FP_Notify(response.data.message, 'success');
-                    FP_Close_Detail();
+                    sifp_notify(response.data.message, 'success');
+                    sifp_close_detail();
                     // Optionally update the card in the UI to reflect changes
-                    card.find('.FPCardTitle').text(productData.post_title);
+                    card.find('.sifp-card-title').text(productData.post_title);
                 } else {
-                    FP_Notify(response.data.message, 'error');
+                    sifp_notify(response.data.message, 'error');
                 }
             },
             error: function() {
                 $btn.removeClass('fp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
-                FP_Notify(fp_ajax.strings.error_import, 'error');
+                sifp_notify(sifp_ajax.strings.error_import, 'error');
             }
         });
     };
 
-    window.FP_Close_Detail = function() {
-        $('.FPDetailSection').slideToggle();
-        $('.FPBackGroundSection').hide();
+    window.sifp_close_detail = function() {
+        $('.sifp-detail-section').slideToggle();
+        $('.sifp-background-section').hide();
     };
 
-    window.FP_Create_Detail_tax_cloud = function( card, key ){
+    window.sifp_create_detail_tax_cloud = function( card, key ){
         var container = $('div[fp-block="'+key+'"]');
         container.empty();
         var val = card.attr(key);
@@ -135,15 +135,15 @@
         }
     };
 
-    window.FP_Import_Bulk = function() {
-        var $selectedCards = $('.FPCard.selected');
+    window.sifp_import_bulk = function() {
+        var $selectedCards = $('.sifp-card.selected');
         if ($selectedCards.length === 0) return;
 
-        if (!confirm(fp_ajax.strings.confirm_bulk + ' (' + $selectedCards.length + ')')) return;
+        if (!confirm(sifp_ajax.strings.confirm_bulk + ' (' + $selectedCards.length + ')')) return;
 
-        var $btn = $('.FP_bulk_import_btn');
+        var $btn = $('.sifp-bulk-import-btn');
         var originalText = $btn.text();
-        $btn.prop('disabled', true).text(fp_ajax.strings.importing + '...');
+        $btn.prop('disabled', true).text(sifp_ajax.strings.importing + '...');
 
         var importedCount = 0;
         var totalToImport = $selectedCards.length;
@@ -151,17 +151,17 @@
         function importNext(index) {
             if (index >= totalToImport) {
                 $btn.prop('disabled', false).text(originalText);
-                FP_Notify(importedCount + ' ' + fp_ajax.strings.bulk_success, 'success');
+                sifp_notify(importedCount + ' ' + sifp_ajax.strings.bulk_success, 'success');
                 $('.bulk-actions').fadeOut();
                 $('#select_all_products').prop('checked', false);
-                $('.FPCard').removeClass('selected').find('.fp-select-product').prop('checked', false);
+                $('.sifp-card').removeClass('selected').find('.fp-select-product').prop('checked', false);
                 return;
             }
 
             var $card = $($selectedCards[index]);
-            var $importBtn = $card.find('.FP_import_btn');
+            var $importBtn = $card.find('.sifp-import-btn');
 
-            FP_Import_product($importBtn, function(success) {
+            sifp_import_product($importBtn, function(success) {
                 if (success) importedCount++;
                 importNext(index + 1);
             });
@@ -170,8 +170,8 @@
         importNext(0);
     };
 
-    window.FP_Import_product = function(btn, callback){
-        var card = btn.closest('.FPCard');
+    window.sifp_import_product = function(btn, callback){
+        var card = btn.closest('.sifp-card');
         var originalHtml = btn.html();
 
         if (btn.hasClass('fp-loading')) return;
@@ -199,34 +199,34 @@
         };
 
         $.ajax({
-            url: fp_ajax.ajax_url,
+            url: sifp_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'fp_import_product',
-                nonce: fp_ajax.nonce,
+                action: 'sifp_import_product',
+                nonce: sifp_ajax.nonce,
                 product: productData
             },
             success: function(response) {
                 btn.removeClass('fp-loading');
                 if (response.success) {
                     btn.html('<span class="dashicons dashicons-yes"></span>').css('background-color', 'var(--fp-completed)');
-                    if (!callback) FP_Notify(response.data.message, 'success');
+                    if (!callback) sifp_notify(response.data.message, 'success');
                     if (callback) callback(true);
                 } else {
                     btn.html(originalHtml);
-                    if (!callback) FP_Notify(response.data.message, 'error');
+                    if (!callback) sifp_notify(response.data.message, 'error');
                     if (callback) callback(false);
                 }
             },
             error: function() {
                 btn.removeClass('fp-loading').html(originalHtml);
-                if (!callback) FP_Notify(fp_ajax.strings.error_import, 'error');
+                if (!callback) sifp_notify(sifp_ajax.strings.error_import, 'error');
                 if (callback) callback(false);
             }
         });
     };
 
-    window.FP_Notify = function(message, type) {
+    window.sifp_notify = function(message, type) {
         var color = type === 'success' ? 'var(--fp-completed)' : 'var(--fp-error-color)';
         var notify = $('<div class="fp-notification"></div>')
             .text(message)
@@ -249,12 +249,12 @@
         });
     };
 
-    window.FP_search_product = function(){
-        var $container = $(".FPContainer");
-        var $found = $(".FPfound");
+    window.sifp_search_product = function(){
+        var $container = $(".sifp-container");
+        var $found = $(".sifp-found");
 
-        $('.FPDetailSection').hide();
-        $('.FPBackGroundSection').hide();
+        $('.sifp-detail-section').hide();
+        $('.sifp-background-section').hide();
         $('.bulk-actions').fadeOut();
         $('#select_all_products').prop('checked', false);
         $('.selected-count').text('0');
@@ -263,46 +263,46 @@
         $container.css('opacity', '0.5');
         $found.html('<span class="dashicons dashicons-update spin"></span>');
 
-        var limit = parseInt($(".FP_limit").val()) || 100;
-        var offset = parseInt($(".FP_offset").val()) || 0;
+        var limit = parseInt($(".sifp-limit").val()) || 100;
+        var offset = parseInt($(".sifp-offset").val()) || 0;
 
         var data = {
-            action: 'fp_search_products',
-            nonce: fp_ajax.nonce,
-            categories: $(".FP_categories").val() || '',
-            languages: $(".FP_languages").val() || '',
-            source: $(".FP_source").val() || 'all',
-            orderby: $(".FP_orderby").val() || '',
+            action: 'sifp_search_products',
+            nonce: sifp_ajax.nonce,
+            categories: $(".sifp-categories").val() || '',
+            languages: $(".sifp-languages").val() || '',
+            source: $(".sifp-source").val() || 'all',
+            orderby: $(".sifp-orderby").val() || '',
             limit: limit,
             offset: offset,
-            s: $(".FP_keyword").val() || ''
+            s: $(".sifp-keyword").val() || ''
         };
 
         $.ajax({
-            url: fp_ajax.ajax_url,
+            url: sifp_ajax.ajax_url,
             type: 'GET',
             data: data,
             success: function(response) {
                 $container.css('opacity', '1');
                 if (response.success) {
-                    var clone = $('.FPdefaultCard').clone();
+                    var clone = $('.sifp-default-card').clone();
                     $container.empty().append(clone);
                     $found.text(response.data.total_results);
-                    FPloopProducts(response.data.result);
+                    sifp_loop_products(response.data.result);
                 } else {
-                    $found.text(fp_ajax.strings.error);
-                    FP_Notify(response.data.message, 'error');
+                    $found.text(sifp_ajax.strings.error);
+                    sifp_notify(response.data.message, 'error');
                 }
             },
             error: function() {
                 $container.css('opacity', '1');
-                $found.text(fp_ajax.strings.error);
-                FP_Notify(fp_ajax.strings.fetch_error, 'error');
+                $found.text(sifp_ajax.strings.error);
+                sifp_notify(sifp_ajax.strings.fetch_error, 'error');
             }
         });
     };
 
-    window.FPloopProducts = function( products ){
+    window.sifp_loop_products = function( products ){
         if (!products || products.length === 0) {
             $('.bulk-actions').fadeOut();
             return;
@@ -315,10 +315,10 @@
             var product_cat = '';
             var product_tag = '';
 
-            var copy = $('.FPdefaultCard').clone();
-            copy.removeClass('FPdefaultCard');
+            var copy = $('.sifp-default-card').clone();
+            copy.removeClass('sifp-default-card');
 
-            copy.find('.FPCardTitle').text( e.post_title );
+            copy.find('.sifp-card-title').text( e.post_title );
 
             // Generic Attributes
             copy.attr('fp_title', e.post_title);
@@ -388,7 +388,7 @@
             }
             
             if (thumbUrl) {
-                copy.find('.FPCardHead img').attr('src', thumbUrl);
+                copy.find('.sifp-card-head img').attr('src', thumbUrl);
                 copy.attr('fp_img', thumbUrl);
             }
 
@@ -396,7 +396,7 @@
                 copy.attr('fp_gallery', e.fp_gallery);
             }
 
-            $(".FPContainer").append(copy);
+            $(".sifp-container").append(copy);
         });
     };
 
@@ -405,58 +405,58 @@
     
     // Selection management
     $(document).on('change', '.fp-select-product', function() {
-        $(this).closest('.FPCard').toggleClass('selected', this.checked);
-        var count = $('.FPCard.selected').length;
+        $(this).closest('.sifp-card').toggleClass('selected', this.checked);
+        var count = $('.sifp-card.selected').length;
         $('.selected-count').text(count);
     });
 
     $('#select_all_products').on('change', function() {
         var checked = this.checked;
-        $('.FPCard').not('.FPdefaultCard').each(function() {
+        $('.sifp-card').not('.sifp-default-card').each(function() {
             $(this).toggleClass('selected', checked);
             $(this).find('.fp-select-product').prop('checked', checked);
         });
-        $('.selected-count').text($('.FPCard.selected').length);
+        $('.selected-count').text($('.sifp-card.selected').length);
     });
 
-    $('.FP_bulk_import_btn').on('click', function() {
-        FP_Import_Bulk();
+    $('.sifp-bulk-import-btn').on('click', function() {
+        sifp_import_bulk();
     });
     // Search on change/keyup
-    $('.FP_languages, .FP_categories, .FP_source, .FP_orderby, .FP_limit, .FP_offset').on('change', function() {
-        FP_search_product();
+    $('.sifp-languages, .sifp-categories, .sifp-source, .sifp-orderby, .sifp-limit, .sifp-offset').on('change', function() {
+        sifp_search_product();
     });
 
-    $('.FP_keyword').on('keyup', function() {
-        clearTimeout(window.fp_search_timeout);
-        window.fp_search_timeout = setTimeout(FP_search_product, 500);
+    $('.sifp-keyword').on('keyup', function() {
+        clearTimeout(window.sifp_search_timeout);
+        window.sifp_search_timeout = setTimeout(sifp_search_product, 500);
     });
 
-    $('.FP_search_btn').on('click', function() {
-        FP_search_product();
+    $('.sifp-search-btn').on('click', function() {
+        sifp_search_product();
     });
 
-    $(document).on('click', '.FP_import_edited_btn', function() {
-        FP_Import_Edited_Product();
+    $(document).on('click', '.sifp-button--import-edited', function() {
+        sifp_import_edited_product();
     });
 
     // Delegate clicks for dynamically loaded cards
-    $(document).on('click', '.FPCardImg, .FPCardFoot', function(e) {
-        FP_Open_Detail($(this).closest('.FPCard'));
+    $(document).on('click', '.sifp-card-head, .sifp-card-foot', function(e) {
+        sifp_open_detail($(this).closest('.sifp-card'));
     });
 
-    $(document).on('click', '.FORapidImport', function(e) {
+    $(document).on('click', '.sifp-rapid-import', function(e) {
         e.stopPropagation();
-        FP_Import_product($(this));
+        sifp_import_product($(this));
     });
 
-    $(document).on('click', '.FPClose, .FPBackGroundSection', function() {
-        FP_Close_Detail();
+    $(document).on('click', '.sifp-button--close, .sifp-modal-overlay', function() {
+        sifp_close_detail();
     });
 
     // Selection logic
     $(document).on('change', '.fp-product-select', function() {
-        var $card = $(this).closest('.FPCard');
+        var $card = $(this).closest('.sifp-card');
         if ($(this).is(':checked')) {
             $card.addClass('selected');
         } else {
@@ -468,56 +468,56 @@
 
     $(document).on('change', '#select_all_products', function() {
         var isChecked = $(this).is(':checked');
-        $('.FPCard:not(.FPdefaultCard) .fp-product-select').prop('checked', isChecked).trigger('change');
+        $('.sifp-card:not(.sifp-default-card) .fp-product-select').prop('checked', isChecked).trigger('change');
     });
 
     function updateBulkActionUI() {
-        var selectedCount = $('.FPCard:not(.FPdefaultCard) .fp-product-select:checked').length;
+        var selectedCount = $('.sifp-card:not(.sifp-default-card) .fp-product-select:checked').length;
         if (selectedCount > 0) {
             $('.bulk-actions').fadeIn();
             $('.selected-count').text(selectedCount);
-            $('.FP_bulk_import_btn').prop('disabled', false);
+            $('.sifp-bulk-import-btn').prop('disabled', false);
         } else {
-            $('.FP_bulk_import_btn').prop('disabled', true);
-            if ($('.FPCard:not(.FPdefaultCard)').length === 0) {
+            $('.sifp-bulk-import-btn').prop('disabled', true);
+            if ($('.sifp-card:not(.sifp-default-card)').length === 0) {
                 $('.bulk-actions').fadeOut();
             }
         }
     }
 
-    $(document).on('click', '.FP_bulk_import_btn', function() {
-        var $selectedCheckboxes = $('.FPCard:not(.FPdefaultCard) .fp-product-select:checked');
+    $(document).on('click', '.sifp-bulk-import-btn', function() {
+        var $selectedCheckboxes = $('.sifp-card:not(.sifp-default-card) .fp-product-select:checked');
         var total = $selectedCheckboxes.length;
         
         if (total === 0) return;
         
-        if (!confirm(fp_ajax.strings.confirm_bulk_import.replace('%d', total))) return;
+        if (!confirm(sifp_ajax.strings.confirm_bulk_import.replace('%d', total))) return;
 
         var $btn = $(this);
         var originalHtml = $btn.html();
-        $btn.addClass('fp-loading').prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + fp_ajax.strings.importing);
+        $btn.addClass('sifp-loading').prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.importing);
 
         var imported = 0;
         var failed = 0;
 
         function importNext(index) {
             if (index >= total) {
-                $btn.removeClass('fp-loading').prop('disabled', false).html(originalHtml);
-                var msg = fp_ajax.strings.bulk_import_done.replace('%d', imported).replace('%d', failed);
-                FP_Notify(msg, imported > 0 ? 'success' : 'error');
+                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalHtml);
+                var msg = sifp_ajax.strings.bulk_import_done.replace('%d', imported).replace('%d', failed);
+                sifp_notify(msg, imported > 0 ? 'success' : 'error');
                 $('#select_all_products').prop('checked', false);
                 $('.fp-product-select').prop('checked', false).trigger('change');
                 return;
             }
 
             var $checkbox = $($selectedCheckboxes[index]);
-            var $card = $checkbox.closest('.FPCard');
-            var $importBtn = $card.find('.FORapidImport');
+            var $card = $checkbox.closest('.sifp-card');
+            var $importBtn = $card.find('.sifp-rapid-import');
 
             $card.addClass('importing');
 
             // Reuse existing single import logic but with a callback
-            FP_Import_product($importBtn, function(success) {
+            sifp_import_product($importBtn, function(success) {
                 $card.removeClass('importing');
                 if (success) {
                     imported++;
@@ -551,68 +551,68 @@
     });
 
     $(document).on('click', '.clear-logs-btn', function() {
-        if (!confirm(fp_ajax.strings.confirm_clear_logs)) return;
+        if (!confirm(sifp_ajax.strings.confirm_clear_logs)) return;
         
         var $btn = $(this);
-        $btn.addClass('fp-loading').prop('disabled', true);
+        $btn.addClass('sifp-loading').prop('disabled', true);
         
         $.ajax({
-            url: fp_ajax.ajax_url,
+            url: sifp_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'fp_clear_logs',
-                nonce: fp_ajax.nonce
+                action: 'sifp_clear_logs',
+                nonce: sifp_ajax.nonce
             },
             success: function(response) {
-                $btn.removeClass('fp-loading').prop('disabled', false);
+                $btn.removeClass('sifp-loading').prop('disabled', false);
                 if (response.success) {
-                    $('.FPLogTableContainer tbody').html('<tr><td colspan="3" style="text-align:center;">' + response.data.message + '</td></tr>');
-                    FP_Notify(response.data.message, 'success');
+                    $('.sifp-log-table-container tbody').html('<tr><td colspan="3" style="text-align:center;">' + response.data.message + '</td></tr>');
+                    sifp_notify(response.data.message, 'success');
                 } else {
-                    FP_Notify(response.data.message, 'error');
+                    sifp_notify(response.data.message, 'error');
                 }
             },
             error: function() {
-                $btn.removeClass('fp-loading').prop('disabled', false);
-                FP_Notify(fp_ajax.strings.error_clear_logs, 'error');
+                $btn.removeClass('sifp-loading').prop('disabled', false);
+                sifp_notify(sifp_ajax.strings.error_clear_logs, 'error');
             }
         });
     });
 
     // Initial search
-    if ($('.FPMainContainer').length > 0 && !$('.AI_Generator').length) {
-        FP_search_product();
+    if ($('.sifp-main-container').length > 0 && !$('.sifp-generator-section').length) {
+        sifp_search_product();
     }
 
     // AI Generation
-    $(document).on('click', '.AI_Generate_Btn', function(e) {
+    $(document).on('click', '.sifp-button--ai-generate', function(e) {
         e.preventDefault();
         var $btn = $(this);
         var name = $('#ai_product_name').val();
         var context = $('#ai_product_context').val();
 
         if (!name) {
-            FP_Notify(fp_ajax.strings.error_missing_name, 'error');
+            sifp_notify(sifp_ajax.strings.error_missing_name, 'error');
             return;
         }
 
-        if ($btn.hasClass('fp-loading')) return;
+        if ($btn.hasClass('sifp-loading')) return;
 
-        $btn.addClass('fp-loading').prop('disabled', true);
+        $btn.addClass('sifp-loading').prop('disabled', true);
         var originalText = $btn.html();
-        $btn.html('<span class="dashicons dashicons-update spin"></span> ' + fp_ajax.strings.generating);
+        $btn.html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.generating);
 
         $.ajax({
-            url: fp_ajax.ajax_url,
+            url: sifp_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'fp_ai_generate_product',
-                nonce: fp_ajax.nonce,
+                action: 'sifp_ai_generate_product',
+                nonce: sifp_ajax.nonce,
                 name: name,
                 context: context
             },
             success: function(response) {
-                $btn.removeClass('fp-loading').prop('disabled', false).html(originalText);
+                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
                 if (response.success) {
                     var data = response.data;
                     $('#out_post_title').val(data.post_title);
@@ -655,14 +655,14 @@
                         $('#out_post_content').val(data.post_content);
                     }
                     
-                    FP_Notify(fp_ajax.strings.ai_gen_success, 'success');
+                    sifp_notify(sifp_ajax.strings.ai_gen_success, 'success');
                 } else {
-                    FP_Notify(response.data.message, 'error');
+                    sifp_notify(response.data.message, 'error');
                 }
             },
             error: function() {
-                $btn.removeClass('fp-loading').prop('disabled', false).html(originalText);
-                FP_Notify(fp_ajax.strings.error_ai_call, 'error');
+                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
+                sifp_notify(sifp_ajax.strings.error_ai_call, 'error');
             }
         });
     });
@@ -711,18 +711,18 @@
     }
 
     // AI Import
-    $(document).on('click', '.AI_Import_Btn', function(e) {
+    $(document).on('click', '.sifp-button--ai-import', function(e) {
         e.preventDefault();
         var $btn = $(this);
         
         // Basic validation
         var title = $('#out_post_title').val();
         if (!title) {
-            $('#out_post_title').closest('.FormField').addClass('has-error');
-            FP_Notify(fp_ajax.strings.error_missing_name, 'error');
+            $('#out_post_title').closest('.sifp-form-field').addClass('has-error');
+            sifp_notify(sifp_ajax.strings.error_missing_name, 'error');
             return;
         } else {
-            $('#out_post_title').closest('.FormField').removeClass('has-error');
+            $('#out_post_title').closest('.sifp-form-field').removeClass('has-error');
         }
 
         // Sync TinyMCE content to textarea before serializing
@@ -740,65 +740,65 @@
         productData['attributes'] = getProductAttributes();
 
         if (!productData.post_title) {
-            FP_Notify(fp_ajax.strings.error_missing_name, 'error');
+            sifp_notify(sifp_ajax.strings.error_missing_name, 'error');
             return;
         }
 
-        if ($btn.hasClass('fp-loading')) return;
+        if ($btn.hasClass('sifp-loading')) return;
 
-        $btn.addClass('fp-loading').prop('disabled', true);
+        $btn.addClass('sifp-loading').prop('disabled', true);
         var originalText = $btn.html();
-        $btn.html('<span class="dashicons dashicons-update spin"></span> ' + fp_ajax.strings.importing);
+        $btn.html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.importing);
 
         $.ajax({
-            url: fp_ajax.ajax_url,
+            url: sifp_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'fp_import_product',
-                nonce: fp_ajax.nonce,
+                action: 'sifp_import_product',
+                nonce: sifp_ajax.nonce,
                 product: productData
             },
             success: function(response) {
-                $btn.removeClass('fp-loading').prop('disabled', false).html(originalText);
+                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
                 if (response.success) {
-                    FP_Notify(response.data.message, 'success');
+                    sifp_notify(response.data.message, 'success');
                 } else {
-                    FP_Notify(response.data.message, 'error');
+                    sifp_notify(response.data.message, 'error');
                 }
             },
             error: function() {
-                $btn.removeClass('fp-loading').prop('disabled', false).html(originalText);
-                FP_Notify(fp_ajax.strings.error_import, 'error');
+                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
+                sifp_notify(sifp_ajax.strings.error_import, 'error');
             }
         });
     });
 
     // AI Clear
-    $(document).on('click', '.AI_Clear_Btn', function() {
+    $(document).on('click', '.sifp-button--ai-clear', function() {
         $('#ai_product_form')[0].reset();
         if (window.tinyMCE && tinyMCE.get('out_post_content')) {
             tinyMCE.get('out_post_content').setContent('');
         }
         $('#ai_product_name, #ai_product_context').val('');
-        $('#img_preview_container').css('background-image', 'none');
+        $('.sifp-image-preview').css('background-image', 'none');
     });
 
     // Image Preview
     $('#out_fp_img').on('input change', function() {
         var url = $(this).val();
         if (url) {
-            $('#img_preview_container').css('background-image', 'url(' + url + ')');
+            $('.sifp-image-preview').css('background-image', 'url(' + url + ')');
         } else {
-            $('#img_preview_container').css('background-image', 'none');
+            $('.sifp-image-preview').css('background-image', 'none');
         }
     });
 
     // Presets
-    $('.PresetBtn[data-preset]').on('click', function() {
+    $('.sifp-button--preset[data-preset]').on('click', function() {
         var preset = $(this).data('preset');
         var now = new Date();
-        var skuPrefix = fp_ajax.sku_prefix || 'PROD-';
-        var defaultStock = fp_ajax.default_stock || '10';
+        var skuPrefix = sifp_ajax.sku_prefix || 'PROD-';
+        var defaultStock = sifp_ajax.default_stock || '10';
         var skuBase = skuPrefix + now.getTime().toString().slice(-6);
 
         switch(preset) {
@@ -846,12 +846,12 @@
                 $('#out_weight, #out_length, #out_width, #out_height').val('');
                 break;
         }
-        FP_Notify(fp_ajax.strings.preset_loaded, 'success');
+        sifp_notify(sifp_ajax.strings.preset_loaded, 'success');
     });
 
     // Media Uploader
     var media_uploader;
-    $('#select_image_btn').on('click', function(e) {
+    $('#sifp-select-image-btn').on('click', function(e) {
         e.preventDefault();
 
         if (media_uploader) {
@@ -860,9 +860,9 @@
         }
 
         media_uploader = wp.media({
-            title: fp_ajax.strings.select_image,
+            title: sifp_ajax.strings.select_image,
             button: {
-                text: fp_ajax.strings.use_image
+                text: sifp_ajax.strings.use_image
             },
             multiple: false
         });
@@ -877,7 +877,7 @@
 
     // Gallery Uploader
     var gallery_uploader;
-    $('#select_gallery_btn').on('click', function(e) {
+    $('#sifp-select-gallery-btn').on('click', function(e) {
         e.preventDefault();
 
         if (gallery_uploader) {
@@ -886,9 +886,9 @@
         }
 
         gallery_uploader = wp.media({
-            title: fp_ajax.strings.select_gallery,
+            title: sifp_ajax.strings.select_gallery,
             button: {
-                text: fp_ajax.strings.add_to_gallery
+                text: sifp_ajax.strings.add_to_gallery
             },
             multiple: true
         });
@@ -913,18 +913,18 @@
     // Gallery Preview Update
     $('#out_fp_gallery').on('change', function() {
         var urls = $(this).val() ? $(this).val().split(',') : [];
-        var $container = $('#gallery_preview_container');
+        var $container = $('.sifp-gallery-preview-grid');
         $container.empty();
 
         urls.forEach(function(url) {
             if (!url) return;
-            var $item = $('<div class="gallery-item"><img src="' + url + '"><span class="remove-gallery-item" data-url="' + url + '">&times;</span></div>');
+            var $item = $('<div class="sifp-gallery-item"><img src="' + url + '"><span class="sifp-gallery-item__remove" data-url="' + url + '">&times;</span></div>');
             $container.append($item);
         });
     });
 
     // Remove Gallery Item
-    $(document).on('click', '.remove-gallery-item', function() {
+    $(document).on('click', '.sifp-gallery-item__remove', function() {
         var urlToRemove = $(this).data('url');
         var current_gallery = $('#out_fp_gallery').val().split(',');
         var updated_gallery = current_gallery.filter(function(url) {
@@ -934,27 +934,27 @@
     });
 
     // Taxonomy Autocomplete
-    var fp_tax_timeout;
-    $(document).on('keyup', '.TaxonomySelector input', function() {
+    var sifp_tax_timeout;
+    $(document).on('keyup', '.sifp-taxonomy-selector input', function() {
         var $input = $(this);
-        var $results = $input.siblings('.AutocompleteResults');
-        var tax = $input.closest('.TaxonomySelector').data('tax');
+        var $results = $input.siblings('.sifp-autocomplete-results');
+        var tax = $input.closest('.sifp-taxonomy-selector').data('tax');
         var query = $input.val().split(',').pop().trim();
 
-        clearTimeout(fp_tax_timeout);
+        clearTimeout(sifp_tax_timeout);
 
         if (query.length < 2) {
             $results.hide().empty();
             return;
         }
 
-        fp_tax_timeout = setTimeout(function() {
+        sifp_tax_timeout = setTimeout(function() {
             $.ajax({
-                url: fp_ajax.ajax_url,
+                url: sifp_ajax.ajax_url,
                 type: 'GET',
                 data: {
-                    action: 'fp_search_terms',
-                    nonce: fp_ajax.nonce,
+                    action: 'sifp_search_terms',
+                    nonce: sifp_ajax.nonce,
                     taxonomy: tax,
                     q: query
                 },
@@ -962,7 +962,7 @@
                     if (response.success && response.data.length > 0) {
                         $results.empty().show();
                         response.data.forEach(function(term) {
-                            $results.append('<div class="autocomplete-item" data-val="' + term.name + '">' + term.name + '</div>');
+                            $results.append('<div class="sifp-autocomplete-results__item" data-val="' + term.name + '">' + term.name + '</div>');
                         });
                     } else {
                         $results.hide().empty();
@@ -972,10 +972,10 @@
         }, 300);
     });
 
-    $(document).on('click', '.autocomplete-item', function() {
+    $(document).on('click', '.sifp-autocomplete-results__item', function() {
         var $item = $(this);
         var val = $item.data('val');
-        var $input = $item.closest('.TaxonomySelector').find('input');
+        var $input = $item.closest('.sifp-taxonomy-selector').find('input');
         var currentVal = $input.val();
         var terms = currentVal.split(',').map(s => s.trim());
         
@@ -992,8 +992,8 @@
 
     // Close autocomplete on click outside
     $(document).on('click', function(e) {
-        if (!$(e.target).closest('.TaxonomySelector').length) {
-            $('.AutocompleteResults').hide().empty();
+        if (!$(e.target).closest('.sifp-taxonomy-selector').length) {
+            $('.sifp-autocomplete-results').hide().empty();
         }
     });
 
