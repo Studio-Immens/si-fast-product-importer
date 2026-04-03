@@ -262,12 +262,12 @@
 }
 
 .sifp-card.selected {
-    border-color: var(--fp-primary);
-    box-shadow: 0 0 0 2px var(--fp-primary);
+    border-color: var(--sifp-primary);
+    box-shadow: 0 0 0 2px var(--sifp-primary);
 }
 
 .sifp-card.selected .sifp-card-selection {
-    background: var(--fp-primary);
+    background: var(--sifp-primary);
 }
 
 .sifp-card:hover .sifp-card-head img {
@@ -284,7 +284,7 @@
 .sifp-card-title {
     font-size: 16px;
     font-weight: 600;
-    color: var(--fp-text);
+    color: var(--sifp-text);
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -296,7 +296,7 @@
     position: absolute;
     top: 15px;
     right: 15px;
-    background: var(--fp-primary);
+    background: var(--sifp-primary);
     color: #fff;
     width: 36px;
     height: 36px;
@@ -304,13 +304,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--fp-shadow);
+    box-shadow: var(--sifp-shadow);
     z-index: 20;
-    transition: var(--fp-transition);
+    transition: var(--sifp-transition);
 }
 
 .sifp-rapid-import:hover {
-    background: var(--fp-accent);
+    background: var(--sifp-accent);
     transform: rotate(90deg) scale(1.1);
 }
 
@@ -338,7 +338,7 @@
 }
 
 .sifp-generator-header__title-group p {
-    color: var(--fp-text-muted);
+    color: var(--sifp-text-muted);
     margin: 5px 0 0 0;
     font-size: 1.1rem;
 }
@@ -355,13 +355,13 @@
     padding: 8px 16px;
     border-radius: 20px;
     cursor: pointer;
-    transition: var(--fp-transition);
+    transition: var(--sifp-transition);
     font-size: 0.9rem;
 }
 
 .sifp-button--preset:hover {
-    background: var(--fp-primary);
-    border-color: var(--fp-primary);
+    background: var(--sifp-primary);
+    border-color: var(--sifp-primary);
 }
 
 .sifp-taxonomy-selector {
@@ -374,7 +374,7 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--fp-bg-card);
+    background: var(--sifp-bg-card);
     border: 1px solid rgba(255,255,255,0.1);
     border-top: none;
     z-index: 1000;
@@ -388,7 +388,7 @@
 .sifp-autocomplete-results__item {
     padding: 10px 15px;
     cursor: pointer;
-    color: var(--fp-text-light);
+    color: var(--sifp-text-light);
     border-bottom: 1px solid rgba(255,255,255,0.05);
     transition: all 0.2s ease;
 }
@@ -398,7 +398,7 @@
 }
 
 .sifp-autocomplete-results__item:hover {
-    background: var(--fp-primary);
+    background: var(--sifp-primary);
     color: #fff;
 }
 
@@ -432,7 +432,7 @@
 }
 
 .sifp-generator-card {
-    background: var(--fp-bg-card);
+    background: var(--sifp-bg-card);
     border-radius: 16px;
     margin-bottom: 30px;
     border: 1px solid rgba(255,255,255,0.05);
@@ -455,7 +455,7 @@
 }
 
 .sifp-generator-card__head .dashicons {
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
 }
 
 .sifp-generator-card__body {
@@ -474,7 +474,7 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--fp-label);
+    color: var(--sifp-label);
     margin-bottom: 8px;
     font-weight: 600;
 }
@@ -486,15 +486,15 @@
     border-radius: 8px;
     padding: 12px 15px;
     color: #fff;
-    transition: var(--fp-transition);
+    transition: var(--sifp-transition);
 }
 
 .sifp-form-field input::placeholder, .sifp-form-field textarea::placeholder {
-    color: var(--fp-placeholder);
+    color: var(--sifp-placeholder);
 }
 
 .sifp-form-field input:focus {
-    border-color: var(--fp-primary);
+    border-color: var(--sifp-primary);
     box-shadow: 0 0 0 3px rgba(15, 156, 192, 0.2);
     outline: none;
 }
@@ -523,7 +523,7 @@
 .sifp-ai-card__logo {
     width: 50px;
     height: 50px;
-    background: var(--fp-primary);
+    background: var(--sifp-primary);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -555,7 +555,7 @@
 .sifp-button--ai-generate, .sifp-ai-generate-btn {
     width: 100%;
     margin-top: 10px;
-    background: var(--fp-primary) !important;
+    background: var(--sifp-primary) !important;
     padding: 15px !important;
     border-radius: 12px !important;
     font-weight: bold !important;
@@ -567,7 +567,7 @@
 }
 
 .sifp-button--ai-import, .sifp-ai-import-btn {
-    background: var(--fp-accent) !important;
+    background: var(--sifp-accent) !important;
     padding: 18px !important;
     border-radius: 12px !important;
     font-weight: 800 !important;
@@ -583,7 +583,7 @@
 }
 
 .sifp-ai-card__error, .sifp-ai-error {
-    color: var(--fp-error);
+    color: var(--sifp-error);
     font-size: 0.8rem;
     margin-top: 10px;
     text-align: center;
@@ -602,13 +602,13 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--fp-bg-input);
+    background: var(--sifp-bg-input);
     border: 1px solid rgba(255,255,255,0.15);
 }
 
 #sifp-select-image-btn:hover, #select_image_btn:hover {
-    background: var(--fp-primary);
-    border-color: var(--fp-primary);
+    background: var(--sifp-primary);
+    border-color: var(--sifp-primary);
 }
 
 .sifp-image-preview, #img_preview_container {
@@ -644,18 +644,18 @@
 .sifp-tax-badge {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    color: var(--fp-text-muted);
+    color: var(--sifp-text-muted);
     padding: 4px 10px;
     border-radius: 15px;
     font-size: 11px;
     cursor: pointer;
-    transition: var(--fp-transition);
+    transition: var(--sifp-transition);
 }
 
 .sifp-tax-badge:hover, .sifp-tax-badge.active {
-    background: var(--fp-primary);
+    background: var(--sifp-primary);
     color: #fff;
-    border-color: var(--fp-primary);
+    border-color: var(--sifp-primary);
 }
 
 /* Gallery Grid */
@@ -689,7 +689,7 @@
     position: absolute;
     top: 2px;
     right: 2px;
-    background: var(--fp-error);
+    background: var(--sifp-error);
     color: #fff;
     border-radius: 50%;
     width: 18px;
@@ -717,7 +717,7 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: var(--fp-text);
+    color: var(--sifp-text);
     cursor: pointer;
     text-transform: none !important;
     letter-spacing: 0 !important;
@@ -741,7 +741,7 @@
 }
 
 .sifp-form-separator b {
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
     text-transform: uppercase;
     font-size: 12px;
     letter-spacing: 1px;
@@ -758,7 +758,7 @@
 
 .sifp-setting-el {
     padding: 15px;
-    transition: var(--fp-transition);
+    transition: var(--sifp-transition);
 }
 
 .sifp-setting-el:hover {
@@ -767,34 +767,34 @@
 
 .sifp-text-settings {
     font-weight: 600;
-    color: var(--fp-text);
+    color: var(--sifp-text);
     margin-bottom: 5px !important;
 }
 
 .sifp-setting-el input, .sifp-setting-el select, .sifp-setting-el textarea {
     width: 100%;
-    background: var(--fp-bg-input) !important;
+    background: var(--sifp-bg-input) !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
     border-radius: 4px !important;
-    color: var(--fp-text) !important;
+    color: var(--sifp-text) !important;
     padding: 8px 12px !important;
 }
 
 .sifp-setting-el input:focus, .sifp-setting-el select:focus, .sifp-setting-el textarea:focus {
-    border-color: var(--fp-primary) !important;
+    border-color: var(--sifp-primary) !important;
     box-shadow: 0 0 0 2px rgba(15, 156, 192, 0.2) !important;
     outline: none !important;
 }
 
 .sifp-log-section {
-    background: var(--fp-bg-card);
+    background: var(--sifp-bg-card);
     border-radius: 8px;
     margin-top: 10px;
 }
 
 .sifp-log-header {
     font-weight: 600;
-    color: var(--fp-text-muted);
+    color: var(--sifp-text-muted);
 }
 
 .sifp-log-table-container {
@@ -813,7 +813,7 @@
     padding: 12px;
     font-size: 12px;
     text-transform: uppercase;
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
 }
 
 .sifp-log-table-container table td {
@@ -850,8 +850,8 @@
     z-index: 100;
 }
 
-.sifp-card.import-success { border-color: var(--fp-success); }
-.sifp-card.import-error { border-color: var(--fp-error); }
+.sifp-card.import-success { border-color: var(--sifp-success); }
+.sifp-card.import-error { border-color: var(--sifp-error); }
 
 @media (max-width: 1100px) {
     .sifp-navbar { flex-direction: column; align-items: stretch; }
@@ -861,7 +861,7 @@
 
 .sifp-woo-info-grid__item strong {
     display: block;
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
     margin-bottom: 3px;
 }
 
@@ -874,7 +874,7 @@
 
 .sifp-tax-cloud {
     background-color: rgba(15, 156, 192, 0.1) !important;
-    color: var(--fp-primary) !important;
+    color: var(--sifp-primary) !important;
     border: 1px solid rgba(15, 156, 192, 0.2);
     border-radius: 20px !important;
     padding: 5px 15px !important;
@@ -889,51 +889,51 @@
 }
 
 .sifp-form__separator {
-    background: linear-gradient(90deg, var(--fp-bg-nav), transparent) !important;
+    background: linear-gradient(90deg, var(--sifp-bg-nav), transparent) !important;
     padding: 15px 25px !important;
-    border-radius: var(--fp-radius) !important;
+    border-radius: var(--sifp-radius) !important;
     margin: 40px 0 20px 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    border-left: 4px solid var(--fp-primary) !important;
+    border-left: 4px solid var(--sifp-primary) !important;
 }
 
-.FPFormSeparator b {
+.sifp-FormSeparator b {
     font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
 }
 
-.FPSetting_Board {
+.sifp-Setting_Board {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 20px;
     margin-bottom: 30px;
 }
 
-.FPsettingEl, .FOsettingEl {
-    background-color: var(--fp-bg-card) !important;
+.sifp-setting-el, .sifp-setting-el {
+    background-color: var(--sifp-bg-card) !important;
     border: 1px solid rgba(255,255,255,0.05) !important;
-    border-radius: var(--fp-radius) !important;
+    border-radius: var(--sifp-radius) !important;
     padding: 20px !important;
     display: flex !important;
     flex-direction: column !important;
     gap: 12px !important;
-    transition: var(--fp-transition) !important;
+    transition: var(--sifp-transition) !important;
     min-width: 300px !important;
     position: relative;
 }
 
-.FPsettingEl:hover, .FOsettingEl:hover {
+.sifp-setting-el:hover, .sifp-setting-el:hover {
     border-color: rgba(15, 156, 192, 0.3) !important;
-    background-color: var(--fp-bg-hover) !important;
+    background-color: var(--sifp-bg-hover) !important;
     transform: translateY(-2px);
 }
 
-.FPtextSettings, .FOtextSettings {
-    color: var(--fp-label) !important;
+.sifp-textSettings, .sifp-textSettings {
+    color: var(--sifp-label) !important;
     text-align: left !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -943,50 +943,50 @@
     letter-spacing: 0.5px;
 }
 
-.FPsettingEl input, .FPsettingEl select, .FPsettingEl textarea,
-.FOsettingEl input, .FOsettingEl select, .FOsettingEl textarea {
+.sifp-setting-el input, .sifp-setting-el select, .sifp-setting-el textarea,
+.sifp-setting-el input, .sifp-setting-el select, .sifp-setting-el textarea {
     width: 100% !important;
-    background: var(--fp-bg-input) !important;
+    background: var(--sifp-bg-input) !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
     border-radius: 6px !important;
     padding: 10px 15px !important;
-    color: var(--fp-text) !important;
+    color: var(--sifp-text) !important;
     font-size: 14px !important;
-    transition: var(--fp-transition) !important;
+    transition: var(--sifp-transition) !important;
 }
 
-.FPsettingEl input:focus, .FPsettingEl select:focus, .FPsettingEl textarea:focus,
-.FOsettingEl input:focus, .FOsettingEl select:focus, .FOsettingEl textarea:focus {
-    border-color: var(--fp-primary) !important;
+.sifp-setting-el input:focus, .sifp-setting-el select:focus, .sifp-setting-el textarea:focus,
+.sifp-setting-el input:focus, .sifp-setting-el select:focus, .sifp-setting-el textarea:focus {
+    border-color: var(--sifp-primary) !important;
     box-shadow: 0 0 0 2px rgba(15, 156, 192, 0.2) !important;
     outline: none !important;
 }
 
-.FPsettingEl .dashicons-image-rotate, 
-.FOsettingEl .dashicons-image-rotate {
+.sifp-setting-el .dashicons-image-rotate, 
+.sifp-setting-el .dashicons-image-rotate {
     position: absolute;
     top: 15px;
     right: 15px;
     font-size: 16px;
-    color: var(--fp-text-muted);
+    color: var(--sifp-text-muted);
     opacity: 0.5;
-    transition: var(--fp-transition);
+    transition: var(--sifp-transition);
 }
 
-.FPsettingEl:hover .dashicons-image-rotate,
-.FOsettingEl:hover .dashicons-image-rotate {
+.sifp-setting-el:hover .dashicons-image-rotate,
+.sifp-setting-el:hover .dashicons-image-rotate {
     opacity: 1;
 }
 
-.FPsettingEl .dashicons-image-rotate:hover,
-.FOsettingEl .dashicons-image-rotate:hover {
-    color: var(--fp-primary);
+.sifp-setting-el .dashicons-image-rotate:hover,
+.sifp-setting-el .dashicons-image-rotate:hover {
+    color: var(--sifp-primary);
     transform: rotate(180deg);
 }
 
-.FPsettingEl p:not(.FPtextSettings):not(.FOtextSettings),
-.FOsettingEl p:not(.FPtextSettings):not(.FOtextSettings) {
-    color: var(--fp-text-muted) !important;
+.sifp-setting-el p:not(.sifp-textSettings):not(.sifp-textSettings),
+.sifp-setting-el p:not(.sifp-textSettings):not(.sifp-textSettings) {
+    color: var(--sifp-text-muted) !important;
     font-size: 12px !important;
     margin: 5px 0 0 0 !important;
     line-height: 1.4 !important;
@@ -994,20 +994,20 @@
 }
 
 /* Update Button Sticky Style */
-.FPForm .FPbutton[name="update"] {
+.sifp-Form .sifp-button[name="update"] {
     z-index: 100;
     padding: 12px 30px !important;
     font-size: 14px !important;
-    background: var(--fp-accent) !important;
+    background: var(--sifp-accent) !important;
 }
 
-.FPForm .FPbutton[name="update"]:hover {
-    background: var(--fp-accent-dark) !important;
+.sifp-Form .sifp-button[name="update"]:hover {
+    background: var(--sifp-accent-dark) !important;
 }
 
 /* Error Logs Section Refinement */
-.FPLogSection {
-    background: var(--fp-bg-card);
+.sifp-LogSection {
+    background: var(--sifp-bg-card);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 12px;
     margin-top: 30px;
@@ -1015,7 +1015,7 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
-.FPLogHeader {
+.sifp-LogHeader {
     border-bottom: 1px solid rgba(255,255,255,0.05);
     padding: 20px 25px;
     background: rgba(255,255,255,0.02);
@@ -1024,7 +1024,7 @@
     align-items: center;
 }
 
-.FPLogHeader span {
+.sifp-LogHeader span {
     font-weight: 600;
     color: #fff;
     font-size: 1rem;
@@ -1033,53 +1033,53 @@
     gap: 10px;
 }
 
-.FPLogHeader span::before {
+.sifp-LogHeader span::before {
     content: "\f534";
     font-family: dashicons;
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
 }
 
-.FPLogTableContainer {
+.sifp-LogTableContainer {
     border: none !important;
 }
 
-.FPLogTableContainer table {
+.sifp-LogTableContainer table {
     margin: 0 !important;
     border: none !important;
     width: 100%;
     border-collapse: collapse;
 }
 
-.FPLogTableContainer table th {
+.sifp-LogTableContainer table th {
     background: rgba(0,0,0,0.2);
     border-bottom: 1px solid rgba(255,255,255,0.1) !important;
     padding: 12px 20px !important;
-    color: var(--fp-label);
+    color: var(--sifp-label);
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 1px;
     text-align: left;
 }
 
-.FPLogTableContainer table td {
+.sifp-LogTableContainer table td {
     padding: 15px 20px !important;
     vertical-align: middle;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: var(--fp-text-muted);
+    color: var(--sifp-text-muted);
     font-size: 13px;
 }
 
-.FPLogTableContainer table tr:last-child td {
+.sifp-LogTableContainer table tr:last-child td {
     border-bottom: none;
 }
 
-.FPLogTableContainer table tr:hover td {
+.sifp-LogTableContainer table tr:hover td {
     background: rgba(255,255,255,0.01);
 }
 
-.FPLogTableContainer code {
+.sifp-LogTableContainer code {
     background: rgba(0,0,0,0.3);
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'Monaco', 'Consolas', monospace;
@@ -1087,39 +1087,39 @@
 }
 
 /* Form Validation */
-.FormField input:invalid, 
-.FormField textarea:invalid {
-    border-color: var(--fp-error);
+.sifp-form-field input:invalid, 
+.sifp-form-field textarea:invalid {
+    border-color: var(--sifp-error);
 }
 
-.FormField input:valid:not(:placeholder-shown) {
+.sifp-form-field input:valid:not(:placeholder-shown) {
     border-color: #4CAF50;
 }
 
-.fp-validation-msg {
+.sifp-validation-msg {
     font-size: 11px;
-    color: var(--fp-error);
+    color: var(--sifp-error);
     margin-top: 4px;
     display: none;
 }
 
-.FormField.has-error .fp-validation-msg {
+.sifp-form-field.has-error .sifp-validation-msg {
     display: block;
 }
 
-.FormField.has-error input,
-.FormField.has-error textarea {
-    border-color: var(--fp-error);
+.sifp-form-field.has-error input,
+.sifp-form-field.has-error textarea {
+    border-color: var(--sifp-error);
 }
 
 /* Bulk Import Progress */
-.FPCard.importing {
+.sifp-card.importing {
     opacity: 0.7;
     pointer-events: none;
     position: relative;
 }
 
-.FPCard.importing::after {
+.sifp-card.importing::after {
     content: "\f463";
     font-family: dashicons;
     position: absolute;
@@ -1127,22 +1127,24 @@
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 40px;
-    color: var(--fp-primary);
+    color: var(--sifp-primary);
     animation: rotation 2s infinite linear;
     z-index: 10;
 }
 
-.FPCard.import-success {
+.sifp-card.import-success {
     border: 2px solid #4CAF50;
 }
 
-.FPCard.import-error {
-    border: 2px solid var(--fp-error);
+.sifp-card.import-error {
+    border: 2px solid var(--sifp-error);
 }
 
 @media (max-width: 768px) {
     .AI_Grid { grid-template-columns: 1fr; }
-    .FPNavBar { flex-direction: column; align-items: stretch; }
-    .FPSetting_Board { grid-template-columns: 1fr; }
-    .FPsettingEl, .FOsettingEl { min-width: 0 !important; }
+    .sifp-NavBar { flex-direction: column; align-items: stretch; }
+    .sifp-Setting_Board { grid-template-columns: 1fr; }
+    .sifp-setting-el, .sifp-setting-el { min-width: 0 !important; }
 }
+
+

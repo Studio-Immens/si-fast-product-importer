@@ -159,11 +159,11 @@ function sifp_general_setting( $setting = array() ){
   
   ?>
 
-  <div class="FOsettingEl <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('Setting name:', 'si-flash-products').' ( '.esc_attr($name).' )';?>">
+  <div class="sifp-setting-el <?php echo esc_attr($class);?>" title="<?php echo esc_attr($info).' ______ '.esc_html__('Setting name:', 'si-flash-products').' ( '.esc_attr($name).' )';?>">
       <?php if($title != ''){ ?>
-          <strong class="FOtextSettings" style="flex-basis:100%"><?php echo esc_html($title);?></strong>
+          <strong class="sifp-text-settings" style="flex-basis:100%"><?php echo esc_html($title);?></strong>
       <?php }?>
-      <p class="FOtextSettings"><?php echo esc_html($text);?></p>
+      <p class="sifp-text-settings"><?php echo esc_html($text);?></p>
       <?php if($type == 'textarea'){ ?>
          <textarea name="setting[<?php echo esc_attr($name);?>]"><?php echo esc_textarea($data_default);?></textarea>
       <?php } elseif ($type == 'select') { ?>
