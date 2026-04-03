@@ -61,7 +61,7 @@ function sifp_load_assets( $hook ) {
 	// Localizzazione per AJAX e Settings
 	wp_localize_script( 'Flash-Products-functions-js', 'sifp_ajax', array(
 		'ajax_url'      => admin_url( 'admin-ajax.php' ),
-		'nonce'         => wp_create_nonce( 'fp_import_nonce' ),
+		'nonce'         => wp_create_nonce( 'sifp_nonce' ),
 		'sku_prefix'    => sifp_get_setting('sifp_sku_prefix', 'PROD-'),
 		'default_stock' => sifp_get_setting('sifp_default_stock', '10'),
 		'strings'       => array(
@@ -124,8 +124,8 @@ function sifp_head_menu_page(){
 }
 
 function sifp_nav_menu_page(){
-    $color1 = 'var(--fp-primary)';
-    $color2 = 'var(--fp-bg-nav)';
+    $color1 = 'var(--sifp-primary)';
+    $color2 = 'var(--sifp-bg-nav)';
     $page = isset($_REQUEST['page']) ? sanitize_key($_REQUEST['page']) : '';
     $sifp_main_color = ( $page == 'flash_products' )? $color1 : $color2;
     $sifp_generator_color = ( $page == 'flash_products_generator' )? $color1 : $color2;

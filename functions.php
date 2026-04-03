@@ -85,13 +85,13 @@ function sifp_ensure_local_db() {
                 'post_title'      => $title,
                 'post_content'    => $desc,
                 'post_excerpt'    => sprintf(esc_html__('The secret to getting the most out of %s. Find out why %s is the number one choice of experts.', 'si-flash-products'), $category, $title),
-                'fp_categories'   => $category,
-                'fp_tag'          => strtolower($category) . ", $adj, offerta, esclusivo",
-                'fp_img'          => $main_img,
-                'fp_gallery'      => "$gallery1,$gallery2",
+                'sifp_categories'   => $category,
+                'sifp_tag'          => strtolower($category) . ", $adj, offerta, esclusivo",
+                'sifp_img'          => $main_img,
+                'sifp_gallery'      => "$gallery1,$gallery2",
                 'regular_price'   => number_format($price, 2, '.', ''),
                 'sale_price'      => $sale_price ? number_format($sale_price, 2, '.', '') : '',
-                'sku'             => "FP-" . strtoupper(substr($category, 0, 3)) . "-" . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'sku'             => "SIFP-" . strtoupper(substr($category, 0, 3)) . "-" . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'stock_status'    => 'instock',
                 'stock_qty'       => rand(5, 150),
                 'weight'          => (rand(5, 100) / 10),
@@ -100,10 +100,10 @@ function sifp_ensure_local_db() {
                 'height'          => rand(2, 40),
                 'is_virtual'      => 'no',
                 'is_downloadable' => 'no',
-                'fp_ingredient'   => $ing,
-                'fp_allerg'       => $all,
-                'fp_sticker'      => $stick,
-                'fp_temp'         => (rand(1, 10) > 9) ? "Conservare in luogo fresco" : '',
+                'sifp_ingredient'   => $ing,
+                'sifp_allerg'       => $all,
+                'sifp_sticker'      => $stick,
+                'sifp_temp'         => (rand(1, 10) > 9) ? "Conservare in luogo fresco" : '',
                 'attributes'      => [
                     ['name' => 'Colore', 'value' => 'Nero | Bianco | Grigio | Blu', 'visible' => 1, 'variation' => 0],
                     ['name' => 'Materiale', 'value' => 'Premium | Eco-friendly', 'visible' => 1, 'variation' => 0]
@@ -121,7 +121,6 @@ function sifp_ensure_local_db() {
             wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_regenerated' ) );
             exit;
         }
-    }
 }
 add_action('admin_init', 'sifp_ensure_local_db');
 
@@ -313,7 +312,7 @@ function sifp_ajax_search_products() {
                         if ( ! empty($s) && stripos($product['post_title'], $s) === false ) {
                             $match = false;
                         }
-                        if ( ! empty($categories) && stripos($product['fp_categories'], $categories) === false ) {
+                        if ( ! empty($categories) && stripos($product['sifp_categories'], $categories) === false ) {
                             $match = false;
                         }
                         
@@ -336,9 +335,9 @@ function sifp_ajax_search_products() {
         set_transient( $cache_key, $results, HOUR_IN_SECONDS );
     }
 
-    wp_send_json_success( $results );
+    wp_send_json_success( array( 'products' => array_slice($results, 0, $limit) ) );
 }
-add_action( 'wp_ajax_fp_search_products', 'sifp_ajax_search_products' );
+add_action( 'wp_ajax_sifp_search_products', 'sifp_ajax_search_products' );
 
 /**
  * AJAX Handler for product import
@@ -382,10 +381,10 @@ function sifp_ajax_import_product() {
         'post_title'      => sanitize_text_field( $product_data['post_title'] ),
         'post_content'    => wp_kses_post( $product_data['post_content'] ),
         'post_excerpt'    => wp_kses_post( $product_data['post_excerpt'] ),
-        'fp_categories'   => sanitize_text_field( $product_data['fp_categories'] ?? '' ),
-        'fp_tag'          => sanitize_text_field( $product_data['fp_tag'] ?? '' ),
-        'fp_img'          => esc_url_raw( $product_data['fp_img'] ?? '' ),
-        'fp_gallery'      => implode( ',', array_filter( array_map( 'esc_url_raw', explode( ',', $product_data['fp_gallery'] ?? '' ) ) ) ),
+        'sifp_categories'   => sanitize_text_field( $product_data['sifp_categories'] ?? '' ),
+        'sifp_tag'          => sanitize_text_field( $product_data['sifp_tag'] ?? '' ),
+        'sifp_img'          => esc_url_raw( $product_data['sifp_img'] ?? '' ),
+        'sifp_gallery'      => implode( ',', array_filter( array_map( 'esc_url_raw', explode( ',', $product_data['sifp_gallery'] ?? '' ) ) ) ),
         'regular_price'   => wc_format_decimal( $product_data['regular_price'] ?? '' ),
         'sale_price'      => wc_format_decimal( $product_data['sale_price'] ?? '' ),
         'sku'             => sanitize_text_field( $product_data['sku'] ?? '' ),
@@ -448,8 +447,8 @@ function sifp_ajax_ai_generate_product() {
     - post_title: un titolo accattivante
     - post_excerpt: una descrizione breve (max 150 caratteri)
     - post_content: una descrizione completa e formattata in HTML (usa tag <p>, <ul>, <li>, <strong>)
-    - fp_categories: 2-3 categorie separate da virgola
-    - fp_tag: 3-5 tag separati da virgola
+    - sifp_categories: 2-3 categorie separate da virgola
+    - sifp_tag: 3-5 tag separati da virgola
     - regular_price: un prezzo realistico (solo numero)
     - sale_price: un prezzo scontato realistico o vuoto (solo numero)
     - sku: un codice SKU univoco che inizia con $sku_prefix
@@ -459,7 +458,8 @@ function sifp_ajax_ai_generate_product() {
     - length: lunghezza realistica (solo numero)
     - width: larghezza realistica (solo numero)
     - height: altezza realistica (solo numero)
-    - fp_gallery: 2-3 URL di immagini realistiche correlate al prodotto, separate da virgola (usa URL placeholder di alta qualità se non ne hai di specifici)
+    - sifp_img: URL di un'immagine realistica di prodotto (usa URL placeholder di alta qualità se non ne hai di specifici)
+    - sifp_gallery: 2-3 URL di immagini realistiche correlate al prodotto, separate da virgola (usa URL placeholder di alta qualità se non ne hai di specifici)
     - attributes: un array di oggetti con 'name' (es. 'Color') e 'values' (es. 'Red | Blue | Green')
 
     Il JSON deve essere valido e non contenere altri testi.";
@@ -612,9 +612,9 @@ function sifp_create_woo_product( $data ) {
     $product->set_status( sanitize_key( $default_status ) );
     
     // Set categories
-    if ( ! empty( $data['fp_categories'] ) ) {
+    if ( ! empty( $data['sifp_categories'] ) ) {
         $cat_ids = array();
-        $cats = explode( ',', $data['fp_categories'] );
+        $cats = explode( ',', $data['sifp_categories'] );
         foreach ( $cats as $cat_name ) {
             if ( empty( $cat_name ) ) continue;
             $term = get_term_by( 'name', trim( $cat_name ), 'product_cat' );
@@ -629,22 +629,22 @@ function sifp_create_woo_product( $data ) {
     }
 
     // Set Tags
-    if ( ! empty( $data['fp_tag'] ) ) {
-        $tag_names = explode( ',', $data['fp_tag'] );
+    if ( ! empty( $data['sifp_tag'] ) ) {
+        $tag_names = explode( ',', $data['sifp_tag'] );
         $product->set_tag_ids( array_filter( array_map( 'trim', $tag_names ) ) );
     }
 
     // Handle Image
-    if ( ! empty( $data['fp_img'] ) ) {
-        $image_id = sifp_sideload_image( $data['fp_img'], $data['post_title'] );
+    if ( ! empty( $data['sifp_img'] ) ) {
+        $image_id = sifp_sideload_image( $data['sifp_img'], $data['post_title'] );
         if ( ! is_wp_error( $image_id ) ) {
             $product->set_image_id( $image_id );
         }
     }
 
     // Handle Gallery
-    if ( ! empty( $data['fp_gallery'] ) ) {
-        $gallery_urls = explode( ',', $data['fp_gallery'] );
+    if ( ! empty( $data['sifp_gallery'] ) ) {
+        $gallery_urls = explode( ',', $data['sifp_gallery'] );
         $gallery_ids = array();
         foreach ( $gallery_urls as $g_url ) {
             if ( empty( $g_url ) ) continue;

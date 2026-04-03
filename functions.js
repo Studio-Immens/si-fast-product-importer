@@ -7,18 +7,18 @@
         $('.sifp-background-section').show();
 
         // Populate basic fields
-        $('.sifp-detail-title').val(card.attr('fp_title'));
+        $('.sifp-detail-title').val(card.attr('sifp_title'));
 
         // Taxonomies and extra fields
         var fields = [
-            'fp_categories', 'fp_tag', 'fp_ingredient', 'fp_allerg', 
-            'fp_sticker', 'fp_temp', 'sku', 'regular_price', 'sale_price'
+            'sifp_categories', 'sifp_tag', 'sifp_ingredient', 'sifp_allerg', 
+            'sifp_sticker', 'sifp_temp', 'sku', 'regular_price', 'sale_price'
         ];
 
         fields.forEach(function(field) {
-            var attrKey = field.startsWith('fp_') ? field : 'fp_' + field;
+            var attrKey = field.startsWith('sifp_') ? field : 'sifp_' + field;
             var value = card.attr(attrKey) || '';
-            var $input = $('input[fp-edit="' + field + '"]');
+            var $input = $('input[sifp-edit="' + field + '"]');
             $input.val(value);
             
             // Show/Hide container based on value
@@ -33,9 +33,9 @@
         // Handle textareas (excerpt and content)
         var textareas = ['post_excerpt', 'post_content'];
         textareas.forEach(function(field) {
-            var attrKey = field === 'post_excerpt' ? 'fp_exerp' : 'fp_description';
+            var attrKey = field === 'post_excerpt' ? 'sifp_exerp' : 'sifp_description';
             var value = card.attr(attrKey) || '';
-            var $textarea = $('textarea[fp-edit="' + field + '"]');
+            var $textarea = $('textarea[sifp-edit="' + field + '"]');
             $textarea.val(value);
             
             var $container = $textarea.closest('.sifp-detail-block');
@@ -50,7 +50,7 @@
         $('.sifp-detail-section').data('source-card', card);
 
         $('.sifp-detail-body-images').empty();
-        var thumb = card.attr('fp_img');
+        var thumb = card.attr('sifp_img');
         $('.sifp-detail-body-images').append( '<img src="'+thumb+'">' );
     };
 
@@ -59,32 +59,32 @@
         var $btn = $('.sifp-import-edited-btn');
         var card = $modal.data('source-card');
 
-        if ($btn.hasClass('fp-loading')) return;
-        $btn.addClass('fp-loading').html('<span class="dashicons dashicons-update spin"></span> Importing...');
+        if ($btn.hasClass('sifp-loading')) return;
+        $btn.addClass('sifp-loading').html('<span class="dashicons dashicons-update spin"></span> Importing...');
 
         var productData = {
-            post_title: $('input[fp-edit="post_title"]').val(),
-            post_content: $('textarea[fp-edit="post_content"]').val(),
-            post_excerpt: $('textarea[fp-edit="post_excerpt"]').val(),
-            fp_categories: $('input[fp-edit="fp_categories"]').val(),
-            fp_tag: $('input[fp-edit="fp_tag"]').val(),
-            fp_img: card.attr('fp_img'),
-            fp_gallery: card.attr('fp_gallery'),
-            regular_price: $('input[fp-edit="regular_price"]').val(),
-            sale_price: $('input[fp-edit="sale_price"]').val(),
-            sku: $('input[fp-edit="sku"]').val(),
-            stock_qty: card.attr('fp_stock_qty'),
-            weight: card.attr('fp_weight'),
-            length: card.attr('fp_length'),
-            width: card.attr('fp_width'),
-            height: card.attr('fp_height'),
-            attributes: card.attr('fp_attributes') ? JSON.parse(card.attr('fp_attributes')) : [],
-            custom_taxonomy: card.attr('fp_custom_taxonomy') ? JSON.parse(card.attr('fp_custom_taxonomy')) : {},
+            post_title: $('input[sifp-edit="post_title"]').val(),
+            post_content: $('textarea[sifp-edit="post_content"]').val(),
+            post_excerpt: $('textarea[sifp-edit="post_excerpt"]').val(),
+            sifp_categories: $('input[sifp-edit="sifp_categories"]').val(),
+            sifp_tag: $('input[sifp-edit="sifp_tag"]').val(),
+            sifp_img: card.attr('sifp_img'),
+            sifp_gallery: card.attr('sifp_gallery'),
+            regular_price: $('input[sifp-edit="regular_price"]').val(),
+            sale_price: $('input[sifp-edit="sale_price"]').val(),
+            sku: $('input[sifp-edit="sku"]').val(),
+            stock_qty: card.attr('sifp_stock_qty'),
+            weight: card.attr('sifp_weight'),
+            length: card.attr('sifp_length'),
+            width: card.attr('sifp_width'),
+            height: card.attr('sifp_height'),
+            attributes: card.attr('sifp_attributes') ? JSON.parse(card.attr('sifp_attributes')) : [],
+            custom_taxonomy: card.attr('sifp_custom_taxonomy') ? JSON.parse(card.attr('sifp_custom_taxonomy')) : {},
             // Add specific editable fields to custom taxonomy if they were there
-            fp_ingredient: $('input[fp-edit="fp_ingredient"]').val(),
-            fp_allerg: $('input[fp-edit="fp_allerg"]').val(),
-            fp_sticker: $('input[fp-edit="fp_sticker"]').val(),
-            fp_temp: $('input[fp-edit="fp_temp"]').val()
+            sifp_ingredient: $('input[sifp-edit="sifp_ingredient"]').val(),
+            sifp_allerg: $('input[sifp-edit="sifp_allerg"]').val(),
+            sifp_sticker: $('input[sifp-edit="sifp_sticker"]').val(),
+            sifp_temp: $('input[sifp-edit="sifp_temp"]').val()
         };
 
         $.ajax({
@@ -96,7 +96,7 @@
                 product: productData
             },
             success: function(response) {
-                $btn.removeClass('fp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
+                $btn.removeClass('sifp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
                 if (response.success) {
                     sifp_notify(response.data.message, 'success');
                     sifp_close_detail();
@@ -107,7 +107,7 @@
                 }
             },
             error: function() {
-                $btn.removeClass('fp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
+                $btn.removeClass('sifp-loading').html('<span class="dashicons dashicons-download"></span> Import with Edited Values');
                 sifp_notify(sifp_ajax.strings.error_import, 'error');
             }
         });
@@ -119,7 +119,7 @@
     };
 
     window.sifp_create_detail_tax_cloud = function( card, key ){
-        var container = $('div[fp-block="'+key+'"]');
+        var container = $('div[sifp-block="'+key+'"]');
         container.empty();
         var val = card.attr(key);
         if (!val || val === '') {
@@ -129,7 +129,7 @@
             var items = val.split(',');
             items.forEach(element => {
                 if ( element.trim() != '' ) {
-                    container.append('<div class="PFCloud">'+element.trim()+'</div>');
+                    container.append('<div class="sifp-cloud">'+element.trim()+'</div>');
                 }
             });
         }
@@ -154,7 +154,7 @@
                 sifp_notify(importedCount + ' ' + sifp_ajax.strings.bulk_success, 'success');
                 $('.bulk-actions').fadeOut();
                 $('#select_all_products').prop('checked', false);
-                $('.sifp-card').removeClass('selected').find('.fp-select-product').prop('checked', false);
+                $('.sifp-card').removeClass('selected').find('.sifp-select-product').prop('checked', false);
                 return;
             }
 
@@ -174,28 +174,28 @@
         var card = btn.closest('.sifp-card');
         var originalHtml = btn.html();
 
-        if (btn.hasClass('fp-loading')) return;
+        if (btn.hasClass('sifp-loading')) return;
 
-        btn.addClass('fp-loading').html('<span class="dashicons dashicons-update spin"></span>');
+        btn.addClass('sifp-loading').html('<span class="dashicons dashicons-update spin"></span>');
 
         var productData = {
-            post_title: card.attr('fp_title'),
-            post_content: card.attr('fp_description'),
-            post_excerpt: card.attr('fp_exerp'),
-            fp_categories: card.attr('fp_categories'),
-            fp_tag: card.attr('fp_tag'),
-            fp_img: card.attr('fp_img'),
-            fp_gallery: card.attr('fp_gallery'),
-            regular_price: card.attr('fp_regular_price'),
-            sale_price: card.attr('fp_sale_price'),
-            sku: card.attr('fp_sku'),
-            stock_qty: card.attr('fp_stock_qty'),
-            weight: card.attr('fp_weight'),
-            length: card.attr('fp_length'),
-            width: card.attr('fp_width'),
-            height: card.attr('fp_height'),
-            attributes: card.attr('fp_attributes') ? JSON.parse(card.attr('fp_attributes')) : [],
-            custom_taxonomy: card.attr('fp_custom_taxonomy') ? JSON.parse(card.attr('fp_custom_taxonomy')) : {}
+            post_title: card.attr('sifp_title'),
+            post_content: card.attr('sifp_description'),
+            post_excerpt: card.attr('sifp_exerp'),
+            sifp_categories: card.attr('sifp_categories'),
+            sifp_tag: card.attr('sifp_tag'),
+            sifp_img: card.attr('sifp_img'),
+            sifp_gallery: card.attr('sifp_gallery'),
+            regular_price: card.attr('sifp_regular_price'),
+            sale_price: card.attr('sifp_sale_price'),
+            sku: card.attr('sifp_sku'),
+            stock_qty: card.attr('sifp_stock_qty'),
+            weight: card.attr('sifp_weight'),
+            length: card.attr('sifp_length'),
+            width: card.attr('sifp_width'),
+            height: card.attr('sifp_height'),
+            attributes: card.attr('sifp_attributes') ? JSON.parse(card.attr('sifp_attributes')) : [],
+            custom_taxonomy: card.attr('sifp_custom_taxonomy') ? JSON.parse(card.attr('sifp_custom_taxonomy')) : {}
         };
 
         $.ajax({
@@ -207,9 +207,9 @@
                 product: productData
             },
             success: function(response) {
-                btn.removeClass('fp-loading');
+                btn.removeClass('sifp-loading');
                 if (response.success) {
-                    btn.html('<span class="dashicons dashicons-yes"></span>').css('background-color', 'var(--fp-completed)');
+                    btn.html('<span class="dashicons dashicons-yes"></span>').css('background-color', 'var(--sifp-success)');
                     if (!callback) sifp_notify(response.data.message, 'success');
                     if (callback) callback(true);
                 } else {
@@ -219,7 +219,7 @@
                 }
             },
             error: function() {
-                btn.removeClass('fp-loading').html(originalHtml);
+                btn.removeClass('sifp-loading').html(originalHtml);
                 if (!callback) sifp_notify(sifp_ajax.strings.error_import, 'error');
                 if (callback) callback(false);
             }
@@ -227,8 +227,8 @@
     };
 
     window.sifp_notify = function(message, type) {
-        var color = type === 'success' ? 'var(--fp-completed)' : 'var(--fp-error-color)';
-        var notify = $('<div class="fp-notification"></div>')
+        var color = type === 'success' ? 'var(--sifp-success)' : 'var(--sifp-error)';
+        var notify = $('<div class="sifp-notification"></div>')
             .text(message)
             .css({
                 'position': 'fixed',
@@ -321,27 +321,27 @@
             copy.find('.sifp-card-title').text( e.post_title );
 
             // Generic Attributes
-            copy.attr('fp_title', e.post_title);
-            copy.attr('fp_short_title', e.short_title || '');
-            copy.attr('fp_slang_title', e.slang_title || '');
-            copy.attr('fp_description', e.post_content);
-            copy.attr('fp_exerp', e.post_excerpt);
-            copy.attr('fp_ingredient', e.fp_ingredient || e.Ingredienti || '');
-            copy.attr('fp_allerg', e.fp_allerg || e.Allergeni || '');
-            copy.attr('fp_sticker', e.fp_sticker || e.Sticker || '');
-            copy.attr('fp_temp', e.fp_temp || e.Temperature || '');
+            copy.attr('sifp_title', e.post_title);
+            copy.attr('sifp_short_title', e.short_title || '');
+            copy.attr('sifp_slang_title', e.slang_title || '');
+            copy.attr('sifp_description', e.post_content);
+            copy.attr('sifp_exerp', e.post_excerpt);
+            copy.attr('sifp_ingredient', e.sifp_ingredient || e.Ingredienti || '');
+            copy.attr('sifp_allerg', e.sifp_allerg || e.Allergeni || '');
+            copy.attr('sifp_sticker', e.sifp_sticker || e.Sticker || '');
+            copy.attr('sifp_temp', e.sifp_temp || e.Temperature || '');
             
             // New WooCommerce Attributes
-            copy.attr('fp_regular_price', e.regular_price || '');
-            copy.attr('fp_sale_price', e.sale_price || '');
-            copy.attr('fp_sku', e.sku || '');
-            copy.attr('fp_stock_qty', e.stock_qty || '');
-            copy.attr('fp_weight', e.weight || '');
-            copy.attr('fp_length', e.length || '');
-            copy.attr('fp_width', e.width || '');
-            copy.attr('fp_height', e.height || '');
-            copy.attr('fp_attributes', e.attributes ? JSON.stringify(e.attributes) : '');
-            copy.attr('fp_custom_taxonomy', e.custom_taxonomy ? JSON.stringify(e.custom_taxonomy) : '');
+            copy.attr('sifp_regular_price', e.regular_price || '');
+            copy.attr('sifp_sale_price', e.sale_price || '');
+            copy.attr('sifp_sku', e.sku || '');
+            copy.attr('sifp_stock_qty', e.stock_qty || '');
+            copy.attr('sifp_weight', e.weight || '');
+            copy.attr('sifp_length', e.length || '');
+            copy.attr('sifp_width', e.width || '');
+            copy.attr('sifp_height', e.height || '');
+            copy.attr('sifp_attributes', e.attributes ? JSON.stringify(e.attributes) : '');
+            copy.attr('sifp_custom_taxonomy', e.custom_taxonomy ? JSON.stringify(e.custom_taxonomy) : '');
 
             // Remote vs Local taxonomies
             if (e.macro_categories) {
@@ -352,11 +352,11 @@
                         macro_categories += (macro_categories ? ',' : '') + ele.name;
                     });
                 }
-                copy.attr('fp_macro_cat', macro_categories);
+                copy.attr('sifp_macro_cat', macro_categories);
             }
             
-            if (e.fp_categories || e.product_cat) {
-                var cats = e.fp_categories || e.product_cat;
+            if (e.sifp_categories || e.product_cat) {
+                var cats = e.sifp_categories || e.product_cat;
                 if (typeof cats === 'string') {
                     product_cat = cats;
                 } else {
@@ -364,11 +364,11 @@
                         product_cat += (product_cat ? ',' : '') + ele.name;
                     });
                 }
-                copy.attr('fp_categories', product_cat);
+                copy.attr('sifp_categories', product_cat);
             }
 
-            if (e.fp_tag || e.product_tag) {
-                var tags = e.fp_tag || e.product_tag;
+            if (e.sifp_tag || e.product_tag) {
+                var tags = e.sifp_tag || e.product_tag;
                 if (typeof tags === 'string') {
                     product_tag = tags;
                 } else {
@@ -376,24 +376,24 @@
                         product_tag += (product_tag ? ',' : '') + ele.name;
                     });
                 }
-                copy.attr('fp_tag', product_tag);
+                copy.attr('sifp_tag', product_tag);
             }
 
             // Image handling
             var thumbUrl = '';
-            if (e.fp_img) {
-                thumbUrl = e.fp_img;
+            if (e.sifp_img) {
+                thumbUrl = e.sifp_img;
             } else if (e.thumbnail != '' && e.gallery && e.gallery.length > 0) {
                 thumbUrl = e.gallery[e.thumbnail] ? e.gallery[e.thumbnail].guid : e.gallery[0].guid;
             }
             
             if (thumbUrl) {
                 copy.find('.sifp-card-head img').attr('src', thumbUrl);
-                copy.attr('fp_img', thumbUrl);
+                copy.attr('sifp_img', thumbUrl);
             }
 
-            if (e.fp_gallery) {
-                copy.attr('fp_gallery', e.fp_gallery);
+            if (e.sifp_gallery) {
+                copy.attr('sifp_gallery', e.sifp_gallery);
             }
 
             $(".sifp-container").append(copy);
@@ -404,7 +404,7 @@
     $(document).ready(function() {
     
     // Selection management
-    $(document).on('change', '.fp-select-product', function() {
+    $(document).on('change', '.sifp-select-product', function() {
         $(this).closest('.sifp-card').toggleClass('selected', this.checked);
         var count = $('.sifp-card.selected').length;
         $('.selected-count').text(count);
@@ -414,7 +414,7 @@
         var checked = this.checked;
         $('.sifp-card').not('.sifp-default-card').each(function() {
             $(this).toggleClass('selected', checked);
-            $(this).find('.fp-select-product').prop('checked', checked);
+            $(this).find('.sifp-select-product').prop('checked', checked);
         });
         $('.selected-count').text($('.sifp-card.selected').length);
     });
@@ -455,7 +455,7 @@
     });
 
     // Selection logic
-    $(document).on('change', '.fp-product-select', function() {
+    $(document).on('change', '.sifp-product-select', function() {
         var $card = $(this).closest('.sifp-card');
         if ($(this).is(':checked')) {
             $card.addClass('selected');
@@ -468,11 +468,11 @@
 
     $(document).on('change', '#select_all_products', function() {
         var isChecked = $(this).is(':checked');
-        $('.sifp-card:not(.sifp-default-card) .fp-product-select').prop('checked', isChecked).trigger('change');
+        $('.sifp-card:not(.sifp-default-card) .sifp-product-select').prop('checked', isChecked).trigger('change');
     });
 
     function updateBulkActionUI() {
-        var selectedCount = $('.sifp-card:not(.sifp-default-card) .fp-product-select:checked').length;
+        var selectedCount = $('.sifp-card:not(.sifp-default-card) .sifp-product-select:checked').length;
         if (selectedCount > 0) {
             $('.bulk-actions').fadeIn();
             $('.selected-count').text(selectedCount);
@@ -486,7 +486,7 @@
     }
 
     $(document).on('click', '.sifp-bulk-import-btn', function() {
-        var $selectedCheckboxes = $('.sifp-card:not(.sifp-default-card) .fp-product-select:checked');
+        var $selectedCheckboxes = $('.sifp-card:not(.sifp-default-card) .sifp-product-select:checked');
         var total = $selectedCheckboxes.length;
         
         if (total === 0) return;
@@ -506,7 +506,7 @@
                 var msg = sifp_ajax.strings.bulk_import_done.replace('%d', imported).replace('%d', failed);
                 sifp_notify(msg, imported > 0 ? 'success' : 'error');
                 $('#select_all_products').prop('checked', false);
-                $('.fp-product-select').prop('checked', false).trigger('change');
+                $('.sifp-product-select').prop('checked', false).trigger('change');
                 return;
             }
 
@@ -588,118 +588,113 @@
     $(document).on('click', '.sifp-button--ai-generate', function(e) {
         e.preventDefault();
         var $btn = $(this);
-        var name = $('#ai_product_name').val();
-        var context = $('#ai_product_context').val();
-
+        var name = $('#sifp_ai_product_name').val();
+        var context = $('#sifp_ai_product_context').val();
+        
         if (!name) {
-            sifp_notify(sifp_ajax.strings.error_missing_name, 'error');
+            sifp_notify(sifp_ajax.strings.enter_product_name, 'error');
             return;
         }
 
-        if ($btn.hasClass('sifp-loading')) return;
-
-        $btn.addClass('sifp-loading').prop('disabled', true);
-        var originalText = $btn.html();
-        $btn.html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.generating);
+        $btn.addClass('sifp-loading').prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.generating);
 
         $.ajax({
             url: sifp_ajax.ajax_url,
             type: 'POST',
             data: {
-                action: 'sifp_ai_generate_product',
+                action: 'sifp_generate_ai_product',
                 nonce: sifp_ajax.nonce,
                 name: name,
                 context: context
             },
             success: function(response) {
-                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
+                $btn.removeClass('sifp-loading').prop('disabled', false).html('<span class="dashicons dashicons-sparkles"></span> ' + sifp_ajax.strings.make_magic);
+                
                 if (response.success) {
                     var data = response.data;
+                    
+                    // Fill form fields
                     $('#out_post_title').val(data.post_title);
                     $('#out_post_excerpt').val(data.post_excerpt);
-                    $('#out_fp_categories').val(data.fp_categories);
-                    $('#out_fp_tag').val(data.fp_tag);
                     
-                    // New WooCommerce fields
-                    $('#out_regular_price').val(data.regular_price);
-                    $('#out_sale_price').val(data.sale_price);
-                    $('#out_sku').val(data.sku);
-                    $('#out_stock_status').val(data.stock_status || 'instock');
-                    $('#out_stock_qty').val(data.stock_qty || 10);
-                    $('#out_weight').val(data.weight);
-                    $('#out_length').val(data.length);
-                    $('#out_width').val(data.width);
-                    $('#out_height').val(data.height);
-                    
-                    // Handle gallery from AI
-                    if (data.fp_gallery) {
-                        $('#out_fp_gallery').val(data.fp_gallery).trigger('change');
-                    }
-
-                    // Handle attributes from AI
-                    var $container = $('#attributes_container');
-                    $container.find('.AttributeRow:not(.attribute-row-template .AttributeRow)').remove();
-                    if (data.attributes && Array.isArray(data.attributes)) {
-                        data.attributes.forEach(function(attr) {
-                            var $template = $($container.find('.attribute-row-template').html());
-                            $template.find('.attr-name').val(attr.name);
-                            $template.find('.attr-values').val(attr.values);
-                            $container.append($template);
-                        });
-                    }
-
-                    // Update WP Editor (TinyMCE)
+                    // TinyMCE content
                     if (window.tinyMCE && tinyMCE.get('out_post_content')) {
                         tinyMCE.get('out_post_content').setContent(data.post_content);
                     } else {
                         $('#out_post_content').val(data.post_content);
                     }
+
+                    $('#out_regular_price').val(data.regular_price);
+                    $('#out_sale_price').val(data.sale_price);
+                    $('#out_sku').val(data.sku);
+                    $('#out_sifp_categories').val(data.sifp_categories);
+                    $('#out_sifp_tag').val(data.sifp_tag);
                     
-                    sifp_notify(sifp_ajax.strings.ai_gen_success, 'success');
+                    // Set image
+                    if (data.sifp_img) {
+                        $('#out_sifp_img').val(data.sifp_img).trigger('change');
+                    }
+
+                    // Set gallery
+                    if (data.sifp_gallery) {
+                        $('#out_sifp_gallery').val(data.sifp_gallery).trigger('change');
+                    }
+
+                    // Set attributes
+                    var $container = $('#sifp_attributes_container');
+                    $container.find('.sifp-attribute-row:not(.sifp-attribute-row-template .sifp-attribute-row)').remove();
+
+                    if (data.attributes && data.attributes.length > 0) {
+                        data.attributes.forEach(function(attr) {
+                            var $template = $($container.find('.sifp-attribute-row-template').html());
+                            $template.find('.sifp-attribute-row__name').val(attr.name);
+                            $template.find('.sifp-attribute-row__values').val(attr.values);
+                            $container.append($template);
+                        });
+                    }
+
+                    sifp_notify(sifp_ajax.strings.generate_success, 'success');
                 } else {
                     sifp_notify(response.data.message, 'error');
                 }
             },
             error: function() {
-                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
-                sifp_notify(sifp_ajax.strings.error_ai_call, 'error');
+                $btn.removeClass('sifp-loading').prop('disabled', false).html('<span class="dashicons dashicons-sparkles"></span> ' + sifp_ajax.strings.make_magic);
+                sifp_notify(sifp_ajax.strings.error_ai, 'error');
             }
         });
     });
 
-    // Product Attributes Logic
-    $(document).on('click', '#add_attribute_btn', function() {
-        var $container = $('#attributes_container');
-        var $template = $container.find('.attribute-row-template').html();
+    // Add Attribute Row
+    $(document).on('click', '#sifp_add_attribute_btn', function() {
+        var $container = $('#sifp_attributes_container');
+        var $template = $container.find('.sifp-attribute-row-template').html();
         $container.append($template);
     });
 
-    /**
-     * Handles the removal of an attribute row.
-     * @param {jQuery} $btn - The button element that was clicked.
-     */
+    // Remove Attribute Row
     function removeAttributeRow($btn) {
-        var $row = $btn.closest('.AttributeRow');
-        if ($('.AttributeRow').length > 1) {
+        var $row = $btn.closest('.sifp-attribute-row');
+        if ($('.sifp-attribute-row').length > 1) {
             $row.fadeOut(300, function() {
                 $(this).remove();
             });
         } else {
             $row.find('input').val('');
-            FP_Notify(fp_ajax.strings.attr_limit_reached, 'info');
+            sifp_notify(sifp_ajax.strings.attr_limit_reached, 'info');
         }
     }
 
-    $(document).on('click', '.remove-attribute-btn', function() {
+    $(document).on('click', '.sifp-attribute-row__remove', function() {
         removeAttributeRow($(this));
     });
 
     // Handle attribute data in import
     function getProductAttributes() {
         var attributes = [];
-        $('.AttributeRow:not(.attribute-row-template .AttributeRow)').each(function() {
-            var name = $(this).find('.attr-name').val().trim();
-            var values = $(this).find('.attr-values').val().trim();
+        $('.sifp-attribute-row:not(.sifp-attribute-row-template .sifp-attribute-row)').each(function() {
+            var name = $(this).find('.sifp-attribute-row__name').val().trim();
+            var values = $(this).find('.sifp-attribute-row__values').val().trim();
             if (name && values) {
                 attributes.push({
                     name: name,
@@ -710,45 +705,49 @@
         return attributes;
     }
 
-    // AI Import
-    $(document).on('click', '.sifp-button--ai-import', function(e) {
-        e.preventDefault();
+    // Import AI Product
+    $(document).on('click', '.sifp-ai-import-btn', function() {
         var $btn = $(this);
+        var attributes = [];
         
-        // Basic validation
-        var title = $('#out_post_title').val();
-        if (!title) {
-            $('#out_post_title').closest('.sifp-form-field').addClass('has-error');
-            sifp_notify(sifp_ajax.strings.error_missing_name, 'error');
+        $('.sifp-attribute-row:not(.sifp-attribute-row-template .sifp-attribute-row)').each(function() {
+            var name = $(this).find('.sifp-attribute-row__name').val().trim();
+            var values = $(this).find('.sifp-attribute-row__values').val().trim();
+            if (name !== '' && values !== '') {
+                attributes.push({
+                    name: name,
+                    values: values
+                });
+            }
+        });
+
+        if ($btn.hasClass('sifp-loading')) return;
+        
+        var post_title = $('#out_post_title').val();
+        if (!post_title) {
+            sifp_notify(sifp_ajax.strings.enter_product_name, 'error');
             return;
-        } else {
-            $('#out_post_title').closest('.sifp-form-field').removeClass('has-error');
         }
 
-        // Sync TinyMCE content to textarea before serializing
+        $btn.addClass('sifp-loading').prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.importing);
+
+        // Get TinyMCE content if exists
+        var content = '';
         if (window.tinyMCE && tinyMCE.get('out_post_content')) {
-            $('#out_post_content').val(tinyMCE.get('out_post_content').getContent());
+            content = tinyMCE.get('out_post_content').getContent();
+        } else {
+            content = $('#out_post_content').val();
         }
 
-        var formData = $('#ai_product_form').serializeArray();
+        var formData = $('#sifp_ai_product_form').serializeArray();
         var productData = {};
         $(formData).each(function(index, obj){
             productData[obj.name] = obj.value;
         });
 
-        // Add attributes
-        productData['attributes'] = getProductAttributes();
-
-        if (!productData.post_title) {
-            sifp_notify(sifp_ajax.strings.error_missing_name, 'error');
-            return;
-        }
-
-        if ($btn.hasClass('sifp-loading')) return;
-
-        $btn.addClass('sifp-loading').prop('disabled', true);
-        var originalText = $btn.html();
-        $btn.html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.importing);
+        // Add additional data
+        productData.post_content = content;
+        productData.attributes = attributes;
 
         $.ajax({
             url: sifp_ajax.ajax_url,
@@ -759,15 +758,23 @@
                 product: productData
             },
             success: function(response) {
-                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
+                $btn.removeClass('sifp-loading').prop('disabled', false).html('<span class="dashicons dashicons-cloud-upload"></span> ' + sifp_ajax.strings.create_product);
                 if (response.success) {
                     sifp_notify(response.data.message, 'success');
+                    // Reset form
+                    $('#sifp_ai_product_form')[0].reset();
+                    if (window.tinyMCE && tinyMCE.get('out_post_content')) {
+                        tinyMCE.get('out_post_content').setContent('');
+                    }
+                    $('#sifp_ai_product_name, #sifp_ai_product_context').val('');
+                    $('#sifp_img_preview_container').empty();
+                    $('#sifp_gallery_preview_container').empty();
                 } else {
                     sifp_notify(response.data.message, 'error');
                 }
             },
             error: function() {
-                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalText);
+                $btn.removeClass('sifp-loading').prop('disabled', false).html('<span class="dashicons dashicons-cloud-upload"></span> ' + sifp_ajax.strings.create_product);
                 sifp_notify(sifp_ajax.strings.error_import, 'error');
             }
         });
@@ -783,13 +790,13 @@
         $('.sifp-image-preview').css('background-image', 'none');
     });
 
-    // Image Preview
-    $('#out_fp_img').on('input change', function() {
+    // Image Upload Handling
+    $('#out_sifp_img').on('input change', function() {
         var url = $(this).val();
+        var $preview = $('#sifp_img_preview_container');
+        $preview.empty();
         if (url) {
-            $('.sifp-image-preview').css('background-image', 'url(' + url + ')');
-        } else {
-            $('.sifp-image-preview').css('background-image', 'none');
+            $preview.append('<img src="' + url + '" style="max-width:100px; max-height:100px; margin-top:10px; border-radius:4px;">');
         }
     });
 
@@ -849,17 +856,9 @@
         sifp_notify(sifp_ajax.strings.preset_loaded, 'success');
     });
 
-    // Media Uploader
-    var media_uploader;
-    $('#sifp-select-image-btn').on('click', function(e) {
+    $(document).on('click', '#sifp_select_image_btn', function(e) {
         e.preventDefault();
-
-        if (media_uploader) {
-            media_uploader.open();
-            return;
-        }
-
-        media_uploader = wp.media({
+        var frame = wp.media({
             title: sifp_ajax.strings.select_image,
             button: {
                 text: sifp_ajax.strings.use_image
@@ -867,25 +866,18 @@
             multiple: false
         });
 
-        media_uploader.on('select', function() {
-            var attachment = media_uploader.state().get('selection').first().toJSON();
-            $('#out_fp_img').val(attachment.url).trigger('change');
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#out_sifp_img').val(attachment.url).trigger('change');
         });
 
-        media_uploader.open();
+        frame.open();
     });
 
-    // Gallery Uploader
-    var gallery_uploader;
-    $('#sifp-select-gallery-btn').on('click', function(e) {
+    // Gallery Upload Handling
+    $(document).on('click', '#sifp_select_gallery_btn', function(e) {
         e.preventDefault();
-
-        if (gallery_uploader) {
-            gallery_uploader.open();
-            return;
-        }
-
-        gallery_uploader = wp.media({
+        var frame = wp.media({
             title: sifp_ajax.strings.select_gallery,
             button: {
                 text: sifp_ajax.strings.add_to_gallery
@@ -893,44 +885,56 @@
             multiple: true
         });
 
-        gallery_uploader.on('select', function() {
-            var selection = gallery_uploader.state().get('selection');
-            var current_gallery = $('#out_fp_gallery').val() ? $('#out_fp_gallery').val().split(',') : [];
+        frame.on('select', function() {
+            var selection = frame.state().get('selection');
+            var current_gallery = $('#out_sifp_gallery').val() ? $('#out_sifp_gallery').val().split(',') : [];
             
             selection.map(function(attachment) {
                 attachment = attachment.toJSON();
-                if (current_gallery.indexOf(attachment.url) === -1) {
-                    current_gallery.push(attachment.url);
+                if (current_gallery.indexOf(attachment.id.toString()) === -1) {
+                    current_gallery.push(attachment.id);
                 }
             });
 
-            $('#out_fp_gallery').val(current_gallery.join(',')).trigger('change');
+            $('#out_sifp_gallery').val(current_gallery.join(',')).trigger('change');
         });
 
-        gallery_uploader.open();
+        frame.open();
     });
 
-    // Gallery Preview Update
-    $('#out_fp_gallery').on('change', function() {
-        var urls = $(this).val() ? $(this).val().split(',') : [];
-        var $container = $('.sifp-gallery-preview-grid');
-        $container.empty();
+    $('#out_sifp_gallery').on('change', function() {
+        var ids = $(this).val();
+        var $preview = $('#sifp_gallery_preview_container');
+        $preview.empty();
 
-        urls.forEach(function(url) {
-            if (!url) return;
-            var $item = $('<div class="sifp-gallery-item"><img src="' + url + '"><span class="sifp-gallery-item__remove" data-url="' + url + '">&times;</span></div>');
-            $container.append($item);
-        });
+        if (ids) {
+            $.ajax({
+                url: sifp_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'sifp_get_gallery_previews',
+                    nonce: sifp_ajax.nonce,
+                    ids: ids
+                },
+                success: function(response) {
+                    if (response.success) {
+                        response.data.forEach(function(img) {
+                            var $item = $('<div class="sifp-gallery-item" data-id="' + img.id + '"><img src="' + img.url + '"><span class="dashicons dashicons-no-alt remove-gallery-img"></span></div>');
+                            $preview.append($item);
+                        });
+                    }
+                }
+            });
+        }
     });
 
-    // Remove Gallery Item
-    $(document).on('click', '.sifp-gallery-item__remove', function() {
-        var urlToRemove = $(this).data('url');
-        var current_gallery = $('#out_fp_gallery').val().split(',');
-        var updated_gallery = current_gallery.filter(function(url) {
-            return url !== urlToRemove;
+    $(document).on('click', '.remove-gallery-img', function() {
+        var id = $(this).parent().data('id').toString();
+        var current_gallery = $('#out_sifp_gallery').val().split(',');
+        var updated_gallery = current_gallery.filter(function(val) {
+            return val !== id;
         });
-        $('#out_fp_gallery').val(updated_gallery.join(',')).trigger('change');
+        $('#out_sifp_gallery').val(updated_gallery.join(',')).trigger('change');
     });
 
     // Taxonomy Autocomplete

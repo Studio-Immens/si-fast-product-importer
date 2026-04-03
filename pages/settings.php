@@ -57,7 +57,7 @@ sifp_general_setting( array( 'name' => 'sifp_gemini_api_key',
 sifp_general_setting( array( 'name' => 'sifp_ai_model',
     'default'   => 'gemini-2.0-flash',
     'type'      => 'select',
-    'options'   => array('gemini-2.0-flash', 'gemini-2.0-flash-latest', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'),
+    'options'   => array('gemini-flash-latest', 'gemini-pro-latest'),
     'class'     => '',
     'text'      => __('AI Model' , 'si-flash-products'),
     'info'      => __('Select the Gemini model to use', 'si-flash-products')
@@ -179,7 +179,7 @@ sifp_general_setting( array( 'name' => 'sifp_default_import_status',
     <div class="sifp-log-section" style="padding: 20px;">
         <div class="sifp-log-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <span><?php esc_html_e('Last 50 events logged by the plugin', 'si-flash-products'); ?></span>
-            <button type="button" class="sifp-button clear-logs-btn" style="background-color: var(--fp-error); font-size: 11px; padding: 5px 10px;">
+            <button type="button" class="sifp-button clear-logs-btn" style="background-color: var(--sifp-error); font-size: 11px; padding: 5px 10px;">
                 <span class="dashicons dashicons-trash" style="font-size: 14px; width: 14px; height: 14px;"></span> <?php esc_html_e('Clear Logs', 'si-flash-products'); ?>
             </button>
         </div>

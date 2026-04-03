@@ -40,7 +40,7 @@ $api_key = sifp_get_setting('sifp_gemini_api_key');
         <!-- Main Form Column -->
         <div class="sifp-generator-layout__main">
             <div id="sifp_generator_notices"></div>
-            <form id="ai_product_form" class="sifp-form--modern">
+            <form id="sifp_ai_product_form" class="sifp-form--modern">
                 <!-- Basic Info Card -->
                 <div class="sifp-card">
                     <div class="sifp-card__header">
@@ -149,23 +149,23 @@ $api_key = sifp_get_setting('sifp_gemini_api_key');
                     <div class="sifp-card__header">
                         <span class="dashicons dashicons-tag"></span>
                         <h3><?php esc_html_e('Product Attributes', 'si-flash-products'); ?></h3>
-                        <button type="button" id="add_attribute_btn" class="sifp-button sifp-button--preset" style="margin-left: auto; font-size: 10px;">
+                        <button type="button" id="sifp_add_attribute_btn" class="sifp-button sifp-button--preset" style="margin-left: auto; font-size: 10px;">
                             <span class="dashicons dashicons-plus"></span> <?php esc_html_e('Add Attribute', 'si-flash-products'); ?>
                         </button>
                     </div>
-                    <div class="sifp-card__body" id="attributes_container">
+                    <div class="sifp-card__body" id="sifp_attributes_container">
                         <!-- Attributes will be added here -->
-                        <div class="attribute-row-template" style="display:none;">
-                            <div class="AttributeRow grid-3" style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; margin-bottom: 15px; align-items: flex-end;">
+                        <div class="sifp-attribute-row-template" style="display:none;">
+                            <div class="sifp-attribute-row grid-3" style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; margin-bottom: 15px; align-items: flex-end;">
                                 <div class="sifp-form-field" style="margin-bottom: 0;">
                                     <label><?php esc_html_e('Name (e.g. Color)', 'si-flash-products'); ?></label>
-                                    <input type="text" class="attr-name" placeholder="<?php esc_attr_e('Color', 'si-flash-products'); ?>">
+                                    <input type="text" class="sifp-attribute-row__name" placeholder="<?php esc_attr_e('Color', 'si-flash-products'); ?>">
                                 </div>
                                 <div class="sifp-form-field" style="margin-bottom: 0;">
                                     <label><?php esc_html_e('Values (pipe separated)', 'si-flash-products'); ?></label>
-                                    <input type="text" class="attr-values" placeholder="<?php esc_attr_e('Red | Blue | Green', 'si-flash-products'); ?>">
+                                    <input type="text" class="sifp-attribute-row__values" placeholder="<?php esc_attr_e('Red | Blue | Green', 'si-flash-products'); ?>">
                                 </div>
-                                <button type="button" class="remove-attribute-btn" style="background: var(--fp-error); color: #fff; border: none; border-radius: 4px; padding: 10px; cursor: pointer;">
+                                <button type="button" class="sifp-attribute-row__remove" style="background: var(--sifp-error); color: #fff; border: none; border-radius: 4px; padding: 10px; cursor: pointer;">
                                     <span class="dashicons dashicons-trash"></span>
                                 </button>
                             </div>
@@ -183,37 +183,37 @@ $api_key = sifp_get_setting('sifp_gemini_api_key');
                         <div class="sifp-form-field full">
                             <label><?php esc_html_e('Categories', 'si-flash-products'); ?></label>
                             <div class="sifp-taxonomy-selector" data-tax="product_cat">
-                                <input type="text" name="fp_categories" id="out_fp_categories" autocomplete="off" placeholder="<?php esc_attr_e('Start typing to search categories...', 'si-flash-products'); ?>">
+                                <input type="text" name="sifp_categories" id="out_sifp_categories" autocomplete="off" placeholder="<?php esc_attr_e('Start typing to search categories...', 'si-flash-products'); ?>">
                                 <div class="sifp-autocomplete-results"></div>
                             </div>
                         </div>
                         <div class="sifp-form-field full">
                             <label><?php esc_html_e('Tags', 'si-flash-products'); ?></label>
                             <div class="sifp-taxonomy-selector" data-tax="product_tag">
-                                <input type="text" name="fp_tag" id="out_fp_tag" autocomplete="off" placeholder="<?php esc_attr_e('Start typing to search tags...', 'si-flash-products'); ?>">
+                                <input type="text" name="sifp_tag" id="out_sifp_tag" autocomplete="off" placeholder="<?php esc_attr_e('Start typing to search tags...', 'si-flash-products'); ?>">
                                 <div class="sifp-autocomplete-results"></div>
                             </div>
                         </div>
                         <div class="sifp-form-field full">
                             <label><?php esc_html_e('Main Image URL', 'si-flash-products'); ?></label>
                             <div class="sifp-image-input-group">
-                                <input type="text" name="fp_img" id="out_fp_img" placeholder="https://example.com/image.jpg">
-                                <button type="button" id="select_image_btn" class="sifp-button sifp-button--preset">
+                                <input type="text" name="sifp_img" id="out_sifp_img" placeholder="https://example.com/image.jpg">
+                                <button type="button" id="sifp_select_image_btn" class="sifp-button sifp-button--preset">
                                     <span class="dashicons dashicons-admin-media"></span>
                                     <?php esc_html_e('Browse', 'si-flash-products'); ?>
                                 </button>
-                                <div id="img_preview_container" class="sifp-image-preview"></div>
+                                <div id="sifp_img_preview_container" class="sifp-image-preview"></div>
                             </div>
                         </div>
                         <div class="sifp-form-field full">
                             <label><?php esc_html_e('Product Gallery', 'si-flash-products'); ?></label>
                             <div class="sifp-gallery-input-group">
-                                <button type="button" id="select_gallery_btn" class="sifp-button sifp-button--preset">
+                                <button type="button" id="sifp_select_gallery_btn" class="sifp-button sifp-button--preset">
                                     <span class="dashicons dashicons-images-alt2"></span>
                                     <?php esc_html_e('Add Gallery Images', 'si-flash-products'); ?>
                                 </button>
-                                <input type="hidden" name="fp_gallery" id="out_fp_gallery">
-                                <div id="gallery_preview_container" class="sifp-gallery-preview-grid"></div>
+                                <input type="hidden" name="sifp_gallery" id="out_sifp_gallery">
+                                <div id="sifp_gallery_preview_container" class="sifp-gallery-preview-grid"></div>
                             </div>
                         </div>
                     </div>
@@ -237,12 +237,12 @@ $api_key = sifp_get_setting('sifp_gemini_api_key');
                 <div class="sifp-card__body sifp-card__body--ai">
                     <div class="sifp-form-field">
                         <label><?php esc_html_e('Product Name', 'si-flash-products'); ?></label>
-                        <input type="text" id="ai_product_name" placeholder="<?php esc_attr_e('e.g. Wireless Headphones', 'si-flash-products'); ?>">
+                        <input type="text" id="sifp_ai_product_name" placeholder="<?php esc_attr_e('e.g. Wireless Headphones', 'si-flash-products'); ?>">
                     </div>
 
                     <div class="sifp-form-field">
                         <label><?php esc_html_e('What do you need?', 'si-flash-products'); ?></label>
-                        <textarea id="ai_product_context" rows="4" placeholder="<?php esc_attr_e('E.g.: Generate a description for a luxury steel watch...', 'si-flash-products'); ?>"></textarea>
+                        <textarea id="sifp_ai_product_context" rows="4" placeholder="<?php esc_attr_e('E.g.: Generate a description for a luxury steel watch...', 'si-flash-products'); ?>"></textarea>
                     </div>
                     
                     <button type="button" class="sifp-button sifp-ai-generate-btn" <?php disabled( empty($api_key) ); ?>>
