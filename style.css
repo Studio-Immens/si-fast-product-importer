@@ -7,18 +7,18 @@
     --sifp-accent-dark: #D16D0F;
     
     /* Backgrounds Moderni (Dark Theme evoluto) */
-    --sifp-bg-main: #1e1e1e;
-    --sifp-bg-card: #2a2a2a;
-    --sifp-bg-nav: #121212;
-    --sifp-bg-input: #333333;
-    --sifp-bg-hover: #3d3d3d;
+    --sifp-bg-main: #121212;
+    --sifp-bg-card: #1e1e1e;
+    --sifp-bg-nav: #0a0a0a;
+    --sifp-bg-input: #252525;
+    --sifp-bg-hover: #2c2c2c;
     
     /* Testi */
     --sifp-text: #ffffff;
-    --sifp-text-muted: #e0e0e0;
+    --sifp-text-muted: #b0b0b0;
     --sifp-text-on-accent: #ffffff;
-    --sifp-label: #cccccc;
-    --sifp-placeholder: #888888;
+    --sifp-label: #e0e0e0;
+    --sifp-placeholder: #757575;
     
     /* Stati */
     --sifp-success: #2ecc71;
@@ -36,14 +36,16 @@
 
 /* Reset & Globali */
 #sifp-admin-content {
-    margin: 20px;
+    margin: 20px 20px 20px 0;
     padding: 30px;
-    background-color: var(--sifp-bg-main);
-    color: var(--sifp-text);
+    background-color: var(--sifp-bg-main) !important;
+    color: var(--sifp-text) !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     border-radius: var(--sifp-radius-lg);
     box-shadow: var(--sifp-shadow);
     line-height: 1.6;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
 }
 
 #sifp-admin-content h1 {
@@ -61,8 +63,17 @@
     margin: 0;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
+#sifp-admin-content label, 
+.sifp-main-container label,
+.sifp-generator-section label {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
 
-/* Scrollbar Moderna */
+#sifp-admin-content strong, 
+#sifp-admin-content b {
+    color: #ffffff !important;
+}
 #sifp-admin-content::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -82,21 +93,24 @@
 .sifp-main-nav {
     margin: 0 0 40px 0;
     background-color: var(--sifp-bg-nav);
-    padding: 10px;
-    border-radius: var(--sifp-radius);
+    padding: 15px;
+    border-radius: var(--sifp-radius-lg);
     display: flex;
-    gap: 5px;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .sifp-main-nav-el {
     margin: 0;
-    padding: 12px 24px;
+    padding: 14px 28px;
     border-radius: var(--sifp-radius);
-    color: var(--sifp-text-muted);
+    color: #ffffff;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
     transition: var(--sifp-transition);
     background-color: transparent;
+    font-size: 14px;
 }
 
 .sifp-main-nav-el:hover {
@@ -133,14 +147,16 @@
 /* Navbar Filtri */
 .sifp-navbar {
     background-color: var(--sifp-bg-card);
-    padding: 20px;
-    border-radius: var(--sifp-radius);
+    padding: 25px;
+    border-radius: var(--sifp-radius-lg);
     margin: 0 0 30px 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     align-items: flex-end;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .sifp-nav-element {
@@ -150,9 +166,9 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    font-weight: 600;
-    font-size: 12px;
-    color: var(--sifp-text-muted);
+    font-weight: 700;
+    font-size: 13px;
+    color: #ffffff;
 }
 
 .sifp-nav-element select, .sifp-nav-element input {
@@ -171,13 +187,20 @@
     box-shadow: 0 0 0 2px rgba(15, 156, 192, 0.2) !important;
 }
 
+.sifp-found {
+    color: var(--sifp-primary);
+    font-size: 16px;
+    font-weight: 800;
+}
+
 /* Cards Grid */
 .sifp-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
     margin-top: 30px;
     padding: 10px 0;
+    width: 100%;
 }
 
 .sifp-default-card {
@@ -198,6 +221,76 @@
 
 .sifp-card:hover {
     transform: translateY(-5px);
+}
+
+/* Variations UI Styles */
+.sifp-variations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sifp-variation-row {
+    background: rgba(255,255,255,0.03) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 20px !important;
+    border-radius: var(--sifp-radius) !important;
+    transition: var(--sifp-transition);
+}
+
+.sifp-variation-row:hover {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: var(--sifp-primary) !important;
+}
+
+.sifp-variation-attrs-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sifp-variation-row .sifp-form-field {
+    margin-bottom: 0 !important;
+}
+
+.sifp-variation-row label {
+    font-size: 12px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    margin-bottom: 8px !important;
+    display: block;
+    font-weight: 700;
+}
+
+.sifp-variation-row input {
+    width: 100%;
+    background: var(--sifp-bg-input) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: var(--sifp-text) !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+}
+
+.sifp-variation-row input:focus {
+    border-color: var(--sifp-primary) !important;
+    outline: none;
+}
+
+/* Grid helper for variations */
+.grid-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
     box-shadow: var(--sifp-shadow-hover);
     border-color: var(--sifp-primary);
 }
@@ -282,9 +375,9 @@
 }
 
 .sifp-card-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--sifp-text);
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -317,8 +410,8 @@
 /* Generator UI Style - Modern BEM */
 .sifp-generator-section {
     padding: 30px;
-    max-width: 1400px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
 }
 
 .sifp-generator-header {
@@ -386,11 +479,12 @@
 }
 
 .sifp-autocomplete-results__item {
-    padding: 10px 15px;
+    padding: 12px 18px;
     cursor: pointer;
-    color: var(--sifp-text-light);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     transition: all 0.2s ease;
+    font-weight: 600;
 }
 
 .sifp-autocomplete-results__item:last-child {
@@ -404,42 +498,46 @@
 
 /* Notices */
 .sifp-notice {
-    padding: 15px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 20px 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-weight: 500;
+    gap: 15px;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 .sifp-notice--success {
-    background: rgba(46, 213, 115, 0.1);
+    background: rgba(46, 213, 115, 0.2);
     color: #2ed573;
-    border: 1px solid rgba(46, 213, 115, 0.2);
+    border: 1px solid rgba(46, 213, 115, 0.4);
 }
 
 .sifp-notice--error {
-    background: rgba(255, 71, 87, 0.1);
+    background: rgba(255, 71, 87, 0.2);
     color: #ff4757;
-    border: 1px solid rgba(255, 71, 87, 0.2);
+    border: 1px solid rgba(255, 71, 87, 0.4);
 }
 
 .sifp-generator-layout {
     display: grid;
-    grid-template-columns: 1fr 350px;
+    grid-template-columns: 1fr 400px;
     gap: 40px;
+    width: 100%;
 }
 
-.sifp-generator-card {
+/* Generator & Global Cards - Modern BEM */
+.sifp-card {
     background: var(--sifp-bg-card);
     border-radius: 16px;
     margin-bottom: 30px;
     border: 1px solid rgba(255,255,255,0.05);
     overflow: hidden;
+    transition: var(--sifp-transition);
 }
 
-.sifp-generator-card__head {
+.sifp-card__header {
     padding: 20px 25px;
     background: rgba(255,255,255,0.02);
     border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -448,22 +546,23 @@
     gap: 12px;
 }
 
-.sifp-generator-card__head h3 {
+.sifp-card__header h3, .sifp-card__header h4 {
     margin: 0;
-    font-size: 1.1rem;
-    color: #fff;
+    font-size: 1.2rem;
+    color: #ffffff !important;
+    font-weight: 700;
 }
 
-.sifp-generator-card__head .dashicons {
+.sifp-card__header .dashicons {
     color: var(--sifp-primary);
 }
 
-.sifp-generator-card__body {
+.sifp-card__body {
     padding: 25px;
 }
 
-.sifp-generator-card__body.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.sifp-generator-card__body.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+.sifp-card__body.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.sifp-card__body.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
 
 .sifp-form-field {
     margin-bottom: 20px;
@@ -471,56 +570,93 @@
 
 .sifp-form-field label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--sifp-label);
-    margin-bottom: 8px;
-    font-weight: 600;
+    color: #ffffff !important;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .sifp-form-field input, .sifp-form-field select, .sifp-form-field textarea {
     width: 100%;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    padding: 12px 15px;
-    color: #fff;
+    background: rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 8px !important;
+    padding: 12px 15px !important;
+    color: #ffffff !important;
     transition: var(--sifp-transition);
 }
 
 .sifp-form-field input::placeholder, .sifp-form-field textarea::placeholder {
-    color: var(--sifp-placeholder);
+    color: #a0a0a0 !important;
 }
 
-.sifp-form-field input:focus {
-    border-color: var(--sifp-primary);
-    box-shadow: 0 0 0 3px rgba(15, 156, 192, 0.2);
-    outline: none;
+.sifp-form-field input:focus, .sifp-form-field select:focus, .sifp-form-field textarea:focus {
+    border-color: var(--sifp-primary) !important;
+    box-shadow: 0 0 0 3px rgba(15, 156, 192, 0.2) !important;
+    outline: none !important;
 }
 
-/* AI Sidebar */
-.sifp-ai-card {
-    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+/* WordPress Editor Dark Theme Integration */
+.wp-editor-container {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.sifp-ai-card.sticky {
+.wp-editor-tabs button {
+    background: transparent !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-bottom: none !important;
+    margin-right: 5px !important;
+}
+
+.wp-editor-tabs button.active {
+    background: var(--sifp-primary) !important;
+    color: #fff !important;
+    border-color: var(--sifp-primary) !important;
+}
+
+.wp-switch-editor {
+    background: transparent !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 5px 15px !important;
+    font-weight: 600 !important;
+}
+
+.wp-editor-tools {
+    background: var(--sifp-bg-nav) !important;
+    padding: 10px !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.quicktags-toolbar {
+    background: #f1f1f1 !important;
+    border-bottom: 1px solid #ddd !important;
+}
+.sifp-card--ai {
+    background: linear-gradient(145deg, #222222, #0a0a0a) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6) !important;
+}
+
+.sifp-card--ai.sticky {
     position: sticky;
     top: 50px;
 }
 
-.sifp-ai-card__head {
+.sifp-card__header--ai {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 0;
+    padding: 30px;
 }
 
-.sifp-ai-card__logo {
+.sifp-ai-logo {
     width: 50px;
     height: 50px;
     background: var(--sifp-primary);
@@ -530,26 +666,34 @@
     justify-content: center;
 }
 
-.sifp-ai-card__logo .dashicons {
+.sifp-ai-logo .dashicons {
     font-size: 30px;
     width: 30px;
     height: 30px;
     color: #fff;
 }
 
-.sifp-ai-card__title h4 {
+.sifp-ai-title h4 {
     margin: 0;
     font-size: 1.2rem;
-    color: #fff;
+    color: #fff !important;
 }
 
-.sifp-ai-card__badge {
+.sifp-ai-badge {
     font-size: 0.7rem;
     background: rgba(255,255,255,0.15);
     padding: 2px 10px;
     border-radius: 10px;
     color: #fff;
     font-weight: 600;
+}
+
+.sifp-card__body--ai {
+    padding: 0 30px 30px 30px;
+}
+
+.sifp-card__footer--ai {
+    padding: 0 30px 30px 30px;
 }
 
 .sifp-button--ai-generate, .sifp-ai-generate-btn {
@@ -766,9 +910,10 @@
 }
 
 .sifp-text-settings {
-    font-weight: 600;
-    color: var(--sifp-text);
-    margin-bottom: 5px !important;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 14px;
+    margin-bottom: 8px !important;
 }
 
 .sifp-setting-el input, .sifp-setting-el select, .sifp-setting-el textarea {
@@ -798,22 +943,27 @@
 }
 
 .sifp-log-table-container {
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
+    background: var(--sifp-bg-input) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
 }
 
 .sifp-log-table-container table {
     width: 100%;
     border-collapse: collapse;
+    background: transparent !important;
+    color: #ffffff !important;
 }
 
 .sifp-log-table-container table th {
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.1);
     text-align: left;
-    padding: 12px;
-    font-size: 12px;
+    padding: 15px;
+    font-size: 13px;
     text-transform: uppercase;
-    color: var(--sifp-primary);
+    color: #ffffff;
+    font-weight: 700;
 }
 
 .sifp-log-table-container table td {
@@ -859,10 +1009,30 @@
     .sifp-setting-el { min-width: 0 !important; }
 }
 
-.sifp-woo-info-grid__item strong {
+.sifp-detail-section {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    bottom: 20px;
+    left: 180px; /* Leave space for WP menu */
+    background: var(--sifp-bg-card);
+    z-index: 9999;
+    border-radius: var(--sifp-radius-lg);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.sifp-detail-block strong {
     display: block;
-    color: var(--sifp-primary);
-    margin-bottom: 3px;
+    margin-bottom: 8px;
+    color: #ffffff;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
 }
 
 .sifp-tax-clouds {

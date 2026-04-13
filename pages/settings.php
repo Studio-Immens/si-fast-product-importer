@@ -183,8 +183,8 @@ sifp_general_setting( array( 'name' => 'sifp_default_import_status',
                 <span class="dashicons dashicons-trash" style="font-size: 14px; width: 14px; height: 14px;"></span> <?php esc_html_e('Clear Logs', 'si-flash-products'); ?>
             </button>
         </div>
-        <div class="sifp-log-table-container" style="max-height: 400px; overflow-y: auto; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">
-            <table class="wp-list-table widefat fixed striped" style="border: none;">
+        <div class="sifp-log-table-container" style="max-height: 500px; overflow-y: auto;">
+            <table class="wp-list-table widefat fixed striped" style="border: none; background: transparent !important;">
                 <thead>
                     <tr>
                         <th style="width: 150px;"><?php esc_html_e('Timestamp', 'si-flash-products'); ?></th>
