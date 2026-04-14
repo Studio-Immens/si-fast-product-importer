@@ -96,7 +96,7 @@ $api_key = get_option('sifp_gemini_api_key');
                     <div class="sifp-card__header">
                         <span class="dashicons dashicons-tag"></span>
                         <h3><?php esc_html_e('Product Attributes', 'si-flash-products'); ?></h3>
-                        <button type="button" id="sifp_add_attribute_btn" class="sifp-button sifp-button--preset" style="margin-left: auto; font-size: 10px;">
+                        <button type="button" id="sifp_add_attribute_btn" class="sifp-button sifp-button--preset sifp-u-ml-auto sifp-u-font-10">
                             <span class="dashicons dashicons-plus"></span> <?php esc_html_e('Add Attribute', 'si-flash-products'); ?>
                         </button>
                     </div>
@@ -106,7 +106,7 @@ $api_key = get_option('sifp_gemini_api_key');
                 </div>
 
                 <!-- Variations Card -->
-                <div class="sifp-card" id="sifp_variations_card" style="display:none;">
+                <div class="sifp-card sifp-u-hidden" id="sifp_variations_card">
                     <div class="sifp-card__header">
                         <span class="dashicons dashicons-networking"></span>
                         <h3><?php esc_html_e('Product Variations', 'si-flash-products'); ?></h3>
@@ -119,17 +119,17 @@ $api_key = get_option('sifp_gemini_api_key');
                 </div>
 
                 <!-- Hidden template for attribute row -->
-                <div class="sifp-attribute-row-template" style="display:none;">
-                    <div class="sifp-attribute-row grid-3" style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 15px; margin-bottom: 15px; align-items: flex-end;">
-                        <div class="sifp-form-field" style="margin-bottom: 0;">
+                <div class="sifp-attribute-row-template sifp-u-hidden">
+                    <div class="sifp-attribute-row grid-3 sifp-u-grid-generator">
+                        <div class="sifp-form-field sifp-u-mb-0">
                             <label><?php esc_html_e('Name', 'si-flash-products'); ?></label>
                             <input type="text" class="sifp-attribute-row__name" placeholder="e.g. Color">
                         </div>
-                        <div class="sifp-form-field" style="margin-bottom: 0;">
+                        <div class="sifp-form-field sifp-u-mb-0">
                             <label><?php esc_html_e('Values (pipe separated)', 'si-flash-products'); ?></label>
                             <input type="text" class="sifp-attribute-row__values" placeholder="Red | Blue | Green">
                         </div>
-                        <button type="button" class="sifp-attribute-row__remove" style="background: var(--sifp-error); color: #fff; border: none; border-radius: 4px; padding: 10px; cursor: pointer;">
+                        <button type="button" class="sifp-attribute-row__remove sifp-u-button-error-small">
                             <span class="dashicons dashicons-trash"></span>
                         </button>
                     </div>

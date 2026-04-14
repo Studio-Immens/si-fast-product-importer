@@ -49,7 +49,7 @@ if ( ! function_exists( 'sifp_general_setting' ) ) {
         ?>
         <div class="sifp-setting-el <?php echo esc_attr( $class ); ?>" title="<?php echo esc_attr( $info ) . ' ( ' . esc_attr( $name ) . ' )'; ?>">
             <?php if ( $title ) : ?>
-                <strong class="sifp-text-settings" style="flex-basis:100%"><?php echo esc_html( $title ); ?></strong>
+                <strong class="sifp-text-settings sifp-u-flex-100"><?php echo esc_html( $title ); ?></strong>
             <?php endif; ?>
             
             <p class="sifp-text-settings"><?php echo esc_html( $text ); ?></p>

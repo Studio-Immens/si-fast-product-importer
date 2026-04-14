@@ -32,14 +32,14 @@ if ( isset( $_GET['message'] ) ) {
 
 <div id="sifp-settings-section" class="sifp-main-container">
 
-    <div class="sifp-navbar" style="justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="margin: 0; font-size: 24px;">
-            <span class="dashicons dashicons-admin-settings" style="font-size: 24px; width: 24px; height: 24px; margin-right: 10px;"></span>
+    <div class="sifp-navbar">
+        <h1>
+            <span class="dashicons dashicons-admin-settings"></span>
             <?php esc_html_e('Plugin Settings', 'si-flash-products'); ?>
         </h1>
         <div class="sifp-nav-element">
             <button form="general" name="update" value="update" class="sifp-button pointer">
-                <span class="dashicons dashicons-saved" style="margin-right: 5px;"></span>
+                <span class="dashicons dashicons-saved"></span>
                 <?php esc_html_e('SAVE ALL SETTINGS', 'si-flash-products'); ?>
             </button>
         </div>
@@ -49,35 +49,37 @@ if ( isset( $_GET['message'] ) ) {
     <div class="sifp-form-separator">
         <b> <?php esc_html_e('Local Database' , 'si-flash-products'); ?> </b>
     </div>
-    <div class="sifp-setting-board" style="padding: 20px;">
-        <p><?php esc_html_e('The local database contains 2000 demo products that you can search and import. You can regenerate it if needed.', 'si-flash-products'); ?></p>
-        <?php
-        $upload_dir = wp_upload_dir();
-        $json_path = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
-        if ( file_exists( $json_path ) ) {
-            $size = size_format( filesize( $json_path ) );
-            echo '<p><strong>' . esc_html__('Status:', 'si-flash-products') . '</strong> ' . sprintf( esc_html__('Database file exists (%s)', 'si-flash-products'), $size ) . '</p>';
-            
-            // Check if synced to DB
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'sifp_local_products';
-            $count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
-            if ( $count > 0 ) {
-                echo '<p><strong>' . esc_html__('DB Table:', 'si-flash-products') . '</strong> ' . sprintf( esc_html__('%d products synced.', 'si-flash-products'), $count ) . '</p>';
+    <div class="sifp-setting-board sifp-setting-board--db">
+        <div class="sifp-db-status">
+            <p><?php esc_html_e('The local database contains 2000 demo products that you can search and import. You can regenerate it if needed.', 'si-flash-products'); ?></p>
+            <?php
+            $upload_dir = wp_upload_dir();
+            $json_path = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
+            if ( file_exists( $json_path ) ) {
+                $size = size_format( filesize( $json_path ) );
+                echo '<p><span class="dashicons dashicons-yes-alt sifp-status-icon--success"></span> <strong>' . esc_html__('Status:', 'si-flash-products') . '</strong> ' . sprintf( esc_html__('Database file exists (%s)', 'si-flash-products'), $size ) . '</p>';
+                
+                // Check if synced to DB
+                global $wpdb;
+                $table_name = $wpdb->prefix . 'sifp_local_products';
+                $count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+                if ( $count > 0 ) {
+                    echo '<p><span class="dashicons dashicons-database-view sifp-status-icon--primary"></span> <strong>' . esc_html__('DB Table:', 'si-flash-products') . '</strong> ' . sprintf( esc_html__('%d products synced.', 'si-flash-products'), $count ) . '</p>';
+                } else {
+                    echo '<p><span class="dashicons dashicons-warning sifp-status-icon--error"></span> <strong>' . esc_html__('DB Table:', 'si-flash-products') . '</strong> <span class="sifp-text--error">' . esc_html__('Empty! Please sync or regenerate.', 'si-flash-products') . '</span></p>';
+                }
             } else {
-                echo '<p><strong>' . esc_html__('DB Table:', 'si-flash-products') . '</strong> <span style="color:var(--sifp-error);">' . esc_html__('Empty! Please sync or regenerate.', 'si-flash-products') . '</span></p>';
+                echo '<p><span class="dashicons dashicons-no-alt sifp-status-icon--error"></span> <strong>' . esc_html__('Status:', 'si-flash-products') . '</strong> ' . esc_html__('Database file not found.', 'si-flash-products') . '</p>';
             }
-        } else {
-            echo '<p><strong>' . esc_html__('Status:', 'si-flash-products') . '</strong> ' . esc_html__('Database file not found.', 'si-flash-products') . '</p>';
-        }
-        ?>
-        <div style="margin-top: 15px; display: flex; gap: 10px;">
-            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=flash_products_settings&sifp_regenerate_db=1' ), 'sifp_regenerate_db' ) ); ?>" class="sifp-button" style="background-color: var(--sifp-bg-input) !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1) !important;">
-                <span class="dashicons dashicons-update" style="margin-right: 5px;"></span>
+            ?>
+        </div>
+        <div class="sifp-db-actions">
+            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=flash_products_settings&sifp_regenerate_db=1' ), 'sifp_regenerate_db' ) ); ?>" class="sifp-button sifp-button--secondary">
+                <span class="dashicons dashicons-update"></span>
                 <?php esc_html_e('Regenerate Local Product DB', 'si-flash-products'); ?>
             </a>
-            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=flash_products_settings&sifp_sync_db=1' ), 'sifp_sync_db' ) ); ?>" class="sifp-button" style="background-color: var(--sifp-bg-input) !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.1) !important;">
-                <span class="dashicons dashicons-database-import" style="margin-right: 5px;"></span>
+            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=flash_products_settings&sifp_sync_db=1' ), 'sifp_sync_db' ) ); ?>" class="sifp-button sifp-button--secondary">
+                <span class="dashicons dashicons-database-import"></span>
                 <?php esc_html_e('Sync File to DB Table', 'si-flash-products'); ?>
             </a>
         </div>
@@ -207,36 +209,36 @@ if ( isset( $_GET['message'] ) ) {
         <b> <?php esc_html_e('Advanced Settings' , 'si-flash-products'); ?> </b>
     </div>
 
-    <div class="sifp-setting-board">
+    <div class="sifp-setting-board sifp-setting-board--db">
         <div class="sifp-form-category">
             <b> <?php esc_html_e('Error Logs' , 'si-flash-products'); ?> </b>
         </div>
-        <div class="sifp-log-section" style="padding: 20px;">
-            <div class="sifp-log-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div class="sifp-log-section">
+            <div class="sifp-log-header">
                 <span><?php esc_html_e('Last 50 events logged by the plugin', 'si-flash-products'); ?></span>
-                <button type="button" class="sifp-button clear-logs-btn" style="background-color: var(--sifp-error) !important; font-size: 11px; padding: 5px 10px;">
-                    <span class="dashicons dashicons-trash" style="font-size: 14px; width: 14px; height: 14px;"></span> <?php esc_html_e('Clear Logs', 'si-flash-products'); ?>
+                <button type="button" class="sifp-button clear-logs-btn sifp-button--error">
+                    <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Clear Logs', 'si-flash-products'); ?>
                 </button>
             </div>
-            <div class="sifp-log-table-container" style="max-height: 500px; overflow-y: auto;">
-                <table class="wp-list-table widefat fixed striped" style="border: none; background: transparent !important;">
+            <div class="sifp-log-table-container">
+                <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th style="width: 150px; color: #fff;"><?php esc_html_e('Timestamp', 'si-flash-products'); ?></th>
-                            <th style="width: 120px; color: #fff;"><?php esc_html_e('Context', 'si-flash-products'); ?></th>
-                            <th style="color: #fff;"><?php esc_html_e('Message', 'si-flash-products'); ?></th>
+                            <th class="sifp-log-th-time"><?php esc_html_e('Timestamp', 'si-flash-products'); ?></th>
+                            <th class="sifp-log-th-context"><?php esc_html_e('Context', 'si-flash-products'); ?></th>
+                            <th class="sifp-log-th-message"><?php esc_html_e('Message', 'si-flash-products'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $logs = get_option('sifp_error_logs', array());
                         if (empty($logs)) {
-                            echo '<tr><td colspan="3" style="text-align:center;">' . esc_html__('No logs found.', 'si-flash-products') . '</td></tr>';
+                            echo '<tr><td colspan="3" class="sifp-no-logs">' . esc_html__('No logs found.', 'si-flash-products') . '</td></tr>';
                         } else {
                             foreach ($logs as $log) {
                                 echo '<tr>';
                                 echo '<td>' . esc_html($log['timestamp']) . '</td>';
-                                echo '<td><code style="background:var(--sifp-bg-nav); color:var(--sifp-primary); padding: 2px 5px; border-radius:3px;">' . esc_html($log['context']) . '</code></td>';
+                                echo '<td><code class="sifp-log-code">' . esc_html($log['context']) . '</code></td>';
                                 echo '<td>' . esc_html($log['message']) . '</td>';
                                 echo '</tr>';
                             }
@@ -248,9 +250,9 @@ if ( isset( $_GET['message'] ) ) {
         </div>
     </div>
 
-    <div style="margin-top: 30px; text-align: right;">
-        <button name="update" value="update" class="sifp-button pointer" style="padding: 15px 40px !important; font-size: 16px !important;">
-            <span class="dashicons dashicons-saved" style="margin-right: 10px;"></span>
+    <div class="sifp-form-footer">
+        <button name="update" value="update" class="sifp-button pointer sifp-button--large">
+            <span class="dashicons dashicons-saved"></span>
             <?php esc_html_e('SAVE ALL SETTINGS', 'si-flash-products'); ?>
         </button>
     </div>

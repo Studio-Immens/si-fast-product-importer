@@ -8,14 +8,23 @@ if ( ! current_user_can( 'manage_options' ) ) {
 
 // Use Transients for API results
 $categories = get_transient( 'sifp_api_categories' );
-if ( false === $categories ) {
+if ( false === $categories || ! is_object( $categories ) ) {
     $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat' );
     
     if ( is_wp_error( $response ) ) {
         $categories = (object) array( 'result' => array() );
     } else {
         $categories = json_decode( wp_remote_retrieve_body( $response ) );
+        if ( ! is_object( $categories ) ) {
+            $categories = (object) array( 'result' => array() );
+        }
     }
+}
+
+// Final safety check for $categories
+if ( ! is_object( $categories ) ) {
+    $categories = (object) array( 'result' => array() );
+}
     
     // Add Local Categories to the list
     $upload_dir = wp_upload_dir();
@@ -122,12 +131,12 @@ if ( false === $languages ) {
 
         <div class="sifp-nav-element">
             <?php echo esc_html__('Limit:','si-flash-products');?>
-            <input class="sifp-limit" name="sifp_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 1000','si-flash-products');?>" min="1" max="1000" step="1" value="100" style="width:65px">
+            <input class="sifp-limit sifp-u-w-65" name="sifp_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 1000','si-flash-products');?>" min="1" max="1000" step="1" value="100">
         </div>
 
         <div class="sifp-nav-element">
             <?php echo esc_html__('Page:','si-flash-products');?>
-            <input class="sifp-offset" name="sifp_offset" type="number" placeholder="<?php esc_attr_e('type a number', 'si-flash-products'); ?>" step="1" value="0" total_pages="0" style="width:65px">
+            <input class="sifp-offset sifp-u-w-65" name="sifp_offset" type="number" placeholder="<?php esc_attr_e('type a number', 'si-flash-products'); ?>" step="1" value="0" total_pages="0">
         </div>
 
         <div class="sifp-nav-element">
@@ -135,14 +144,14 @@ if ( false === $languages ) {
             <strong class="sifp-found"></strong>
         </div>
 
-        <div class="sifp-nav-element bulk-actions" style="display:none; margin-left: 20px;">
+        <div class="sifp-nav-element bulk-actions sifp-u-ml-20 sifp-u-hidden">
             <input type="checkbox" id="select_all_products">
             <label for="select_all_products"><?php esc_html_e('Select All', 'si-flash-products'); ?></label>
-            <button class="sifp-bulk-import-btn button-primary" style="margin-left: 10px;"><?php esc_html_e('Import Selected', 'si-flash-products'); ?> (<span class="selected-count">0</span>)</button>
+            <button class="sifp-bulk-import-btn button-primary sifp-u-ml-10"><?php esc_html_e('Import Selected', 'si-flash-products'); ?> (<span class="selected-count">0</span>)</button>
         </div>
 
 
-        <button class="sifp-nav-element sifp-search-btn" style="margin-left:auto;"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
+        <button class="sifp-nav-element sifp-search-btn sifp-u-ml-auto"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
     </div>
 
     <div class="sifp-container">
@@ -169,14 +178,14 @@ if ( false === $languages ) {
 
     </div>
 
-    <div class="sifp-sidebar" style="display:none;">
+    <div class="sifp-sidebar sifp-u-hidden">
 
     </div>
 
-    <div class="sifp-detail-section" style="display:none;">
+    <div class="sifp-detail-section sifp-u-hidden">
         <div class="sifp-detail-section__head">
             <input type="text" class="sifp-detail-title editable-title" sifp-edit="post_title" value="">
-            <div class="sifp-button--close" style="margin-left:auto;"><?php echo esc_html__('CLOSE','si-flash-products');?></div>
+            <div class="sifp-button--close sifp-u-ml-auto"><?php echo esc_html__('CLOSE','si-flash-products');?></div>
         </div>
         <div class="sifp-detail-section__body">
             <div class="sifp-detail-body-images">
@@ -251,7 +260,7 @@ if ( false === $languages ) {
         </button>
     </div>
     </div>
-    <div class="sifp-background-section" style="display:none;"></div>
+    <div class="sifp-background-section sifp-u-hidden"></div>
 
 </div>
 
