@@ -62,13 +62,12 @@ final class Plugin {
      * Include required files
      */
     public function includes() {
-        // Autoloader could be here, but for now we'll manually include or use a simple one
         require_once SIFProd_PATH . 'includes/Helpers/Functions.php';
-        require_once SIFProd_PATH . 'includes/Core/Database.php';
-        require_once SIFProd_PATH . 'includes/Core/Importer.php';
-        require_once SIFProd_PATH . 'includes/Core/AIGenerator.php';
-        require_once SIFProd_PATH . 'includes/Admin/AdminManager.php';
-        require_once SIFProd_PATH . 'includes/Admin/AJAXHandler.php';
+        
+        // Load legacy functions.php if it exists (per user request)
+        if ( file_exists( SIFProd_PATH . 'functions.php' ) ) {
+            require_once SIFProd_PATH . 'functions.php';
+        }
     }
 
     /**

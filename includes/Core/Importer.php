@@ -19,13 +19,13 @@ class Importer {
         $type = ! empty( $data['variations'] ) ? 'variable' : 'simple';
         $product = $type === 'variable' ? new \WC_Product_Variable() : new \WC_Product_Simple();
 
-        $product->set_name( $data['post_title'] ?? '' );
+        $product->set_name( sanitize_text_field( $data['post_title'] ?? '' ) );
         $product->set_status( get_option( 'sifp_default_product_status', 'publish' ) );
-        $product->set_description( $data['post_content'] ?? '' );
-        $product->set_short_description( $data['post_excerpt'] ?? '' );
-        $product->set_sku( $data['sku'] ?? '' );
-        $product->set_regular_price( $data['regular_price'] ?? '' );
-        $product->set_sale_price( $data['sale_price'] ?? '' );
+        $product->set_description( wp_kses_post( $data['post_content'] ?? '' ) );
+        $product->set_short_description( wp_kses_post( $data['post_excerpt'] ?? '' ) );
+        $product->set_sku( sanitize_text_field( $data['sku'] ?? '' ) );
+        $product->set_regular_price( sanitize_text_field( $data['regular_price'] ?? '' ) );
+        $product->set_sale_price( sanitize_text_field( $data['sale_price'] ?? '' ) );
         $product->set_stock_status( 'instock' );
         $product->set_manage_stock( true );
         $product->set_stock_quantity( intval( get_option( 'sifp_default_stock', 10 ) ) );
@@ -82,10 +82,10 @@ class Importer {
         $this->handle_seo_meta( $product_id, $data );
 
         // Extra custom meta
-        update_post_meta( $product_id, '_sifp_ingredient', $data['sifp_ingredient'] ?? '' );
-        update_post_meta( $product_id, '_sifp_allerg', $data['sifp_allerg'] ?? '' );
-        update_post_meta( $product_id, '_sifp_sticker', $data['sifp_sticker'] ?? '' );
-        update_post_meta( $product_id, '_sifp_temp', $data['sifp_temp'] ?? '' );
+        update_post_meta( $product_id, '_sifp_ingredient', wp_kses_post( $data['sifp_ingredient'] ?? '' ) );
+        update_post_meta( $product_id, '_sifp_allerg', wp_kses_post( $data['sifp_allerg'] ?? '' ) );
+        update_post_meta( $product_id, '_sifp_sticker', sanitize_text_field( $data['sifp_sticker'] ?? '' ) );
+        update_post_meta( $product_id, '_sifp_temp', sanitize_text_field( $data['sifp_temp'] ?? '' ) );
 
         return $product_id;
     }
@@ -122,6 +122,11 @@ class Importer {
         
         // If it's already an ID (from media library)
         if ( is_numeric( $url ) ) return intval( $url );
+
+        // Basic URL validation
+        if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
+            return false;
+        }
 
         require_once( ABSPATH . 'wp-admin/includes/media.php' );
         require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -176,14 +181,14 @@ class Importer {
     private function handle_seo_meta( $product_id, $data ) {
         // Yoast SEO
         if ( defined( 'WPSEO_VERSION' ) ) {
-            update_post_meta( $product_id, '_yoast_wpseo_title', $data['seo_title'] ?? '' );
-            update_post_meta( $product_id, '_yoast_wpseo_metadesc', $data['seo_description'] ?? '' );
+            update_post_meta( $product_id, '_yoast_wpseo_title', sanitize_text_field( $data['seo_title'] ?? '' ) );
+            update_post_meta( $product_id, '_yoast_wpseo_metadesc', sanitize_textarea_field( $data['seo_description'] ?? '' ) );
         }
 
         // Rank Math
         if ( defined( 'RANK_MATH_VERSION' ) ) {
-            update_post_meta( $product_id, 'rank_math_title', $data['seo_title'] ?? '' );
-            update_post_meta( $product_id, 'rank_math_description', $data['seo_description'] ?? '' );
+            update_post_meta( $product_id, 'rank_math_title', sanitize_text_field( $data['seo_title'] ?? '' ) );
+            update_post_meta( $product_id, 'rank_math_description', sanitize_textarea_field( $data['seo_description'] ?? '' ) );
         }
     }
 }

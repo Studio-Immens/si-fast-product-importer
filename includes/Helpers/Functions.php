@@ -52,15 +52,15 @@ if ( ! function_exists( 'sifp_general_setting' ) ) {
             <p class="sifp-text-settings"><?php echo esc_html( $text ); ?></p>
             
             <?php if ( 'textarea' === $type ) : ?>
-                <textarea name="setting[<?php echo esc_attr( $name ); ?>]" <?php echo $other; ?>><?php echo esc_textarea( $value ); ?></textarea>
+                <textarea name="setting[<?php echo esc_attr( $name ); ?>]" <?php echo wp_kses_post( $other ); ?>><?php echo esc_textarea( $value ); ?></textarea>
             <?php elseif ( 'select' === $type ) : ?>
-                <select name="setting[<?php echo esc_attr( $name ); ?>]" <?php echo $other; ?>>
+                <select name="setting[<?php echo esc_attr( $name ); ?>]" <?php echo wp_kses_post( $other ); ?>>
                     <?php foreach ( $options as $option ) : ?>
                         <option value="<?php echo esc_attr( $option ); ?>" <?php selected( $value, $option ); ?>><?php echo esc_html( $option ); ?></option>
                     <?php endforeach; ?>
                 </select>
             <?php else : ?>
-                <input type="<?php echo esc_attr( $type ); ?>" name="setting[<?php echo esc_attr( $name ); ?>]" value="<?php echo esc_attr( $value ); ?>" <?php echo $other; ?>>
+                <input type="<?php echo esc_attr( $type ); ?>" name="setting[<?php echo esc_attr( $name ); ?>]" value="<?php echo esc_attr( $value ); ?>" <?php echo wp_kses_post( $other ); ?>>
             <?php endif; ?>
 
             <?php if ( null !== $default ) : ?>
@@ -69,6 +69,22 @@ if ( ! function_exists( 'sifp_general_setting' ) ) {
         </div>
         <?php
     }
+}
+
+/**
+ * Handle settings save from POST on admin_init
+ */
+if ( ! function_exists( 'sifp_handle_settings_save_init' ) ) {
+    function sifp_handle_settings_save_init() {
+        if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        if ( isset( $_POST['update'] ) && isset( $_POST['setting'] ) ) {
+            sifp_save_settings( 'setting' );
+        }
+    }
+    add_action( 'admin_init', 'sifp_handle_settings_save_init' );
 }
 
 /**
@@ -86,10 +102,53 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
 
         if ( isset( $_POST[ $args_name ] ) && is_array( $_POST[ $args_name ] ) ) {
             foreach ( $_POST[ $args_name ] as $key => $value ) {
-                update_option( sanitize_key( $key ), sanitize_textarea_field( $value ) );
+                $sanitized_key = sanitize_key( $key );
+                
+                // Specific sanitization based on setting key
+                switch ( $sanitized_key ) {
+                    case 'sifp_gemini_api_key':
+                    case 'sifp_ai_tone':
+                    case 'sifp_sku_prefix':
+                        $sanitized_value = sanitize_text_field( $value );
+                        break;
+                    case 'sifp_remote_db_links':
+                        // Sanitize each URL in the textarea
+                        $links = explode( "\n", str_replace( "\r", "", $value ) );
+                        $sanitized_links = array();
+                        foreach ( $links as $link ) {
+                            $link = trim( $link );
+                            if ( ! empty( $link ) ) {
+                                $sanitized_links[] = esc_url_raw( $link );
+                            }
+                        }
+                        $sanitized_value = implode( "\n", $sanitized_links );
+                        break;
+                    case 'sifp_default_stock':
+                    case 'sifp_menu_order':
+                        $sanitized_value = intval( $value );
+                        break;
+                    case 'sifp_ai_creativity':
+                        $sanitized_value = floatval( $value );
+                        break;
+                    case 'sifp_ai_model':
+                        $sanitized_value = sanitize_text_field( $value );
+                        break;
+                    case 'sifp_default_product_status':
+                    case 'sifp_default_import_status':
+                        $sanitized_value = sanitize_key( $value );
+                        break;
+                    default:
+                        $sanitized_value = sanitize_text_field( $value );
+                        break;
+                }
+                
+                update_option( $sanitized_key, $sanitized_value );
             }
             
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved successfully!', 'si-flash-products' ) . '</p></div>';
+            // Re-render the page with a success message
+            $redirect_url = remove_query_arg( array( 'message', 'sifp_sync_db', 'sifp_regenerate_db', '_wpnonce' ), $_SERVER['REQUEST_URI'] );
+            wp_safe_redirect( add_query_arg( 'message', 'settings_saved', $redirect_url ) );
+            exit;
         }
     }
 }
@@ -156,54 +215,58 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
             $gallery1 = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80&sig=" . ($i + 2000);
             $gallery2 = "https://images.unsplash.com/photo-1526170315830-ef18a283ac13?auto=format&fit=crop&w=800&q=80&sig=" . ($i + 4000);
 
-            $desc = "<h3>" . sprintf(esc_html__('Want to transform how you experience %s?', 'si-flash-products'), esc_html($category)) . "</h3>";
-            $desc .= "<p>" . sprintf(esc_html__('Stop settling for mediocre solutions. The new %s is not just a product, it is the ultimate answer you were looking for.', 'si-flash-products'), "<strong>$title</strong>") . "</p>";
-            $desc .= "<h4>" . sprintf(esc_html__('Why choose %s?', 'si-flash-products'), esc_html($title)) . "</h4>";
+            $desc = "<h3>" . sprintf( esc_html__( 'Want to transform how you experience %s?', 'si-flash-products' ), esc_html( $category ) ) . "</h3>";
+            $desc .= "<p>" . sprintf( esc_html__( 'Stop settling for mediocre solutions. The new %s is not just a product, it is the ultimate answer you were looking for.', 'si-flash-products' ), "<strong>" . esc_html( $title ) . "</strong>" ) . "</p>";
+            $desc .= "<h4>" . sprintf( esc_html__( 'Why choose %s?', 'si-flash-products' ), esc_html( $title ) ) . "</h4>";
             $desc .= "<ul>";
-            $desc .= "<li><strong>" . esc_html__('Unmatched Performance:', 'si-flash-products') . "</strong> " . sprintf(esc_html__('Designed with %s technology to exceed every expectation.', 'si-flash-products'), esc_html($adj)) . "</li>";
-            $desc .= "<li><strong>" . esc_html__('Certified Quality:', 'si-flash-products') . "</strong> " . esc_html__('Every component has been tested to ensure unprecedented durability.', 'si-flash-products') . "</li>";
-            $desc .= "<li><strong>" . esc_html__('Exclusive Design:', 'si-flash-products') . "</strong> " . esc_html__('An aesthetic that fits perfectly with your modern lifestyle.', 'si-flash-products') . "</li>";
+            $desc .= "<li><strong>" . esc_html__( 'Unmatched Performance:', 'si-flash-products' ) . "</strong> " . sprintf( esc_html__( 'Designed with %s technology to exceed every expectation.', 'si-flash-products' ), esc_html( $adj ) ) . "</li>";
+            $desc .= "<li><strong>" . esc_html__( 'Certified Quality:', 'si-flash-products' ) . "</strong> " . esc_html__( 'Every component has been tested to ensure unprecedented durability.', 'si-flash-products' ) . "</li>";
+            $desc .= "<li><strong>" . esc_html__( 'Exclusive Design:', 'si-flash-products' ) . "</strong> " . esc_html__( 'An aesthetic that fits perfectly with your modern lifestyle.', 'si-flash-products' ) . "</li>";
             $desc .= "</ul>";
 
-            $ing = ($category === 'Bellezza' || rand(1, 10) > 8) ? $ingredients_list[array_rand($ingredients_list)] . ", " . $ingredients_list[array_rand($ingredients_list)] : '';
-            $all = ($category === 'Bellezza' && rand(1, 10) > 7) ? $allergens_list[array_rand($allergens_list)] : '';
-            $stick = (rand(1, 10) > 8) ? "NOVITÀ" : ((rand(1, 10) > 8) ? "BEST SELLER" : '');
+            $ing = ( $category === 'Bellezza' || rand( 1, 10 ) > 8 ) ? $ingredients_list[ array_rand( $ingredients_list ) ] . ", " . $ingredients_list[ array_rand( $ingredients_list ) ] : '';
+            $all = ( $category === 'Bellezza' && rand( 1, 10 ) > 7 ) ? $allergens_list[ array_rand( $allergens_list ) ] : '';
+            $stick = ( rand( 1, 10 ) > 8 ) ? "NOVITÀ" : ( ( rand( 1, 10 ) > 8 ) ? "BEST SELLER" : '' );
 
             $products[] = [
                 'post_title'      => $title,
                 'post_content'    => $desc,
-                'post_excerpt'    => sprintf(esc_html__('The secret to getting the most out of %s. Find out why %s is the number one choice of experts.', 'si-flash-products'), $category, $title),
-                'sifp_categories'   => $category,
-                'sifp_tag'          => strtolower($category) . ", $adj, offerta, esclusivo",
-                'sifp_img'          => $main_img,
-                'sifp_gallery'      => "$gallery1,$gallery2",
-                'regular_price'   => number_format($price, 2, '.', ''),
-                'sale_price'      => $sale_price ? number_format($sale_price, 2, '.', '') : '',
-                'sku'             => "SIFP-" . strtoupper(substr($category, 0, 3)) . "-" . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'post_excerpt'    => sprintf( esc_html__( 'The secret to getting the most out of %s. Find out why %s is the number one choice of experts.', 'si-flash-products' ), esc_html( $category ), esc_html( $title ) ),
+                'sifp_categories' => $category,
+                'sifp_tag'        => strtolower( $category ) . ", $adj, offerta, esclusivo",
+                'sifp_img'        => $main_img,
+                'sifp_gallery'    => "$gallery1,$gallery2",
+                'regular_price'   => number_format( $price, 2, '.', '' ),
+                'sale_price'      => $sale_price ? number_format( $sale_price, 2, '.', '' ) : '',
+                'sku'             => "SIFP-" . strtoupper( substr( $category, 0, 3 ) ) . "-" . str_pad( $i, 4, '0', STR_PAD_LEFT ),
                 'stock_status'    => 'instock',
-                'stock_qty'       => rand(5, 150),
-                'weight'          => (rand(5, 100) / 10),
-                'length'          => rand(5, 80),
-                'width'           => rand(5, 80),
-                'height'          => rand(2, 40),
+                'stock_qty'       => rand( 5, 150 ),
+                'weight'          => ( rand( 5, 100 ) / 10 ),
+                'length'          => rand( 5, 80 ),
+                'width'           => rand( 5, 80 ),
+                'height'          => rand( 2, 40 ),
                 'is_virtual'      => 'no',
                 'is_downloadable' => 'no',
-                'sifp_ingredient'   => $ing,
-                'sifp_allerg'       => $all,
-                'sifp_sticker'      => $stick,
-                'sifp_temp'         => (rand(1, 10) > 9) ? "Conservare in luogo fresco" : '',
+                'sifp_ingredient' => $ing,
+                'sifp_allerg'     => $all,
+                'sifp_sticker'    => $stick,
+                'sifp_temp'       => ( rand( 1, 10 ) > 9 ) ? "Conservare in luogo fresco" : '',
                 'attributes'      => [
-                    ['name' => 'Colore', 'value' => 'Nero | Bianco | Grigio | Blu', 'visible' => 1, 'variation' => 0],
-                    ['name' => 'Materiale', 'value' => 'Premium | Eco-friendly', 'visible' => 1, 'variation' => 0]
+                    [ 'name' => 'Colore', 'value' => 'Nero | Bianco | Grigio | Blu', 'visible' => 1, 'variation' => 0 ],
+                    [ 'name' => 'Materiale', 'value' => 'Premium | Eco-friendly', 'visible' => 1, 'variation' => 0 ]
                 ],
                 'custom_taxonomy' => [
-                    'brand'      => 'FlashBrand',
-                    'materiale'  => 'Materiale ' . $adj
+                    'brand'     => 'FlashBrand',
+                    'materiale' => 'Materiale ' . $adj
                 ]
             ];
         }
 
-        file_put_contents($json_path, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        file_put_contents( $json_path, wp_json_encode( $products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
+        
+        // Sync to database table
+        $db = \SIFlashProducts\Core\Database::instance();
+        $db->sync_json_to_db( $json_path );
         
         if ( isset( $_GET['sifp_regenerate_db'] ) ) {
             wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_regenerated' ) );
@@ -211,7 +274,40 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
         }
     }
 }
-add_action('admin_init', 'sifp_ensure_local_db');
+
+/**
+ * Handle sync DB manually
+ */
+if ( ! function_exists( 'sifp_handle_sync_db' ) ) {
+    function sifp_handle_sync_db() {
+        if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        if ( isset( $_GET['sifp_sync_db'] ) && check_admin_referer( 'sifp_sync_db' ) ) {
+            $upload_dir = wp_upload_dir();
+            $json_path  = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
+            
+            if ( file_exists( $json_path ) ) {
+                $db = \SIFlashProducts\Core\Database::instance();
+                $db->sync_json_to_db( $json_path );
+                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_synced' ) );
+                exit;
+            } else {
+                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_file_not_found' ) );
+                exit;
+            }
+        }
+    }
+    add_action( 'admin_init', 'sifp_handle_sync_db' );
+}
+
+if ( ! function_exists( 'sifp_ensure_local_db_hook' ) ) {
+    function sifp_ensure_local_db_hook() {
+        sifp_ensure_local_db();
+    }
+    add_action('admin_init', 'sifp_ensure_local_db_hook');
+}
 
 /**
  * Log message for debugging and UI display

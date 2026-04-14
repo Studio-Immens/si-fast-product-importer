@@ -5,8 +5,8 @@
  * Version:         1.1.0
  * Author:          Mauro Arnone
  * Text Domain:     si-flash-products
- * License:         GPL v.3
- * License URI:     http://www.gnu.org/licenses/gpl-3.0.txt
+ * License:         GPLv2 or later
+ * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  * Domain Path:     /languages
  * Requires PHP:    7.4
  * Requires at least: 5.8
@@ -36,7 +36,7 @@ spl_autoload_register( function ( $class ) {
 	$file = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
 
 	if ( file_exists( $file ) ) {
-		require $file;
+		require_once $file;
 	}
 } );
 
@@ -44,6 +44,7 @@ spl_autoload_register( function ( $class ) {
  * Initialize the plugin
  */
 function sifp_init_plugin() {
+	// Let the Core\Plugin class handle includes and initialization
 	return \SIFlashProducts\Core\Plugin::instance();
 }
 

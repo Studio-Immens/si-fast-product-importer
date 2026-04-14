@@ -94,24 +94,24 @@ class Database {
             $wpdb->insert(
                 $this->table_name,
                 array(
-                    'title'         => $product['post_title'],
-                    'content'       => $product['post_content'],
-                    'excerpt'       => $product['post_excerpt'],
-                    'categories'    => $product['sifp_categories'] ?? '',
-                    'tags'          => $product['sifp_tag'] ?? '',
-                    'sku'           => $product['sku'] ?? '',
-                    'regular_price' => $product['regular_price'] ?? '',
-                    'sale_price'    => $product['sale_price'] ?? '',
-                    'img_url'       => $product['sifp_img'] ?? '',
-                    'gallery_urls'  => $product['sifp_gallery'] ?? '',
-                    'seo_title'     => $product['seo_title'] ?? '',
-                    'seo_description' => $product['seo_description'] ?? '',
-                    'attributes'    => isset($product['attributes']) ? json_encode($product['attributes']) : '',
-                    'extra_data'    => json_encode(array(
-                        'ingredient' => $product['sifp_ingredient'] ?? '',
-                        'allerg'     => $product['sifp_allerg'] ?? '',
-                        'sticker'    => $product['sifp_sticker'] ?? '',
-                        'temp'       => $product['sifp_temp'] ?? ''
+                    'title'         => sanitize_text_field( $product['post_title'] ),
+                    'content'       => wp_kses_post( $product['post_content'] ),
+                    'excerpt'       => wp_kses_post( $product['post_excerpt'] ),
+                    'categories'    => sanitize_text_field( $product['sifp_categories'] ?? '' ),
+                    'tags'          => sanitize_text_field( $product['sifp_tag'] ?? '' ),
+                    'sku'           => sanitize_text_field( $product['sku'] ?? '' ),
+                    'regular_price' => sanitize_text_field( $product['regular_price'] ?? '' ),
+                    'sale_price'    => sanitize_text_field( $product['sale_price'] ?? '' ),
+                    'img_url'       => esc_url_raw( $product['sifp_img'] ?? '' ),
+                    'gallery_urls'  => sanitize_text_field( $product['sifp_gallery'] ?? '' ),
+                    'seo_title'     => sanitize_text_field( $product['seo_title'] ?? '' ),
+                    'seo_description' => sanitize_textarea_field( $product['seo_description'] ?? '' ),
+                    'attributes'    => isset($product['attributes']) ? wp_json_encode($product['attributes']) : '',
+                    'extra_data'    => wp_json_encode(array(
+                        'ingredient' => wp_kses_post( $product['sifp_ingredient'] ?? '' ),
+                        'allerg'     => wp_kses_post( $product['sifp_allerg'] ?? '' ),
+                        'sticker'    => sanitize_text_field( $product['sifp_sticker'] ?? '' ),
+                        'temp'       => sanitize_text_field( $product['sifp_temp'] ?? '' )
                     )),
                     'created_at'    => current_time('mysql')
                 )
@@ -156,7 +156,10 @@ class Database {
 
         $total_results = $wpdb->get_var( $wpdb->prepare( str_replace( '*', 'COUNT(*)', $query ), $params ) );
 
-        $query .= " ORDER BY {$args['orderby']} {$args['order']}";
+        $orderby = in_array( $args['orderby'], array( 'title', 'id', 'created_at', 'sku' ) ) ? $args['orderby'] : 'title';
+        $order   = strtoupper( $args['order'] ) === 'DESC' ? 'DESC' : 'ASC';
+
+        $query .= " ORDER BY {$orderby} {$order}";
         $query .= " LIMIT %d OFFSET %d";
         $params[] = $args['limit'];
         $params[] = $args['offset'];

@@ -57,15 +57,21 @@ class AIGenerator {
         }
 
         $content = $res_body['candidates'][0]['content']['parts'][0]['text'] ?? '';
-        return json_decode( $content, true );
+        $decoded = json_decode( $content, true );
+        
+        if ( ! is_array( $decoded ) ) {
+            return new \WP_Error( 'ai_invalid_json', __( 'AI returned an invalid JSON format.', 'si-flash-products' ) );
+        }
+
+        return $decoded;
     }
 
     /**
      * Build Prompt
      */
     private function build_prompt( $data ) {
-        $name = $data['name'] ?? 'Prodotto';
-        $desc = $data['description'] ?? '';
+        $name = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : 'Prodotto';
+        $desc = isset( $data['description'] ) ? sanitize_textarea_field( $data['description'] ) : '';
         $lang = get_option( 'sifp_default_lang', 'it' );
 
         $prompt = "Genera i dettagli completi per un prodotto WooCommerce in lingua: {$lang}.\n";

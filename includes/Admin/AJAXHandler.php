@@ -72,12 +72,57 @@ class AJAXHandler {
             'limit'      => intval( $_GET['limit'] ?? 100 ),
             'offset'     => intval( $_GET['offset'] ?? 0 ),
             'orderby'    => sanitize_text_field( $_GET['orderby'] ?? 'title' ),
+            'source'     => sanitize_key( $_GET['source'] ?? 'all' ),
         );
 
-        $db = \SIFlashProducts\Core\Database::instance();
-        $results = $db->search( $args );
+        $all_results = array( 'result' => array(), 'total_results' => 0 );
 
-        wp_send_json_success( $results );
+        // 1. Get Remote Results
+        if ( $args['source'] === 'all' || $args['source'] === 'remote' ) {
+            $remote_links = sifp_get_setting('sifp_remote_db_links');
+            $urls = array('https://flashproducts.studioimmens.com/wp-json/flash_products/v1/products');
+            
+            if ( ! empty( $remote_links ) ) {
+                $extra_links = explode( "\n", str_replace( "\r", "", $remote_links ) );
+                foreach ( $extra_links as $link ) {
+                    $link = trim($link);
+                    if ( ! empty( $link ) && filter_var($link, FILTER_VALIDATE_URL) ) {
+                        $urls[] = $link;
+                    }
+                }
+            }
+
+            foreach ( $urls as $base_url ) {
+                $url = add_query_arg( array(
+                    'categories' => $args['categories'],
+                    'orderby'    => $args['orderby'],
+                    'limit'      => $args['limit'],
+                    'offset'     => $args['offset'],
+                    's'          => $args['s'],
+                ), $base_url );
+
+                $response = wp_remote_get( $url, array('timeout' => 10) );
+
+                if ( ! is_wp_error( $response ) ) {
+                    $data = json_decode( wp_remote_retrieve_body( $response ), true );
+                    if ( isset($data['result']) && is_array($data['result']) ) {
+                        $all_results['result'] = array_merge($all_results['result'], $data['result']);
+                        $all_results['total_results'] += intval($data['total_results'] ?? 0);
+                    }
+                }
+            }
+        }
+
+        // 2. Get Local Results (from DB)
+        if ( $args['source'] === 'all' || $args['source'] === 'local' ) {
+            $db = \SIFlashProducts\Core\Database::instance();
+            $local_results = $db->search( $args );
+            
+            $all_results['result'] = array_merge( $all_results['result'], $local_results['result'] );
+            $all_results['total_results'] += intval( $local_results['total_results'] );
+        }
+
+        wp_send_json_success( $all_results );
     }
 
     /**

@@ -37,6 +37,7 @@
             $(document).on('click', '.sifp-ai-import-btn', () => this.createAIProduct());
             $(document).on('click', '.sifp-ai-clear-btn', () => this.clearGenerator());
             $(document).on('click', '.clear-logs-btn', () => this.clearLogs());
+            $(document).on('click', '.dashicons-image-rotate', (e) => this.resetSetting($(e.currentTarget)));
 
             // Attributes
             $(document).on('click', '#sifp_add_attribute_btn', () => this.addAttributeRow());
@@ -63,7 +64,8 @@
                 categories: $(".sifp-categories").val(),
                 limit: $(".sifp-limit").val(),
                 offset: $(".sifp-offset").val(),
-                orderby: $(".sifp-orderby").val()
+                orderby: $(".sifp-orderby").val(),
+                source: $(".sifp-source").val()
             };
 
             $.get(sifp_ajax.ajax_url, data, (response) => {
@@ -81,17 +83,28 @@
             const $container = $(".sifp-container");
             const $template = $('.sifp-default-card');
             
+            // Capture the template BEFORE emptying the container
+            if ($template.length && !this.cardTemplate) {
+                this.cardTemplate = $template.clone().removeClass('sifp-default-card');
+            }
+            
             $container.empty();
+            $('.bulk-actions').fadeOut();
 
             if (!products || products.length === 0) {
-                $('.bulk-actions').fadeOut();
+                $container.append('<div class="sifp-no-results">' + sifp_ajax.strings.no_results + '</div>');
+                return;
+            }
+
+            if (!this.cardTemplate) {
+                this.notify('Template not found! Please reload.', 'error');
                 return;
             }
 
             $('.bulk-actions').fadeIn();
 
             products.forEach(p => {
-                const $card = $template.clone().removeClass('sifp-default-card');
+                const $card = this.cardTemplate.clone();
                 $card.find('.sifp-card-title').text(p.post_title);
                 $card.find('.sifp-card-head img').attr('src', p.sifp_img || '');
                 
@@ -124,6 +137,38 @@
                     $btn.html(originalHtml);
                     if (!callback) this.notify(response.data, 'error');
                     if (callback) callback(false);
+                }
+            });
+        },
+
+        importEditedProduct: function() {
+            const $modal = $('.sifp-detail-section');
+            const originalProduct = $modal.data('product');
+            const $btn = $('.sifp-import-edited-btn');
+            const originalHtml = $btn.html();
+
+            if ($btn.hasClass('sifp-loading')) return;
+
+            // Collect edited values
+            const editedProduct = { ...originalProduct };
+            $modal.find('[sifp-edit]').each(function() {
+                const key = $(this).attr('sifp-edit');
+                editedProduct[key] = $(this).val();
+            });
+
+            $btn.addClass('sifp-loading').prop('disabled', true).html('<span class="dashicons dashicons-update spin"></span> ' + sifp_ajax.strings.importing);
+
+            $.post(sifp_ajax.ajax_url, {
+                action: 'sifp_import_product',
+                nonce: sifp_ajax.nonce,
+                product: editedProduct
+            }, (response) => {
+                $btn.removeClass('sifp-loading').prop('disabled', false).html(originalHtml);
+                if (response.success) {
+                    this.notify(sifp_ajax.strings.bulk_success, 'success');
+                    this.closeDetail();
+                } else {
+                    this.notify(response.data || sifp_ajax.strings.error_import, 'error');
                 }
             });
         },
@@ -294,13 +339,23 @@
                 nonce: sifp_ajax.nonce
             }, (response) => {
                 if (response.success) {
-                    $('.sifp-log-table-container tbody').html('<tr><td colspan="3" style="text-align:center;">' + sifp_ajax.strings.bulk_success + '</td></tr>');
-                    this.notify(response.data, 'success');
-                    location.reload(); // Reload to show empty state correctly
+                    $('.sifp-log-table-container tbody').html('<tr><td colspan="3" style="text-align:center;">' + sifp_ajax.strings.logs_cleared + '</td></tr>');
+                    this.notify(response.data || sifp_ajax.strings.logs_cleared, 'success');
+                    setTimeout(() => location.reload(), 1500);
                 } else {
                     this.notify(response.data || sifp_ajax.strings.error_clear_logs, 'error');
                 }
             });
+        },
+
+        resetSetting: function($btn) {
+            const defaultValue = $btn.data('default');
+            const $input = $btn.siblings('input, select, textarea');
+            
+            if ($input.length) {
+                $input.val(defaultValue);
+                this.notify(sifp_ajax.strings.preset_loaded, 'success');
+            }
         },
 
         // --- Helpers ---
@@ -313,34 +368,33 @@
         },
 
         addVariationRow: function(variation) {
-            let attrHtml = '';
-            for (const [name, val] of Object.entries(variation.attributes)) {
-                attrHtml += `
-                    <div class="sifp-form-field">
-                        <label>${name}</label>
-                        <input type="text" class="sifp-variation-attr" data-attr="${name}" value="${val}">
-                    </div>
-                `;
+            const $container = $('<div class="sifp-variation-row sifp-card"></div>');
+            const $grid = $('<div class="grid-3"></div>');
+            const $attrsGroup = $('<div class="sifp-variation-attrs-group"></div>');
+
+            if (variation.attributes) {
+                for (const [name, val] of Object.entries(variation.attributes)) {
+                    const $field = $('<div class="sifp-form-field"></div>');
+                    $field.append($('<label></label>').text(name));
+                    $field.append($('<input type="text" class="sifp-variation-attr">').attr('data-attr', name).val(val));
+                    $attrsGroup.append($field);
+                }
             }
 
-            const html = `
-                <div class="sifp-variation-row sifp-card">
-                    <div class="grid-3">
-                        <div class="sifp-variation-attrs-group">
-                            ${attrHtml}
-                        </div>
-                        <div class="sifp-form-field">
-                            <label>Price (€)</label>
-                            <input type="number" class="sifp-variation-price" value="${variation.regular_price}">
-                        </div>
-                        <div class="sifp-form-field">
-                            <label>SKU</label>
-                            <input type="text" class="sifp-variation-sku" value="${variation.sku || ''}">
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#sifp_variations_container').append(html);
+            $grid.append($attrsGroup);
+
+            const $priceField = $('<div class="sifp-form-field"></div>');
+            $priceField.append($('<label>Price (€)</label>'));
+            $priceField.append($('<input type="number" class="sifp-variation-price">').val(variation.regular_price));
+            $grid.append($priceField);
+
+            const $skuField = $('<div class="sifp-form-field"></div>');
+            $skuField.append($('<label>SKU</label>'));
+            $skuField.append($('<input type="text" class="sifp-variation-sku">').val(variation.sku || ''));
+            $grid.append($skuField);
+
+            $container.append($grid);
+            $('#sifp_variations_container').append($container);
         },
 
         updateSelection: function(e) {
@@ -361,12 +415,27 @@
             const product = JSON.parse($card.attr('data-product'));
             const $modal = $('.sifp-detail-section');
             
-            $modal.find('input[sifp-edit="post_title"]').val(product.post_title);
-            $modal.find('textarea[sifp-edit="post_content"]').val(product.post_content);
-            $modal.find('textarea[sifp-edit="post_excerpt"]').val(product.post_excerpt);
-            $modal.find('input[sifp-edit="sku"]').val(product.sku);
-            $modal.find('input[sifp-edit="regular_price"]').val(product.regular_price);
-            $modal.find('input[sifp-edit="sifp_categories"]').val(product.sifp_categories);
+            // Populate all fields based on sifp-edit attribute
+            $modal.find('[sifp-edit]').each(function() {
+                const key = $(this).attr('sifp-edit');
+                const val = product[key] || product['sifp_' + key] || '';
+                $(this).val(val);
+            });
+
+            // Special handling for images
+            const $imgContainer = $modal.find('.sifp-detail-body-images');
+            $imgContainer.empty();
+            if (product.sifp_img) {
+                $imgContainer.append('<img src="' + product.sifp_img + '" class="sifp-detail-main-img">');
+            }
+            if (product.sifp_gallery) {
+                const gallery = product.sifp_gallery.split(',');
+                const $galleryContainer = $('<div class="sifp-detail-gallery"></div>');
+                gallery.forEach(url => {
+                    $galleryContainer.append('<img src="' + url.trim() + '">');
+                });
+                $imgContainer.append($galleryContainer);
+            }
             
             $modal.data('product', product);
             $modal.fadeIn();
@@ -414,7 +483,7 @@
                 if (type === 'single') {
                     const attachment = selection.first().toJSON();
                     $('#out_sifp_img').val(attachment.url);
-                    $('#sifp_img_preview_container').html(`<img src="${attachment.url}" style="max-width:100px;">`);
+                    $('#sifp_img_preview_container').empty().append($('<img>').attr('src', attachment.url).css('max-width', '100px'));
                 } else {
                     const urls = [];
                     selection.map(a => {
@@ -423,7 +492,9 @@
                     });
                     $('#out_sifp_gallery').val(urls.join(','));
                     $('#sifp_gallery_preview_container').empty();
-                    urls.forEach(url => $('#sifp_gallery_preview_container').append(`<img src="${url}" style="max-width:60px;">`));
+                    urls.forEach(url => {
+                        $('#sifp_gallery_preview_container').append($('<img>').attr('src', url).css('max-width', '60px'));
+                    });
                 }
             });
 

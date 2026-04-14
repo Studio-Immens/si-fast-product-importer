@@ -88,6 +88,7 @@ class AdminManager {
                 'confirm_bulk_import' => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
                 'bulk_import_done'    => __( 'Import completed: %d success, %d failure.', 'si-flash-products' ),
                 'confirm_clear_logs'  => __( 'Are you sure you want to clear all logs?', 'si-flash-products' ),
+                'logs_cleared'        => __( 'Logs cleared successfully!', 'si-flash-products' ),
                 'error_clear_logs'    => __( 'Error while clearing logs', 'si-flash-products' ),
                 'error_missing_name'  => __( 'Please enter at least the product name', 'si-flash-products' ),
                 'ai_gen_success'      => __( 'Content generated successfully!', 'si-flash-products' ),
@@ -98,11 +99,12 @@ class AdminManager {
                 'error_import'        => __( 'Error during import', 'si-flash-products' ),
                 'preset_loaded'       => __( 'Preset loaded!', 'si-flash-products' ),
                 'select_image'        => __( 'Select Product Image', 'si-flash-products' ),
-                'use_image'           => __( 'Use this image', 'si-flash-products' ),
+                'use_image'           => __( 'Use Image', 'si-flash-products' ),
                 'select_gallery'      => __( 'Select Gallery Images', 'si-flash-products' ),
                 'add_to_gallery'      => __( 'Add to gallery', 'si-flash-products' ),
                 'error'               => __( 'Error', 'si-flash-products' ),
                 'fetch_error'         => __( 'Failed to fetch products', 'si-flash-products' ),
+                'no_results'          => __( 'No products found matching your search.', 'si-flash-products' ),
             )
         ) );
     }
@@ -111,20 +113,20 @@ class AdminManager {
      * Render Main Page
      */
     public function render_main_page() {
-        require_once SIFProd_PATH . 'pages/main.php';
+        include_once SIFProd_PATH . 'pages/main.php';
     }
 
     /**
      * Render Generator Page
      */
     public function render_generator_page() {
-        require_once SIFProd_PATH . 'pages/generator.php';
+        include_once SIFProd_PATH . 'pages/generator.php';
     }
 
     /**
      * Render Settings Page
      */
     public function render_settings_page() {
-        require_once SIFProd_PATH . 'pages/settings.php';
+        include_once SIFProd_PATH . 'pages/settings.php';
     }
 }
