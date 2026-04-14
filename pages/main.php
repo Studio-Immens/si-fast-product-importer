@@ -55,7 +55,6 @@ if ( ! is_object( $categories ) ) {
     }
 
     set_transient( 'sifp_api_categories', $categories, DAY_IN_SECONDS );
-}
 
 $languages = get_transient( 'sifp_api_languages' );
 if ( false === $languages ) {
@@ -70,6 +69,44 @@ if ( false === $languages ) {
     set_transient( 'sifp_api_languages', $languages, DAY_IN_SECONDS );
 }
 
+/**
+ * Render Pagination Bar
+ */
+function sifp_render_pagination_bar() {
+    ?>
+    <div class="sifp-pagination-bar">
+        <div class="sifp-nav-element sifp-nav-element--inline">
+            <label><?php echo esc_html__('Order:','si-flash-products');?></label>
+            <select class="sifp-orderby" name="sifp_orderby">
+                <option value="name"> <?php esc_html_e('By Name', 'si-flash-products'); ?> </option>
+                <option value="date"> <?php esc_html_e('By Date', 'si-flash-products'); ?> </option>
+            </select>
+        </div>
+
+        <div class="sifp-nav-element sifp-nav-element--inline">
+            <label><?php echo esc_html__('Limit:','si-flash-products');?></label>
+            <input class="sifp-limit sifp-u-w-65" name="sifp_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 1000','si-flash-products');?>" min="1" max="1000" step="1" value="100">
+        </div>
+
+        <div class="sifp-nav-element sifp-nav-element--inline">
+            <label><?php echo esc_html__('Page:','si-flash-products');?></label>
+            <input class="sifp-offset sifp-u-w-65" name="sifp_offset" type="number" placeholder="<?php esc_attr_e('type a number', 'si-flash-products'); ?>" step="1" value="0" total_pages="0">
+        </div>
+
+        <div class="sifp-nav-element sifp-nav-element--inline sifp-u-ml-auto">
+            <label><?php echo esc_html__('Founds:','si-flash-products');?></label>
+            <strong class="sifp-found"></strong>
+        </div>
+
+        <div class="sifp-nav-element sifp-nav-element--inline bulk-actions sifp-u-ml-auto sifp-u-hidden">
+            <input type="checkbox" class="sifp-select-all-products">
+            <label><?php esc_html_e('Select All', 'si-flash-products'); ?></label>
+            <button class="sifp-bulk-import-btn button-primary sifp-u-ml-10"><?php esc_html_e('Import Selected', 'si-flash-products'); ?> (<span class="selected-count">0</span>)</button>
+        </div>
+    </div>
+    <?php
+}
+
 ?>
 
 <div id="sifp-admin-content" class="sifp-main-container">
@@ -77,7 +114,7 @@ if ( false === $languages ) {
     <div class="sifp-navbar">
 
         <div class="sifp-nav-element">
-            <?php echo esc_html__('Languages:','si-flash-products');?>
+            <label><?php echo esc_html__('Languages:','si-flash-products');?></label>
             <select class="sifp-languages" name="sifp_languages">
                 <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
                 <?php 
@@ -91,7 +128,7 @@ if ( false === $languages ) {
         </div>
 
         <div class="sifp-nav-element">
-            <?php echo esc_html__('Categories:','si-flash-products');?>
+            <label><?php echo esc_html__('Categories:','si-flash-products');?></label>
             <select class="sifp-categories" name="sifp_categories">
                 <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
                 <?php 
@@ -105,13 +142,12 @@ if ( false === $languages ) {
         </div>
 
         <div class="sifp-nav-element">
-            <?php echo esc_html__('Keyword:','si-flash-products');?>
+            <label><?php echo esc_html__('Keyword:','si-flash-products');?></label>
             <input class="sifp-keyword" name="sifp_keyword" type="search" placeholder="<?php esc_attr_e('type a keyword', 'si-flash-products'); ?>">
         </div>
         
-
         <div class="sifp-nav-element">
-            <?php echo esc_html__('Source:','si-flash-products');?>
+            <label><?php echo esc_html__('Source:','si-flash-products');?></label>
             <select class="sifp-source" name="sifp_source">
                 <option value="all"> <?php esc_html_e('All Sources', 'si-flash-products'); ?> </option>
                 <option value="local"> <?php esc_html_e('Local JSON DB', 'si-flash-products'); ?> </option>
@@ -119,40 +155,10 @@ if ( false === $languages ) {
             </select>
         </div>
 
-        <div class="sifp-nav-element">
-            <?php echo esc_html__('Order:','si-flash-products');?>
-            <select class="sifp-orderby" name="sifp_orderby">
-                <option value="name"> <?php esc_html_e('By Name', 'si-flash-products'); ?> </option>
-                <option value="date"> <?php esc_html_e('By Date', 'si-flash-products'); ?> </option>
-            </select>
-        </div>
-        
-
-
-        <div class="sifp-nav-element">
-            <?php echo esc_html__('Limit:','si-flash-products');?>
-            <input class="sifp-limit sifp-u-w-65" name="sifp_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 1000','si-flash-products');?>" min="1" max="1000" step="1" value="100">
-        </div>
-
-        <div class="sifp-nav-element">
-            <?php echo esc_html__('Page:','si-flash-products');?>
-            <input class="sifp-offset sifp-u-w-65" name="sifp_offset" type="number" placeholder="<?php esc_attr_e('type a number', 'si-flash-products'); ?>" step="1" value="0" total_pages="0">
-        </div>
-
-        <div class="sifp-nav-element">
-            <?php echo esc_html__('Founds:','si-flash-products');?>
-            <strong class="sifp-found"></strong>
-        </div>
-
-        <div class="sifp-nav-element bulk-actions sifp-u-ml-20 sifp-u-hidden">
-            <input type="checkbox" id="select_all_products">
-            <label for="select_all_products"><?php esc_html_e('Select All', 'si-flash-products'); ?></label>
-            <button class="sifp-bulk-import-btn button-primary sifp-u-ml-10"><?php esc_html_e('Import Selected', 'si-flash-products'); ?> (<span class="selected-count">0</span>)</button>
-        </div>
-
-
-        <button class="sifp-nav-element sifp-search-btn sifp-u-ml-auto"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
+        <button class="sifp-search-btn sifp-u-ml-auto"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
     </div>
+
+    <?php sifp_render_pagination_bar(); ?>
 
     <div class="sifp-container">
 
@@ -177,6 +183,8 @@ if ( false === $languages ) {
         </div>
 
     </div>
+
+    <?php sifp_render_pagination_bar(); ?>
 
     <div class="sifp-sidebar sifp-u-hidden">
 

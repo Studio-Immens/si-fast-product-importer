@@ -8,6 +8,11 @@
         init: function() {
             this.bindEvents();
             this.initAutocomplete();
+
+            // Auto search on load if search container exists
+            if ($('.sifp-container').length) {
+                this.searchProducts();
+            }
         },
 
         bindEvents: function() {
@@ -17,11 +22,25 @@
                 clearTimeout(this.searchTimeout);
                 this.searchTimeout = setTimeout(() => this.searchProducts(), 500);
             });
-            $(document).on('change', '.sifp-languages, .sifp-categories, .sifp-source, .sifp-orderby, .sifp-limit', () => this.searchProducts());
+            $(document).on('change', '.sifp-languages, .sifp-categories, .sifp-source, .sifp-orderby, .sifp-limit, .sifp-offset', () => this.searchProducts());
 
             // Selection
             $(document).on('change', '.sifp-select-product', (e) => this.updateSelection(e));
-            $(document).on('change', '#select_all_products', (e) => this.selectAll(e));
+            $(document).on('change', '.sifp-select-all-products', (e) => this.selectAll(e));
+
+            // Sync duplicated controls
+            $(document).on('change keyup', '.sifp-limit, .sifp-offset, .sifp-orderby, .sifp-select-all-products', (e) => {
+                const $target = $(e.currentTarget);
+                const val = $target.is(':checkbox') ? $target.prop('checked') : $target.val();
+                const cls = '.' + $target.attr('class').split(' ')[0];
+                $(cls).not($target).each(function() {
+                    if ($(this).is(':checkbox')) {
+                        $(this).prop('checked', val);
+                    } else {
+                        $(this).val(val);
+                    }
+                });
+            });
 
             // Import
             $(document).on('click', '.sifp-rapid-import', (e) => this.importProduct($(e.currentTarget)));
@@ -29,8 +48,11 @@
             $(document).on('click', '.sifp-import-edited-btn', () => this.importEditedProduct());
 
             // Modal
-            $(document).on('click', '.sifp-card-head, .sifp-card-foot', (e) => this.openDetail($(e.currentTarget).closest('.sifp-card')));
-            $(document).on('click', '.sifp-button--close, .sifp-modal-overlay', () => this.closeDetail());
+            $(document).on('click', '.sifp-card', (e) => {
+                if ($(e.target).closest('.sifp-card-selection, .sifp-rapid-import').length) return;
+                this.openDetail($(e.currentTarget));
+            });
+            $(document).on('click', '.sifp-button--close, .sifp-background-section', () => this.closeDetail());
 
             // AI Generator
             $(document).on('click', '.sifp-ai-generate-btn', () => this.generateAI());
@@ -90,6 +112,8 @@
             
             $container.empty();
             $('.bulk-actions').fadeOut();
+            $('.sifp-select-all-products').prop('checked', false);
+            $('.selected-count').text(0);
 
             if (!products || products.length === 0) {
                 $container.append('<div class="sifp-no-results">' + sifp_ajax.strings.no_results + '</div>');
@@ -108,16 +132,18 @@
                 $card.find('.sifp-card-title').text(p.post_title);
                 $card.find('.sifp-card-head img').attr('src', p.sifp_img || '');
                 
-                // Store data in attributes
-                $card.attr('data-product', JSON.stringify(p));
+                // Store data in jQuery cache
+                $card.data('product', p);
                 $container.append($card);
             });
         },
 
         importProduct: function($btn, callback) {
             const $card = $btn.closest('.sifp-card');
-            const product = JSON.parse($card.attr('data-product'));
+            const product = $card.data('product');
             const originalHtml = $btn.html();
+            
+            if (!product) return;
 
             if ($btn.hasClass('sifp-loading')) return;
 
@@ -412,7 +438,9 @@
         },
 
         openDetail: function($card) {
-            const product = JSON.parse($card.attr('data-product'));
+            const product = $card.data('product');
+            if (!product) return;
+
             const $modal = $('.sifp-detail-section');
             
             // Populate all fields based on sifp-edit attribute
@@ -438,13 +466,17 @@
             }
             
             $modal.data('product', product);
-            $modal.fadeIn();
-            $('.sifp-background-section').show();
+            $modal.removeClass('sifp-u-hidden').fadeIn();
+            $('.sifp-background-section').removeClass('sifp-u-hidden').show();
         },
 
         closeDetail: function() {
-            $('.sifp-detail-section').fadeOut();
-            $('.sifp-background-section').hide();
+            $('.sifp-detail-section').fadeOut(() => {
+                $('.sifp-detail-section').addClass('sifp-u-hidden');
+            });
+            $('.sifp-background-section').hide(() => {
+                $('.sifp-background-section').addClass('sifp-u-hidden');
+            });
         },
 
         notify: function(message, type) {
