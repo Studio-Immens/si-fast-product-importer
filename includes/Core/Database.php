@@ -82,41 +82,76 @@ class Database {
             return false;
         }
 
-        $products = json_decode( file_get_contents( $json_file ), true );
+        $json_content = file_get_contents( $json_file );
+        // Basic validation before decoding
+        if ( empty($json_content) || $json_content[0] !== '[' ) {
+             return false;
+        }
+        
+        $products = json_decode( $json_content, true );
         if ( ! is_array( $products ) ) {
             return false;
         }
 
         global $wpdb;
-        $wpdb->query( "TRUNCATE TABLE $this->table_name" );
+        
+        // Start transaction
+        $wpdb->query( 'START TRANSACTION' );
+        
+        // Delete all old rows
+        $truncate_result = $wpdb->query( "TRUNCATE TABLE $this->table_name" );
+        
+        if ( $truncate_result === false ) {
+             $wpdb->query( 'ROLLBACK' );
+             return false;
+        }
 
-        foreach ( $products as $product ) {
-            $wpdb->insert(
-                $this->table_name,
-                array(
-                    'title'         => sanitize_text_field( $product['post_title'] ),
-                    'content'       => wp_kses_post( $product['post_content'] ),
-                    'excerpt'       => wp_kses_post( $product['post_excerpt'] ),
-                    'categories'    => sanitize_text_field( $product['sifp_categories'] ?? '' ),
-                    'tags'          => sanitize_text_field( $product['sifp_tag'] ?? '' ),
-                    'sku'           => sanitize_text_field( $product['sku'] ?? '' ),
-                    'regular_price' => sanitize_text_field( $product['regular_price'] ?? '' ),
-                    'sale_price'    => sanitize_text_field( $product['sale_price'] ?? '' ),
-                    'img_url'       => esc_url_raw( $product['sifp_img'] ?? '' ),
-                    'gallery_urls'  => sanitize_text_field( $product['sifp_gallery'] ?? '' ),
-                    'seo_title'     => sanitize_text_field( $product['seo_title'] ?? '' ),
-                    'seo_description' => sanitize_textarea_field( $product['seo_description'] ?? '' ),
-                    'attributes'    => isset($product['attributes']) ? wp_json_encode($product['attributes']) : '',
-                    'extra_data'    => wp_json_encode(array(
+        $batch_size = 50;
+        $batches = array_chunk($products, $batch_size);
+
+        foreach ( $batches as $batch ) {
+            $query = "INSERT INTO {$this->table_name} (title, content, excerpt, categories, tags, sku, regular_price, sale_price, img_url, gallery_urls, seo_title, seo_description, attributes, extra_data, created_at) VALUES ";
+            $values = array();
+            $placeholders = array();
+
+            foreach ( $batch as $product ) {
+                $placeholders[] = "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)";
+                array_push(
+                    $values,
+                    sanitize_text_field( $product['post_title'] ?? '' ),
+                    wp_kses_post( $product['post_content'] ?? '' ),
+                    wp_kses_post( $product['post_excerpt'] ?? '' ),
+                    sanitize_text_field( $product['sifp_categories'] ?? '' ),
+                    sanitize_text_field( $product['sifp_tag'] ?? '' ),
+                    sanitize_text_field( $product['sku'] ?? '' ),
+                    sanitize_text_field( $product['regular_price'] ?? '' ),
+                    sanitize_text_field( $product['sale_price'] ?? '' ),
+                    esc_url_raw( $product['sifp_img'] ?? '' ),
+                    sanitize_text_field( $product['sifp_gallery'] ?? '' ),
+                    sanitize_text_field( $product['seo_title'] ?? '' ),
+                    sanitize_textarea_field( $product['seo_description'] ?? '' ),
+                    isset($product['attributes']) ? wp_json_encode($product['attributes']) : '',
+                    wp_json_encode(array(
                         'ingredient' => wp_kses_post( $product['sifp_ingredient'] ?? '' ),
                         'allerg'     => wp_kses_post( $product['sifp_allerg'] ?? '' ),
                         'sticker'    => sanitize_text_field( $product['sifp_sticker'] ?? '' ),
                         'temp'       => sanitize_text_field( $product['sifp_temp'] ?? '' )
                     )),
-                    'created_at'    => current_time('mysql')
-                )
-            );
+                    current_time('mysql')
+                );
+            }
+
+            $query .= implode(', ', $placeholders);
+            
+            $insert_result = $wpdb->query( $wpdb->prepare( $query, $values ) );
+            if ( $insert_result === false ) {
+                 $wpdb->query( 'ROLLBACK' );
+                 return false;
+            }
         }
+
+        // Commit transaction
+        $wpdb->query( 'COMMIT' );
 
         return true;
     }

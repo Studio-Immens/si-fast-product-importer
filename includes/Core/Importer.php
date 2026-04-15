@@ -16,8 +16,9 @@ class Importer {
             return new \WP_Error( 'wc_missing', __( 'WooCommerce is not active.', 'si-flash-products' ) );
         }
 
-        $type = ! empty( $data['variations'] ) ? 'variable' : 'simple';
-        $product = $type === 'variable' ? new \WC_Product_Variable() : new \WC_Product_Simple();
+        try {
+            $type = ! empty( $data['variations'] ) ? 'variable' : 'simple';
+            $product = $type === 'variable' ? new \WC_Product_Variable() : new \WC_Product_Simple();
 
         $product->set_name( sanitize_text_field( $data['post_title'] ?? '' ) );
         $product->set_status( get_option( 'sifp_default_product_status', 'publish' ) );
@@ -88,6 +89,13 @@ class Importer {
         update_post_meta( $product_id, '_sifp_temp', sanitize_text_field( $data['sifp_temp'] ?? '' ) );
 
         return $product_id;
+        
+        } catch ( \Exception $e ) {
+            if ( function_exists( 'sifp_log' ) ) {
+                sifp_log( 'Fatal error importing product: ' . $e->getMessage(), 'importer', 'error' );
+            }
+            return new \WP_Error( 'import_failed', sprintf( __( 'Error creating product: %s', 'si-flash-products' ), $e->getMessage() ) );
+        }
     }
 
     /**
@@ -140,6 +148,7 @@ class Importer {
      * Create Variations
      */
     private function create_variations( $product_id, $variations ) {
+        $default_stock = intval( get_option( 'sifp_default_stock', 10 ) );
         foreach ( $variations as $var_data ) {
             try {
                 $variation = new \WC_Product_Variation();
@@ -164,7 +173,7 @@ class Importer {
                 
                 $variation->set_sku( $var_data['sku'] ?? '' );
                 $variation->set_manage_stock( true );
-                $variation->set_stock_quantity( intval( get_option( 'sifp_default_stock', 10 ) ) );
+                $variation->set_stock_quantity( $default_stock );
                 $variation->set_status( 'publish' );
                 $variation->save();
             } catch ( \Exception $e ) {

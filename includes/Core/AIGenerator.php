@@ -57,9 +57,19 @@ class AIGenerator {
         }
 
         $content = $res_body['candidates'][0]['content']['parts'][0]['text'] ?? '';
+        
+        // Clean markdown backticks if present
+        $content = preg_replace('/^```json\s*/i', '', $content);
+        $content = preg_replace('/```\s*$/i', '', $content);
+        $content = trim($content);
+        
         $decoded = json_decode( $content, true );
         
         if ( ! is_array( $decoded ) ) {
+            // Give detailed log if decoding fails to help debugging
+            if ( function_exists( 'sifp_log' ) ) {
+                sifp_log( 'Failed to decode JSON from AI. Raw content: ' . print_r($content, true), 'ai_generator', 'error' );
+            }
             return new \WP_Error( 'ai_invalid_json', __( 'AI returned an invalid JSON format.', 'si-flash-products' ) );
         }
 

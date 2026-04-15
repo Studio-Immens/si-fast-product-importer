@@ -67,8 +67,8 @@ class AJAXHandler {
         }
 
         $args = array(
-            's'          => sanitize_text_field( $_GET['s'] ?? '' ),
-            'categories' => sanitize_text_field( $_GET['categories'] ?? '' ),
+            's'          => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['s'] ?? '' ) ) ),
+            'categories' => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['categories'] ?? '' ) ) ),
             'limit'      => intval( $_GET['limit'] ?? 100 ),
             'offset'     => intval( $_GET['offset'] ?? 0 ),
             'orderby'    => sanitize_text_field( $_GET['orderby'] ?? 'title' ),
@@ -92,24 +92,44 @@ class AJAXHandler {
                 }
             }
 
-            foreach ( $urls as $base_url ) {
-                $url = add_query_arg( array(
-                    'categories' => $args['categories'],
-                    'orderby'    => $args['orderby'],
-                    'limit'      => $args['limit'],
-                    'offset'     => $args['offset'],
-                    's'          => $args['s'],
-                ), $base_url );
-
-                $response = wp_remote_get( $url, array('timeout' => 10) );
-
-                if ( ! is_wp_error( $response ) ) {
-                    $data = json_decode( wp_remote_retrieve_body( $response ), true );
-                    if ( isset($data['result']) && is_array($data['result']) ) {
-                        $all_results['result'] = array_merge($all_results['result'], $data['result']);
-                        $all_results['total_results'] += intval($data['total_results'] ?? 0);
+            // Create a unique cache key based on search parameters
+            $cache_key = 'sifp_remote_search_' . md5( serialize( $args ) . implode('_', $urls) );
+            $cached_results = get_transient( $cache_key );
+            
+            if ( false !== $cached_results ) {
+                $all_results['result'] = array_merge($all_results['result'], $cached_results['result']);
+                $all_results['total_results'] += intval($cached_results['total_results'] ?? 0);
+            } else {
+                $remote_fetched = array( 'result' => array(), 'total_results' => 0 );
+                
+                // Fetch from remote if not cached
+                foreach ( $urls as $base_url ) {
+                    $url = add_query_arg( array(
+                        'categories' => $args['categories'],
+                        'orderby'    => $args['orderby'],
+                        'limit'      => $args['limit'],
+                        'offset'     => $args['offset'],
+                        's'          => $args['s'],
+                    ), $base_url );
+    
+                    $response = wp_remote_get( $url, array('timeout' => 15) );
+    
+                    if ( ! is_wp_error( $response ) ) {
+                        $data = json_decode( wp_remote_retrieve_body( $response ), true );
+                        if ( isset($data['result']) && is_array($data['result']) ) {
+                            $remote_fetched['result'] = array_merge($remote_fetched['result'], $data['result']);
+                            $remote_fetched['total_results'] += intval($data['total_results'] ?? 0);
+                        }
+                    } else if ( function_exists( 'sifp_log' ) ) {
+                         sifp_log( 'Remote fetch error for ' . $url . ': ' . $response->get_error_message(), 'ajax_search', 'error' );
                     }
                 }
+                
+                // Cache the fetched remotes for 1 hour
+                set_transient( $cache_key, $remote_fetched, HOUR_IN_SECONDS );
+                
+                $all_results['result'] = array_merge($all_results['result'], $remote_fetched['result']);
+                $all_results['total_results'] += intval($remote_fetched['total_results'] ?? 0);
             }
         }
 
