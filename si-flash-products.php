@@ -15,6 +15,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Register with WP Consent API to declare support and follow guidelines.
+ */
+add_filter( 'wp_consent_api_registered_' . plugin_basename( __FILE__ ), '__return_true' );
+
 // Define SIFProd_FILE
 if ( ! defined( 'SIFProd_FILE' ) ) {
 	define( 'SIFProd_FILE', __FILE__ );
