@@ -38,19 +38,12 @@ jobs:
             echo "Tag $TAG does not exist. Proceeding with release."
           fi
 
-      - name: Create ZIP for WordPress
-        if: steps.check_tag.outputs.exists == 'false'
-        run: |
-          git archive --format=zip --prefix=si-flash-products/ -o si-flash-products.zip HEAD
-          echo "ZIP created: si-flash-products.zip"
-
       - name: Create Release
         if: steps.check_tag.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           name: Version ${{ steps.get_version.outputs.VERSION }}
-          files: si-flash-products.zip
           generate_release_notes: true
           draft: false
           prerelease: false
