@@ -114,6 +114,23 @@ class ModelRegistry {
                     'streaming' => true,
                 ),
             ),
+            'gemini-flash-latest' => array(
+                'name'         => 'Gemini Flash Latest (alias)',
+                'pricing_tier' => 'free',
+                'context'      => 1000000,
+                'max_output'   => 8192,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Legacy alias — resolves to latest flash',
+                'capabilities' => array(
+                    'coding'    => 72,
+                    'reasoning' => 72,
+                    'writing'   => 73,
+                    'speed'     => 85,
+                    'vision'    => true,
+                    'json_mode' => true,
+                    'streaming' => true,
+                ),
+            ),
         );
     }
 
@@ -355,8 +372,95 @@ class ModelRegistry {
 
     private function get_default_openrouter_models(): array {
         return array(
+            // --- Free models ---
+            'openrouter/free' => array(
+                'name'         => 'OpenRouter Auto FREE',
+                'pricing_tier' => 'free',
+                'context'      => 128000,
+                'max_output'   => 4096,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Auto-routes to best free model available',
+                'capabilities' => array(
+                    'coding' => 70, 'reasoning' => 70, 'writing' => 70, 'speed' => 80,
+                    'vision' => true, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+            'google/gemini-2.0-flash-exp:free' => array(
+                'name'         => 'Gemini 2.0 Flash Exp FREE',
+                'pricing_tier' => 'free',
+                'context'      => 1000000,
+                'max_output'   => 8192,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Free Gemini with 1M context via OpenRouter',
+                'capabilities' => array(
+                    'coding' => 72, 'reasoning' => 68, 'writing' => 72, 'speed' => 88,
+                    'vision' => true, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+            'deepseek/deepseek-chat-v3-0324:free' => array(
+                'name'         => 'DeepSeek V3 Chat FREE',
+                'pricing_tier' => 'free',
+                'context'      => 128000,
+                'max_output'   => 4096,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Free DeepSeek V3 chat model',
+                'capabilities' => array(
+                    'coding' => 82, 'reasoning' => 75, 'writing' => 75, 'speed' => 80,
+                    'vision' => false, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+            'meta-llama/llama-3.3-70b-instruct:free' => array(
+                'name'         => 'Llama 3.3 70B FREE',
+                'pricing_tier' => 'free',
+                'context'      => 128000,
+                'max_output'   => 4096,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Free Llama 3.3 70B via OpenRouter',
+                'capabilities' => array(
+                    'coding' => 78, 'reasoning' => 78, 'writing' => 78, 'speed' => 65,
+                    'vision' => false, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+            'mistralai/mistral-small-3.1-24b-instruct:free' => array(
+                'name'         => 'Mistral Small 3.1 FREE',
+                'pricing_tier' => 'free',
+                'context'      => 128000,
+                'max_output'   => 4096,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Free Mistral Small 3.1',
+                'capabilities' => array(
+                    'coding' => 68, 'reasoning' => 65, 'writing' => 70, 'speed' => 88,
+                    'vision' => false, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+            'qwen/qwen3-235b-a22b:free' => array(
+                'name'         => 'Qwen 3 235B FREE',
+                'pricing_tier' => 'free',
+                'context'      => 128000,
+                'max_output'   => 4096,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Free Qwen coding model',
+                'capabilities' => array(
+                    'coding' => 82, 'reasoning' => 78, 'writing' => 72, 'speed' => 70,
+                    'vision' => true, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+            'nvidia/nemotron-3-super-4b-instruct:free' => array(
+                'name'         => 'NVIDIA Nemotron 3 Super FREE',
+                'pricing_tier' => 'free',
+                'context'      => 128000,
+                'max_output'   => 4096,
+                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
+                'description'  => 'Fast and free small model',
+                'capabilities' => array(
+                    'coding' => 55, 'reasoning' => 50, 'writing' => 52, 'speed' => 90,
+                    'vision' => false, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+
+            // --- Premium models ---
             'openai/gpt-4o-mini' => array(
-                'name'         => 'GPT-4o Mini',
+                'name'         => 'GPT-4o Mini (OpenAI)',
                 'pricing_tier' => 'free',
                 'context'      => 128000,
                 'max_output'   => 16384,
@@ -367,20 +471,20 @@ class ModelRegistry {
                     'vision' => true, 'json_mode' => true, 'streaming' => true,
                 ),
             ),
-            'google/gemini-2.0-flash-lite-preview-02-05:free' => array(
-                'name'         => 'Gemini 2.0 Flash Lite (Free)',
-                'pricing_tier' => 'free',
-                'context'      => 1000000,
-                'max_output'   => 8192,
-                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
-                'description'  => 'Free Gemini via OpenRouter',
+            'openai/gpt-4o' => array(
+                'name'         => 'GPT-4o (OpenAI)',
+                'pricing_tier' => 'premium',
+                'context'      => 128000,
+                'max_output'   => 16384,
+                'pricing'      => array( 'prompt' => 0.0000025, 'completion' => 0.00001 ),
+                'description'  => 'OpenAI flagship model via OpenRouter',
                 'capabilities' => array(
-                    'coding' => 70, 'reasoning' => 72, 'writing' => 72, 'speed' => 88,
+                    'coding' => 85, 'reasoning' => 88, 'writing' => 90, 'speed' => 75,
                     'vision' => true, 'json_mode' => true, 'streaming' => true,
                 ),
             ),
             'anthropic/claude-3-5-sonnet' => array(
-                'name'         => 'Claude 3.5 Sonnet',
+                'name'         => 'Claude 3.5 Sonnet (Anthropic)',
                 'pricing_tier' => 'premium',
                 'context'      => 200000,
                 'max_output'   => 8192,
@@ -391,27 +495,39 @@ class ModelRegistry {
                     'vision' => true, 'json_mode' => true, 'streaming' => true,
                 ),
             ),
-            'meta-llama/llama-3.3-70b-instruct' => array(
-                'name'         => 'Llama 3.3 70B',
-                'pricing_tier' => 'free',
-                'context'      => 131072,
-                'max_output'   => 4096,
-                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
-                'description'  => 'Free Llama 3.3 via OpenRouter',
+            'google/gemini-2.0-flash-001' => array(
+                'name'         => 'Gemini 2.0 Flash (Google)',
+                'pricing_tier' => 'premium',
+                'context'      => 1000000,
+                'max_output'   => 8192,
+                'pricing'      => array( 'prompt' => 0.0000001, 'completion' => 0.0000004 ),
+                'description'  => 'Gemini with 1M context via OpenRouter',
                 'capabilities' => array(
-                    'coding' => 72, 'reasoning' => 74, 'writing' => 75, 'speed' => 70,
-                    'vision' => false, 'json_mode' => true, 'streaming' => true,
+                    'coding' => 78, 'reasoning' => 78, 'writing' => 78, 'speed' => 88,
+                    'vision' => true, 'json_mode' => true, 'streaming' => true,
                 ),
             ),
             'deepseek/deepseek-chat' => array(
-                'name'         => 'DeepSeek V3',
+                'name'         => 'DeepSeek V3 (DeepSeek)',
                 'pricing_tier' => 'free',
-                'context'      => 65536,
+                'context'      => 128000,
                 'max_output'   => 8192,
-                'pricing'      => array( 'prompt' => 0, 'completion' => 0 ),
-                'description'  => 'Free DeepSeek via OpenRouter',
+                'pricing'      => array( 'prompt' => 0.00000027, 'completion' => 0.0000011 ),
+                'description'  => 'Top open-source reasoning model',
                 'capabilities' => array(
-                    'coding' => 80, 'reasoning' => 82, 'writing' => 76, 'speed' => 75,
+                    'coding' => 90, 'reasoning' => 80, 'writing' => 80, 'speed' => 70,
+                    'vision' => false, 'json_mode' => true, 'streaming' => true,
+                ),
+            ),
+            'deepseek/deepseek-r1' => array(
+                'name'         => 'DeepSeek R1 (DeepSeek)',
+                'pricing_tier' => 'premium',
+                'context'      => 128000,
+                'max_output'   => 8192,
+                'pricing'      => array( 'prompt' => 0.00000055, 'completion' => 0.00000219 ),
+                'description'  => 'Specialized reasoning model',
+                'capabilities' => array(
+                    'coding' => 92, 'reasoning' => 95, 'writing' => 78, 'speed' => 45,
                     'vision' => false, 'json_mode' => true, 'streaming' => true,
                 ),
             ),

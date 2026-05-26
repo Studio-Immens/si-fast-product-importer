@@ -329,8 +329,7 @@ if ( isset( $_GET['message'] ) ) {
                         echo '<p><span class="dashicons dashicons-yes-alt sifp-status-icon--success"></span> <strong>' . esc_html__( 'Status:', 'si-flash-products' ) . '</strong> ' . sprintf( esc_html__( 'Database file exists (%s)', 'si-flash-products' ), $size ) . '</p>';
 
                         global $wpdb;
-                        $table_name = $wpdb->prefix . 'sifp_local_products';
-                        $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}sifp_local_products" ) );
+                        $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}sifp_local_products" );
                         if ( $count > 0 ) {
                             echo '<p><span class="dashicons dashicons-database-view sifp-status-icon--primary"></span> <strong>' . esc_html__( 'DB Table:', 'si-flash-products' ) . '</strong> ' . sprintf( esc_html__( '%d products synced.', 'si-flash-products' ), $count ) . '</p>';
                         } else {

@@ -98,12 +98,15 @@ class OpenAIProvider implements AIInterface {
 
     private function get_effective_model(): string {
         $model = get_option( $this->get_model_option_name(), 'gpt-4o-mini' );
+
         if ( 'custom' === $model ) {
             $custom = get_option( $this->get_model_option_name() . '_custom', '' );
             if ( ! empty( $custom ) ) {
                 return $custom;
             }
+            return 'gpt-4o-mini';
         }
+
         return $model;
     }
 }

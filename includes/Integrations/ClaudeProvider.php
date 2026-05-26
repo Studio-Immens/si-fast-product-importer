@@ -105,12 +105,15 @@ class ClaudeProvider implements AIInterface {
 
     private function get_effective_model(): string {
         $model = get_option( $this->get_model_option_name(), 'claude-sonnet-4-20250514' );
+
         if ( 'custom' === $model ) {
             $custom = get_option( $this->get_model_option_name() . '_custom', '' );
             if ( ! empty( $custom ) ) {
                 return $custom;
             }
+            return 'claude-sonnet-4-20250514';
         }
+
         return $model;
     }
 }

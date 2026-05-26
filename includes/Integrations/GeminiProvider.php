@@ -104,23 +104,30 @@ class GeminiProvider implements AIInterface {
 
     private function get_effective_model(): string {
         $model = get_option( $this->get_model_option_name(), 'gemini-2.0-flash' );
-        // Validate: preview models with dates may not exist — fall back to stable
-        $known_working = array(
-            'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-pro-exp-03-25',
-            'gemini-1.5-flash', 'gemini-1.5-pro',
-        );
-        if ( ! in_array( $model, $known_working, true ) && strpos( $model, 'custom' ) === false ) {
-            $custom = get_option( $this->get_model_option_name() . '_custom', '' );
-            if ( ! empty( $custom ) ) {
-                return $custom;
-            }
-        }
+
+        // Custom model override
         if ( 'custom' === $model ) {
             $custom = get_option( $this->get_model_option_name() . '_custom', '' );
             if ( ! empty( $custom ) ) {
                 return $custom;
             }
+            return 'gemini-2.0-flash';
         }
+
+        // Validate against known working models to avoid API errors
+        $known_working = array(
+            'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-pro-exp-03-25',
+            'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-flash-latest',
+        );
+        if ( ! in_array( $model, $known_working, true ) ) {
+            // Unknown model — try custom fallback, otherwise fall back to stable
+            $custom = get_option( $this->get_model_option_name() . '_custom', '' );
+            if ( ! empty( $custom ) ) {
+                return $custom;
+            }
+            return 'gemini-2.0-flash';
+        }
+
         return $model;
     }
 }
