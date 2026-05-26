@@ -72,6 +72,18 @@ class Database {
         dbDelta( $sql );
 
         update_option( 'sifp_db_version', '1.1.0' );
+
+        // Copy default JSON file to uploads directory
+        $source_file = __DIR__ . '/../local_products.json';
+        $upload_dir  = wp_upload_dir();
+        $dest_dir    = $upload_dir['basedir'] . '/si-flash-products';
+
+        if ( file_exists( $source_file ) && ! file_exists( $dest_dir . '/local_products.json' ) ) {
+            if ( ! file_exists( $dest_dir ) ) {
+                wp_mkdir_p( $dest_dir );
+            }
+            copy( $source_file, $dest_dir . '/local_products.json' );
+        }
     }
 
     /**

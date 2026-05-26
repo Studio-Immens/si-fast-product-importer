@@ -1,5 +1,19 @@
 <?php
+/**
+ * Standalone helper: generates a local_products.json file.
+ *
+ * This file is NOT loaded by the plugin. It is a utility
+ * that can be run via WP-CLI or direct admin action.
+ */
+
 defined( 'ABSPATH' ) || exit;
+
+$upload_dir = wp_upload_dir();
+$output_dir = $upload_dir['basedir'] . '/si-flash-products';
+if ( ! file_exists( $output_dir ) ) {
+    wp_mkdir_p( $output_dir );
+}
+$output_file = $output_dir . '/local_products.json';
 
 $categories_data = [
     'Elettronica' => ['Smartphone', 'Laptop', 'Cuffie Bluetooth', 'Smartwatch', 'Tablet', 'Fotocamera', 'Monitor 4K', 'Tastiera Meccanica'],
@@ -56,5 +70,5 @@ for ($i = 1; $i <= 1000; $i++) {
     ];
 }
 
-file_put_contents('local_products.json', json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-echo "Generati 1000 prodotti in local_products.json\n";
+file_put_contents( $output_file, wp_json_encode( $products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) );
+echo "Generati 1000 prodotti in " . esc_html( $output_file ) . "\n";

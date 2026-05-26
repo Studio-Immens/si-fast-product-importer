@@ -46,3 +46,10 @@ wp-config.php
 # Note: If you wish to whitelist themes,
 # uncomment the next line
 #/wp-content/themes
+
+# Internal / dev files not for distribution
+INTERNAL_DOCUMENTATION.md
+*.log
+debug.log
+.github/
+.git/

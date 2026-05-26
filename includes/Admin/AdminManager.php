@@ -77,6 +77,11 @@ class AdminManager {
         wp_enqueue_media();
         wp_enqueue_script( 'sifp-admin-functions', SIFProd_URL . 'functions.js', array( 'jquery' ), SIFProd_VERSION, true );
 
+        // Enqueue settings JS only on settings page
+        if ( strpos( $hook, 'flash_products_settings' ) !== false ) {
+            wp_enqueue_script( 'sifp-settings', SIFProd_URL . 'assets/settings.js', array( 'jquery' ), SIFProd_VERSION, true );
+        }
+
         wp_localize_script( 'sifp-admin-functions', 'sifp_ajax', array(
             'ajax_url'      => admin_url( 'admin-ajax.php' ),
             'nonce'         => wp_create_nonce( 'sifp_nonce' ),

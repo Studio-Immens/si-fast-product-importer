@@ -3,72 +3,45 @@ namespace SIFlashProducts\Core;
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * AI Generator Class (Gemini Integration)
- */
 class AIGenerator {
 
-    /**
-     * API Endpoint
-     */
-    private $api_url = "https://generativelanguage.googleapis.com/v1beta/models/";
-
-    /**
-     * Generate product details
-     */
     public function generate( $data ) {
-        $api_key = get_option( 'sifp_gemini_api_key' );
-        if ( ! $api_key ) {
-            return new \WP_Error( 'missing_api_key', __( 'Gemini API Key is missing in settings.', 'si-flash-products' ) );
+        $provider = AIProviderManager::instance()->get_active_provider();
+
+        if ( ! $provider ) {
+            return new \WP_Error( 'no_provider', __( 'No active AI provider found. Please configure one in Settings.', 'si-flash-products' ) );
         }
 
-        $model = get_option( 'sifp_ai_model', 'gemini-flash-latest' );
-        $url = "{$this->api_url}{$model}:generateContent?key={$api_key}";
+        if ( ! $provider->is_available() ) {
+            return new \WP_Error( 'provider_not_configured', sprintf(
+                __( '%s is not configured. Please add your API key in Settings.', 'si-flash-products' ),
+                $provider->get_name()
+            ) );
+        }
 
         $prompt = $this->build_prompt( $data );
 
-        $body = array(
-            'contents' => array(
-                array(
-                    'parts' => array(
-                        array( 'text' => $prompt )
-                    )
-                )
-            ),
-            'generationConfig' => array(
-                'temperature' => 0.7,
-                'response_mime_type' => 'application/json'
-            )
-        );
+        $result = $provider->call_ai( $prompt, true, 8192 );
 
-        $response = wp_remote_post( $url, array(
-            'body'    => json_encode( $body ),
-            'headers' => array( 'Content-Type' => 'application/json' ),
-            'timeout' => 45,
-        ) );
-
-        if ( is_wp_error( $response ) ) {
-            return $response;
-        }
-
-        $res_body = json_decode( wp_remote_retrieve_body( $response ), true );
-        if ( isset( $res_body['error'] ) ) {
-            return new \WP_Error( 'ai_error', $res_body['error']['message'] ?? __( 'AI Error', 'si-flash-products' ) );
-        }
-
-        $content = $res_body['candidates'][0]['content']['parts'][0]['text'] ?? '';
-        
-        // Clean markdown backticks if present
-        $content = preg_replace('/^```json\s*/i', '', $content);
-        $content = preg_replace('/```\s*$/i', '', $content);
-        $content = trim($content);
-        
-        $decoded = json_decode( $content, true );
-        
-        if ( ! is_array( $decoded ) ) {
-            // Give detailed log if decoding fails to help debugging
+        if ( ! $result['success'] ) {
             if ( function_exists( 'sifp_log' ) ) {
-                sifp_log( 'Failed to decode JSON from AI. Raw content: ' . print_r($content, true), 'ai_generator', 'error' );
+                sifp_log( 'AI generation failed: ' . ( $result['error'] ?? 'Unknown error' ), 'ai_generator', 'error' );
+            }
+            return new \WP_Error( 'ai_error', $result['error'] ?? __( 'AI call failed.', 'si-flash-products' ) );
+        }
+
+        $content = $result['text'];
+
+        // Clean markdown backticks if present
+        $content = preg_replace( '/^```json\s*/i', '', $content );
+        $content = preg_replace( '/```\s*$/i', '', $content );
+        $content = trim( $content );
+
+        $decoded = json_decode( $content, true );
+
+        if ( ! is_array( $decoded ) ) {
+            if ( function_exists( 'sifp_log' ) ) {
+                sifp_log( 'Failed to decode JSON from AI. Raw: ' . substr( print_r( $content, true ), 0, 500 ), 'ai_generator', 'error' );
             }
             return new \WP_Error( 'ai_invalid_json', __( 'AI returned an invalid JSON format.', 'si-flash-products' ) );
         }
@@ -76,18 +49,14 @@ class AIGenerator {
         return $decoded;
     }
 
-    /**
-     * Build Prompt
-     */
     private function build_prompt( $data ) {
         $name = isset( $data['name'] ) ? sanitize_text_field( $data['name'] ) : 'Prodotto';
         $desc = isset( $data['description'] ) ? sanitize_textarea_field( $data['description'] ) : '';
         $lang = get_option( 'sifp_default_lang', 'it' );
 
-        $prompt = "Genera i dettagli completi per un prodotto WooCommerce in lingua: {$lang}.\n";
+        $prompt  = "Genera i dettagli completi per un prodotto WooCommerce in lingua: {$lang}.\n";
         $prompt .= "Nome del prodotto: {$name}\n";
         $prompt .= "Descrizione fornita: {$desc}\n\n";
-        
         $prompt .= "Il risultato deve essere un JSON valido con i seguenti campi:\n";
         $prompt .= "- post_title: Titolo accattivante\n";
         $prompt .= "- post_content: Descrizione lunga formattata in HTML (usa <ul>, <p>, <strong>)\n";
@@ -100,7 +69,6 @@ class AIGenerator {
         $prompt .= "- seo_description: Meta description ottimizzata SEO (max 160 car.)\n";
         $prompt .= "- attributes: Array di oggetti con {name, value} (es: {name: 'Colore', value: 'Rosso|Blu'})\n";
         $prompt .= "- variations: (Opzionale) Se ha attributi, genera un array di varianti con {attributes, regular_price, sku}\n\n";
-        
         $prompt .= "Ritorna SOLO il JSON.";
 
         return $prompt;

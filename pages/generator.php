@@ -1,7 +1,4 @@
 <?php
-// If this file is called directly, abort.
-namespace SIFlashProducts\Admin;
-
 defined( 'ABSPATH' ) || exit;
 
 if ( ! current_user_can( 'manage_options' ) ) {

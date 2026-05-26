@@ -1,20 +1,24 @@
 === SI Flash Products ===
-Contributors: Mauro Arnone
+Contributors: mauroarnone
 Tags: woocommerce, product importer, ai generator, gemini, product management
-Requires at least: 6.0
+Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
+Requires Plugins: woocommerce
+WC requires at least: 5.0
+WC tested up to: 9.0
 Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Flash Products is a powerful WordPress plugin that gives you instant access to a vast database of ready-to-import products for your WooCommerce store.
+Flash Products gives you instant access to a vast database of ready-to-import products for your WooCommerce store.
 
 == Description ==
 
 Flash Products is designed for e-commerce businesses looking to expand their product range quickly and efficiently. It allows you to import high-quality, pre-configured items with just a few clicks.
 
 Key Features:
+
 * **Instant Product Search**: Search through a vast database of products.
 * **One-Click Import**: Import products directly into your WooCommerce store.
 * **AI Product Generator**: Generate unique product descriptions and details using Google Gemini AI.
@@ -55,3 +59,8 @@ You can get one for free from the Google AI Studio.
 * Added AI Product Generation.
 * Added Local JSON Database support.
 * Full WPCS compliance and security hardening.
+
+== Upgrade Notice ==
+
+= 1.1.0 =
+Important security and compliance update. All users should upgrade.

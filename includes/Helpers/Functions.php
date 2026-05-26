@@ -106,13 +106,12 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
                 
                 // Specific sanitization based on setting key
                 switch ( $sanitized_key ) {
-                    case 'sifp_gemini_api_key':
-                    case 'sifp_ai_tone':
-                    case 'sifp_sku_prefix':
-                        $sanitized_value = sanitize_text_field( $value );
+                    case 'sifp_openai_key':
+                    case 'sifp_claude_key':
+                    case 'sifp_openrouter_key':
+                        $sanitized_value = \SIFlashProducts\Helpers\Encryption::encrypt( sanitize_text_field( $value ) );
                         break;
                     case 'sifp_remote_db_links':
-                        // Sanitize each URL in the textarea
                         $links = explode( "\n", str_replace( "\r", "", $value ) );
                         $sanitized_links = array();
                         foreach ( $links as $link ) {
@@ -130,9 +129,7 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
                     case 'sifp_ai_creativity':
                         $sanitized_value = floatval( $value );
                         break;
-                    case 'sifp_ai_model':
-                        $sanitized_value = sanitize_text_field( $value );
-                        break;
+                    case 'sifp_active_ai_provider':
                     case 'sifp_default_product_status':
                     case 'sifp_default_import_status':
                         $sanitized_value = sanitize_key( $value );
@@ -146,7 +143,7 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
             }
             
             // Re-render the page with a success message
-            $redirect_url = remove_query_arg( array( 'message', 'sifp_sync_db', 'sifp_regenerate_db', '_wpnonce' ), $_SERVER['REQUEST_URI'] );
+            $redirect_url = remove_query_arg( array( 'message', 'sifp_sync_db', 'sifp_regenerate_db', '_wpnonce' ), wp_unslash( $_SERVER['REQUEST_URI'] ) );
             wp_safe_redirect( add_query_arg( 'message', 'settings_saved', $redirect_url ) );
             exit;
         }
@@ -269,7 +266,7 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
         $db->sync_json_to_db( $json_path );
         
         if ( isset( $_GET['sifp_regenerate_db'] ) ) {
-            wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_regenerated' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&tab=database&message=db_regenerated' ) );
             exit;
         }
     }
@@ -291,10 +288,10 @@ if ( ! function_exists( 'sifp_handle_sync_db' ) ) {
             if ( file_exists( $json_path ) ) {
                 $db = \SIFlashProducts\Core\Database::instance();
                 $db->sync_json_to_db( $json_path );
-                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_synced' ) );
+                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&tab=database&message=db_synced' ) );
                 exit;
             } else {
-                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&message=db_file_not_found' ) );
+                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&tab=database&message=db_file_not_found' ) );
                 exit;
             }
         }
@@ -328,9 +325,13 @@ if ( ! function_exists( 'sifp_log' ) ) {
         $logs = array_slice( $logs, 0, 50 );
         update_option( 'sifp_error_logs', $logs );
 
-        // Fallback to file logging if WP_DEBUG is on
+        // Fallback to file logging if WP_DEBUG is on (use content dir, not plugin dir)
         if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-            $log_file = SIFProd_PATH . 'debug.log';
+            $log_dir = WP_CONTENT_DIR . '/uploads/si-flash-products';
+            if ( ! file_exists( $log_dir ) ) {
+                wp_mkdir_p( $log_dir );
+            }
+            $log_file = $log_dir . '/debug.log';
             $formatted_message = "[{$timestamp}] [{$level}] [{$context}] " . $log_entry['message'] . PHP_EOL;
             error_log( $formatted_message, 3, $log_file );
         }

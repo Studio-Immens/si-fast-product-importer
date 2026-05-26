@@ -98,6 +98,7 @@ final class Plugin {
         \SIFlashProducts\Admin\AdminManager::instance();
         \SIFlashProducts\Admin\AJAXHandler::instance();
         \SIFlashProducts\Core\Database::instance();
+        \SIFlashProducts\Core\AIProviderManager::instance();
     }
 
     /**

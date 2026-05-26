@@ -37,6 +37,12 @@ class AJAXHandler {
         // AI Generation
         add_action( 'wp_ajax_sifp_ai_generate_product', array( $this, 'ai_generate_product' ) );
         
+        // AI Test Connection (live, uses current form values)
+        add_action( 'wp_ajax_sifp_test_ai_connection', array( $this, 'test_ai_connection' ) );
+
+        // Refresh models for a provider
+        add_action( 'wp_ajax_sifp_refresh_models', array( $this, 'refresh_models' ) );
+        
         // Settings/DB
         add_action( 'wp_ajax_sifp_sync_db', array( $this, 'sync_db' ) );
         add_action( 'wp_ajax_sifp_clear_logs', array( $this, 'clear_logs' ) );
@@ -93,7 +99,7 @@ class AJAXHandler {
             }
 
             // Create a unique cache key based on search parameters
-            $cache_key = 'sifp_remote_search_' . md5( serialize( $args ) . implode('_', $urls) );
+            $cache_key = 'sifp_remote_search_' . md5( wp_json_encode( $args ) . implode('_', $urls) );
             $cached_results = get_transient( $cache_key );
             
             if ( false !== $cached_results ) {
@@ -193,6 +199,79 @@ class AJAXHandler {
         }
 
         wp_send_json_success( $result );
+    }
+
+    /**
+     * Test AI Connection (live, uses posted form values without saving)
+     */
+    public function test_ai_connection() {
+        check_ajax_referer( 'sifp_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+        }
+
+        $provider_id = sanitize_key( $_POST['provider'] ?? '' );
+        $model       = sanitize_text_field( wp_unslash( $_POST['model'] ?? '' ) );
+        $api_key     = sanitize_text_field( wp_unslash( $_POST['api_key'] ?? '' ) );
+
+        if ( ! $provider_id || ! $model ) {
+            wp_send_json_error( __( 'Provider and model are required.', 'si-flash-products' ) );
+        }
+
+        $manager = \SIFlashProducts\Core\AIProviderManager::instance();
+        $provider = $manager->get_provider( $provider_id );
+
+        if ( ! $provider ) {
+            wp_send_json_error( __( 'Provider not found.', 'si-flash-products' ) );
+        }
+
+        // Temporarily override options for this test
+        $original_key = get_option( $provider->get_api_key_option_name() );
+        $original_model = get_option( $provider->get_model_option_name() );
+
+        // For providers that encrypt (OpenAI, Claude, OpenRouter), store raw
+        if ( in_array( $provider_id, array( 'openai', 'claude', 'openrouter' ), true ) ) {
+            if ( ! empty( $api_key ) ) {
+                $encrypted = \SIFlashProducts\Helpers\Encryption::encrypt( $api_key );
+                update_option( $provider->get_api_key_option_name(), $encrypted );
+            }
+        } else {
+            update_option( $provider->get_api_key_option_name(), $api_key );
+        }
+        update_option( $provider->get_model_option_name(), $model );
+
+        $test_prompt = __( 'Reply with ONLY the word: OK. No punctuation, no extra text, just OK.', 'si-flash-products' );
+        $result = $provider->call_ai( $test_prompt, false, 50 );
+
+        // Restore original settings
+        update_option( $provider->get_api_key_option_name(), $original_key );
+        update_option( $provider->get_model_option_name(), $original_model );
+
+        if ( $result['success'] && trim( strtoupper( $result['text'] ) ) === 'OK' ) {
+            wp_send_json_success( __( 'Connection successful!', 'si-flash-products' ) );
+        } else {
+            wp_send_json_error( $result['error'] ?? __( 'Connection failed. Check your API key and model.', 'si-flash-products' ) );
+        }
+    }
+
+    /**
+     * Refresh AI models for a provider
+     */
+    public function refresh_models() {
+        check_ajax_referer( 'sifp_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+        }
+
+        $provider_id = sanitize_key( $_POST['provider'] ?? '' );
+
+        if ( 'openrouter' === $provider_id ) {
+            delete_transient( 'sifp_openrouter_models' );
+        }
+
+        wp_send_json_success( __( 'Models refreshed.', 'si-flash-products' ) );
     }
 
     /**
