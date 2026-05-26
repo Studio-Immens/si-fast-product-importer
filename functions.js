@@ -23,6 +23,7 @@
                 this.searchTimeout = setTimeout(() => this.searchProducts(), 500);
             });
             $(document).on('change', '.sifp-languages, .sifp-categories, .sifp-source, .sifp-orderby, .sifp-limit, .sifp-offset', () => this.searchProducts());
+            $(document).on('change', '.sifp-languages', () => this.filterCategoriesByLanguage());
 
             // Selection
             $(document).on('change', '.sifp-select-product', (e) => this.updateSelection(e));
@@ -71,6 +72,25 @@
         },
 
         // --- Core Functions ---
+
+        filterCategoriesByLanguage: function() {
+            const lang = $(".sifp-languages").val();
+            const catMap = {
+                'it': ['Elettronica', 'Casa', 'Abbigliamento', 'Bellezza', 'Sport'],
+                'en': ['Electronics', 'Home', 'Clothing', 'Beauty', 'Sports']
+            };
+            const valid = lang && catMap[lang] ? catMap[lang] : null;
+
+            $(".sifp-categories option").each(function() {
+                const $opt = $(this);
+                if ($opt.val() === '') return;
+                if (valid !== null && valid.indexOf($opt.text()) === -1) {
+                    $opt.hide();
+                } else {
+                    $opt.show();
+                }
+            });
+        },
 
         searchProducts: function() {
             const $container = $(".sifp-container");

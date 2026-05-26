@@ -156,6 +156,23 @@ class AJAXHandler {
             $all_results['total_results'] += intval( $local_results['total_results'] );
         }
 
+        // Post-filter merged results by language (when language filter is active)
+        if ( ! empty( $args['languages'] ) ) {
+            $valid_cats = $this->get_categories_for_language( $args['languages'] );
+            $filtered = array();
+            foreach ( $all_results['result'] as $product ) {
+                $cat = $product['sifp_categories'] ?? '';
+                foreach ( $valid_cats as $vc ) {
+                    if ( strcasecmp( $cat, $vc ) === 0 ) {
+                        $filtered[] = $product;
+                        break;
+                    }
+                }
+            }
+            $all_results['result']      = $filtered;
+            $all_results['total_results'] = count( $filtered );
+        }
+
         wp_send_json_success( $all_results );
     }
 

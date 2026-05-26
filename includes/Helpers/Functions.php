@@ -242,8 +242,8 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
                     'photo-1468495244123-6c6c332eeece',
                     'photo-1505740420928-5e560c06d30e',
                     'photo-1523275335684-37898b6baf30',
-                    'photo-1526170315830-ef18a283ac13',
-                    'photo-1498049792014-1850a1b1b0b9',
+                    'photo-1507003211169-0a1dd7228f2d',
+                    'photo-1511707171634-5f897ff02aa9',
                 ),
                 'gallery' => array(
                     'photo-1544244015-0df4b3ffc6b0',
@@ -296,7 +296,7 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
                 'main' => array(
                     'photo-1571019613454-1cb2f99b2d8b',
                     'photo-1517836357463-d25dfeac3438',
-                    'photo-1519861531473-920026212ad0',
+                    'photo-1530541930197-ff16ac917b0e',
                     'photo-1518611012118-696072aa579a',
                     'photo-1556817411-31ae72fa3ea0',
                 ),

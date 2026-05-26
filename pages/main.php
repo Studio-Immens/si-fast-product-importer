@@ -9,7 +9,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
 // Use Transients for API results
 $categories = get_transient( 'sifp_api_categories' );
 if ( false === $categories || ! is_object( $categories ) ) {
-    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat' );
+    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat', array( 'timeout' => 5 ) );
     
     if ( is_wp_error( $response ) ) {
         $categories = (object) array( 'result' => array() );
@@ -56,14 +56,31 @@ if ( ! is_object( $categories ) ) {
 
     set_transient( 'sifp_api_categories', $categories, DAY_IN_SECONDS );
 
+// Delete stale transient to force refresh
+delete_transient( 'sifp_api_languages' );
+
 $languages = get_transient( 'sifp_api_languages' );
 if ( false === $languages ) {
-    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=Languages' );
+    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=Languages', array( 'timeout' => 5 ) );
     
     if ( is_wp_error( $response ) ) {
-        $languages = (object) array( 'result' => array() );
+        // Fallback languages when remote API is unreachable
+        $languages = (object) array(
+            'result' => array(
+                (object) array( 'slug' => 'it', 'name' => 'Italiano' ),
+                (object) array( 'slug' => 'en', 'name' => 'English' ),
+            ),
+        );
     } else {
         $languages = json_decode( wp_remote_retrieve_body( $response ) );
+        if ( ! is_object( $languages ) || ! isset( $languages->result ) || ! is_array( $languages->result ) ) {
+            $languages = (object) array(
+                'result' => array(
+                    (object) array( 'slug' => 'it', 'name' => 'Italiano' ),
+                    (object) array( 'slug' => 'en', 'name' => 'English' ),
+                ),
+            );
+        }
     }
     
     set_transient( 'sifp_api_languages', $languages, DAY_IN_SECONDS );
@@ -137,9 +154,18 @@ function sifp_render_pagination_bar() {
             <label><?php echo esc_html__('Categories:','si-flash-products');?></label>
             <select class="sifp-categories" name="sifp_categories">
                 <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
-                <?php 
+                <?php
+                $lang_cat_map = array(
+                    'it' => array( 'Elettronica', 'Casa', 'Abbigliamento', 'Bellezza', 'Sport' ),
+                    'en' => array( 'Electronics', 'Home', 'Clothing', 'Beauty', 'Sports' ),
+                );
+                $valid_cats = ! empty( $selected_lang ) && isset( $lang_cat_map[ $selected_lang ] ) ? $lang_cat_map[ $selected_lang ] : null;
+
                 if ( isset( $categories->result ) && is_array( $categories->result ) ) {
                     foreach ($categories->result as $key => $value) {
+                        if ( $valid_cats !== null && ! in_array( $value->name, $valid_cats ) ) {
+                            continue;
+                        }
                         echo '<option value="'.esc_attr($value->slug).'">'.esc_html($value->name).'</option>';
                     }
                 }
