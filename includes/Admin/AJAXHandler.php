@@ -74,6 +74,7 @@ class AJAXHandler {
 
         $args = array(
             's'          => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['s'] ?? '' ) ) ),
+            'languages'  => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['languages'] ?? '' ) ) ),
             'categories' => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['categories'] ?? '' ) ) ),
             'limit'      => intval( $_GET['limit'] ?? 100 ),
             'offset'     => intval( $_GET['offset'] ?? 0 ),
@@ -111,6 +112,7 @@ class AJAXHandler {
                 // Fetch from remote if not cached
                 foreach ( $urls as $base_url ) {
                     $url = add_query_arg( array(
+                        'languages'  => $args['languages'],
                         'categories' => $args['categories'],
                         'orderby'    => $args['orderby'],
                         'limit'      => $args['limit'],
@@ -141,6 +143,12 @@ class AJAXHandler {
 
         // 2. Get Local Results (from DB)
         if ( $args['source'] === 'all' || $args['source'] === 'local' ) {
+            // When language filter is active, restrict to that language's categories
+            if ( ! empty( $args['languages'] ) && empty( $args['categories'] ) ) {
+                $lang_cats = $this->get_categories_for_language( $args['languages'] );
+                $args['categories'] = implode( ',', $lang_cats );
+            }
+
             $db = \SIFlashProducts\Core\Database::instance();
             $local_results = $db->search( $args );
             
@@ -267,9 +275,8 @@ class AJAXHandler {
 
         $provider_id = sanitize_key( $_POST['provider'] ?? '' );
 
-        if ( 'openrouter' === $provider_id ) {
-            delete_transient( 'sifp_openrouter_models' );
-        }
+        $cache_key = 'sifp_models_v' . \SIFlashProducts\Core\ModelRegistry::CACHE_VERSION . '_' . $provider_id;
+        delete_transient( $cache_key );
 
         wp_send_json_success( __( 'Models refreshed.', 'si-flash-products' ) );
     }
@@ -329,5 +336,15 @@ class AJAXHandler {
             }
         }
         return $sanitized;
+    }
+
+    /**
+     * Map language code to category names for local DB filtering
+     */
+    private function get_categories_for_language( $lang ) {
+        if ( 'it' === $lang ) {
+            return array( 'Elettronica', 'Casa', 'Abbigliamento', 'Bellezza', 'Sport' );
+        }
+        return array( 'Electronics', 'Home', 'Clothing', 'Beauty', 'Sports' );
     }
 }

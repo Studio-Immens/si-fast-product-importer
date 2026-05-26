@@ -218,6 +218,7 @@
     font-weight: 700;
     font-size: 13px;
     color: var(--sifp-text);
+    min-width: 0;
 }
 
 .sifp-nav-element--inline {
@@ -231,20 +232,23 @@
     color: var(--sifp-text) !important;
     border: 1px solid #e2e8f0 !important;
     border-radius: 8px !important;
-    padding: 8px 12px !important;
-    height: 42px !important;
+    padding: 10px 14px !important;
+    min-height: 44px !important;
+    height: auto !important;
     transition: var(--sifp-transition);
     font-size: 14px !important;
     appearance: none !important;
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
+    box-sizing: border-box;
 }
 
 .sifp-nav-element select {
-    padding-right: 35px !important;
+    padding-right: 44px !important;
+    min-width: 200px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
     background-repeat: no-repeat !important;
-    background-position: right 12px center !important;
+    background-position: right 14px center !important;
     background-size: 16px !important;
 }
 
@@ -361,13 +365,12 @@
         grid-template-columns: 1fr;
     }
 }
-    box-shadow: var(--sifp-shadow-hover);
-    border-color: var(--sifp-primary);
-}
 
 .sifp-card-head {
     position: relative;
     height: 220px;
+    max-height: 220px;
+    overflow: hidden;
     background-color: #000;
 }
 
@@ -1534,18 +1537,119 @@
     .sifp-setting-el, .sifp-setting-el { min-width: 0 !important; }
 }
 
-/* Settings Page: Tabs */
-.sifp-main-nav-el--active {
-    background-color: var(--sifp-primary) !important;
-    color: #fff !important;
+/* ════════════════════════════════════════════════════
+   SETTINGS PAGE — redesigned
+   ════════════════════════════════════════════════════ */
+
+/* Header bar */
+.sifp-settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 20px 30px;
+    background: var(--sifp-bg-card);
+    border-radius: var(--sifp-radius-lg);
+    box-shadow: var(--sifp-shadow);
 }
 
-.sifp-settings-tabs .sifp-main-nav-el .dashicons {
-    margin-right: 6px;
+.sifp-settings-header h1 {
+    margin: 0;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* Provider Sections */
-.sifp-provider-section {
+/* Tabs */
+.sifp-settings-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+    background: var(--sifp-bg-card);
+    padding: 10px 10px 0 10px;
+    border-radius: var(--sifp-radius-lg) var(--sifp-radius-lg) 0 0;
+    box-shadow: var(--sifp-shadow);
+}
+
+.sifp-settings-tab {
+    padding: 12px 22px;
+    border-radius: var(--sifp-radius) var(--sifp-radius) 0 0;
+    text-decoration: none;
+    color: var(--sifp-text-muted);
+    font-weight: 600;
+    font-size: 13px;
+    transition: var(--sifp-transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid transparent;
+    border-bottom: none;
+}
+
+.sifp-settings-tab:hover {
+    color: var(--sifp-text);
+    background: var(--sifp-bg-hover);
+}
+
+.sifp-settings-tab--active {
+    color: var(--sifp-primary) !important;
+    background: var(--sifp-bg-main) !important;
+    border-color: #e2e8f0;
+}
+
+.sifp-settings-tab .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Tab panels */
+.sifp-tab-panel {
+    background: var(--sifp-bg-card);
+    padding: 30px;
+    border-radius: 0 0 var(--sifp-radius-lg) var(--sifp-radius-lg);
+    box-shadow: var(--sifp-shadow);
+    margin-bottom: 30px;
+}
+
+/* Provider Selector at top of AI Providers tab */
+.sifp-provider-selector {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding: 18px 22px;
+    background: var(--sifp-bg-main);
+    border-radius: var(--sifp-radius);
+    border: 1px solid #e2e8f0;
+}
+
+.sifp-provider-selector label {
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--sifp-label);
+    white-space: nowrap;
+}
+
+.sifp-provider-selector select {
+    min-width: 280px;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--sifp-bg-input);
+    color: var(--sifp-text);
+}
+
+/* Provider card (one per provider) */
+.sifp-provider-card {
+    border: 1px solid #e2e8f0;
+    border-radius: var(--sifp-radius-lg);
+    overflow: hidden;
+    margin-bottom: 24px;
     animation: sifpFadeIn 0.25s ease;
 }
 
@@ -1554,19 +1658,356 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-.sifp-setting-el--full {
-    min-width: 100% !important;
+.sifp-provider-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--sifp-bg-nav);
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.sifp-setting-el--full select {
-    width: 100% !important;
-    max-width: 400px;
+.sifp-provider-card__head h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--sifp-text);
 }
 
-/* Model Capabilities Card */
+.sifp-provider-card__refresh {
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 4px 10px;
+    color: var(--sifp-text-muted);
+    transition: var(--sifp-transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.sifp-provider-card__refresh:hover {
+    color: var(--sifp-primary);
+    border-color: var(--sifp-primary);
+}
+
+.sifp-provider-card__refresh.sifp-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.sifp-provider-card__refresh.sifp-loading .dashicons {
+    animation: sifpSpin 1s linear infinite;
+}
+
+.sifp-provider-card__body {
+    padding: 24px;
+}
+
+/* Field rows inside provider card */
+.sifp-field {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+}
+
+.sifp-field:last-child {
+    margin-bottom: 0;
+}
+
+.sifp-field__label {
+    min-width: 120px;
+    padding-top: 8px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--sifp-label);
+    flex-shrink: 0;
+}
+
+.sifp-field__control {
+    flex: 1;
+}
+
+.sifp-field__control select {
+    width: 100%;
+    max-width: 500px;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--sifp-bg-input);
+    color: var(--sifp-text);
+}
+
+.sifp-field__control input[type="password"],
+.sifp-field__control input[type="text"] {
+    width: 100%;
+    max-width: 500px;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--sifp-bg-input);
+    color: var(--sifp-text);
+    transition: var(--sifp-transition);
+}
+
+.sifp-field__control input:focus,
+.sifp-field__control select:focus {
+    border-color: var(--sifp-primary);
+    box-shadow: 0 0 0 3px rgba(15, 156, 192, 0.15);
+    outline: none;
+}
+
+.sifp-field__hint {
+    margin: 6px 0 0 0;
+    font-size: 12px;
+    color: var(--sifp-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sifp-field__hint input[type="text"] {
+    width: 220px;
+    padding: 5px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 13px;
+    background: var(--sifp-bg-input);
+    color: var(--sifp-text);
+}
+
+/* Test connection row */
+.sifp-field--test .sifp-field__control {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sifp-test-result {
+    font-weight: 700;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sifp-test-result .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* ─── Settings tab ─── */
+
+.sifp-settings-section {
+    border: 1px solid #e2e8f0;
+    border-radius: var(--sifp-radius-lg);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.sifp-settings-section__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    background: var(--sifp-bg-nav);
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--sifp-primary);
+}
+
+.sifp-settings-section__body {
+    padding: 8px 0;
+}
+
+.sifp-settings-section__body--nopad {
+    padding: 0;
+}
+
+/* Settings rows (label + field) */
+.sifp-settings-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 22px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.sifp-settings-row:last-child {
+    border-bottom: none;
+}
+
+.sifp-settings-row__label {
+    width: 180px;
+    flex-shrink: 0;
+    padding-top: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--sifp-label);
+}
+
+.sifp-settings-row__field {
+    flex: 1;
+    max-width: 500px;
+}
+
+.sifp-settings-row__field input[type="text"],
+.sifp-settings-row__field input[type="number"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--sifp-bg-input);
+    color: var(--sifp-text);
+    transition: var(--sifp-transition);
+}
+
+.sifp-settings-row__field select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--sifp-bg-input);
+    color: var(--sifp-text);
+}
+
+.sifp-settings-row__field textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--sifp-bg-input);
+    color: var(--sifp-text);
+    resize: vertical;
+}
+
+.sifp-settings-row__field input:focus,
+.sifp-settings-row__field select:focus,
+.sifp-settings-row__field textarea:focus {
+    border-color: var(--sifp-primary);
+    box-shadow: 0 0 0 3px rgba(15, 156, 192, 0.15);
+    outline: none;
+}
+
+.sifp-settings-row__hint {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--sifp-text-muted);
+    line-height: 1.4;
+}
+
+/* ─── Button variants ─── */
+.sifp-button--small {
+    height: 32px !important;
+    padding: 0 14px !important;
+    font-size: 12px !important;
+}
+
+.sifp-button--large {
+    padding: 14px 40px !important;
+    font-size: 15px !important;
+}
+
+.sifp-button--secondary {
+    background: var(--sifp-bg-input) !important;
+    color: var(--sifp-text) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.sifp-button--secondary:hover {
+    background: var(--sifp-bg-hover) !important;
+    border-color: var(--sifp-primary) !important;
+}
+
+/* ─── Settings footer ─── */
+.sifp-settings-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 0;
+    margin-top: 10px;
+}
+
+/* ─── Database tab ─── */
+.sifp-db-intro {
+    padding: 0 22px;
+    margin: 12px 0 18px 0;
+    font-size: 13px;
+    color: var(--sifp-text-muted);
+}
+
+.sifp-db-cards {
+    display: flex;
+    gap: 16px;
+    padding: 0 22px;
+    margin-bottom: 20px;
+}
+
+.sifp-db-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--sifp-radius);
+    background: var(--sifp-bg-main);
+}
+
+.sifp-db-card--ok {
+    border-left: 4px solid var(--sifp-success);
+}
+
+.sifp-db-card--empty {
+    border-left: 4px solid var(--sifp-error);
+}
+
+.sifp-db-card__icon .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--sifp-primary);
+}
+
+.sifp-db-card__info strong {
+    display: block;
+    font-size: 13px;
+    color: var(--sifp-text);
+    margin-bottom: 2px;
+}
+
+.sifp-db-card__status {
+    font-size: 12px;
+    color: var(--sifp-success);
+    font-weight: 600;
+}
+
+.sifp-db-card__status--missing {
+    color: var(--sifp-error);
+}
+
+.sifp-db-actions {
+    display: flex;
+    gap: 12px;
+    padding: 0 22px 22px 22px;
+}
+
+/* ─── Model capabilities card ─── */
 .sifp-model-caps {
-    margin-top: 12px;
-    padding: 15px;
+    margin: 0 0 18px 136px;
+    padding: 14px 18px;
     background: var(--sifp-bg-hover);
     border: 1px solid #e2e8f0;
     border-radius: var(--sifp-radius);
@@ -1577,7 +2018,7 @@
 }
 
 .sifp-caps-desc {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: var(--sifp-text-muted);
     font-size: 12px;
     font-style: italic;
@@ -1589,14 +2030,14 @@
 }
 
 .sifp-caps-table tr td {
-    padding: 4px 8px;
+    padding: 3px 8px;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .sifp-caps-label {
     color: var(--sifp-label);
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     width: 40%;
@@ -1605,23 +2046,23 @@
 .sifp-caps-val {
     color: var(--sifp-text);
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .sifp-caps-cost {
     font-family: monospace;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--sifp-text-muted);
 }
 
 .sifp-caps-bar {
     display: inline-block;
-    width: 80px;
-    height: 6px;
+    width: 70px;
+    height: 5px;
     background: #e2e8f0;
     border-radius: 3px;
     vertical-align: middle;
-    margin-right: 8px;
+    margin-right: 6px;
 }
 
 .sifp-caps-fill {
@@ -1638,42 +2079,51 @@
 .sifp-caps-yes {
     color: var(--sifp-success);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .sifp-caps-no {
     color: var(--sifp-error);
     font-weight: 700;
-    font-size: 14px;
-}
-
-/* Test Connection button area */
-.sifp-setting-el--test {
-    min-width: 280px !important;
-}
-
-.sifp-ai-test-result {
-    vertical-align: middle;
     font-size: 13px;
 }
 
-.sifp-ai-test-result .dashicons {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
+/* ─── Error logs table ─── */
+.sifp-log-table-container {
+    max-height: 400px;
+    overflow-y: auto;
 }
 
-/* Refresh models button loading state */
-.sifp-btn-refresh-models.sifp-loading {
-    opacity: 0.5;
-    pointer-events: none;
+.sifp-log-table-container table {
+    margin: 0 !important;
+    border: none !important;
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.sifp-btn-refresh-models.sifp-loading .dashicons {
-    animation: sifpSpin 1s linear infinite;
+.sifp-log-table-container table th {
+    background: var(--sifp-bg-nav);
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 10px 16px !important;
+    color: var(--sifp-label);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-align: left;
 }
 
+.sifp-log-table-container table td {
+    padding: 10px 16px !important;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--sifp-text-muted);
+    font-size: 13px;
+}
+
+.sifp-log-table-container table tr:hover td {
+    background: var(--sifp-bg-hover);
+}
+
+/* Animations */
 @keyframes sifpSpin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }

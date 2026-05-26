@@ -97,6 +97,7 @@ final class Plugin {
     private function init_components() {
         \SIFlashProducts\Admin\AdminManager::instance();
         \SIFlashProducts\Admin\AJAXHandler::instance();
+        \SIFlashProducts\Admin\ProductAISidebar::instance();
         \SIFlashProducts\Core\Database::instance();
         \SIFlashProducts\Core\AIProviderManager::instance();
     }

@@ -7,11 +7,17 @@ class ModelRegistry {
 
     protected static $_instance = null;
 
+    const CACHE_VERSION = 2;
+
     public static function instance() {
         if ( is_null( self::$_instance ) ) {
             self::$_instance = new self();
         }
         return self::$_instance;
+    }
+
+    private function cache_key( string $provider_id ): string {
+        return 'sifp_models_v' . self::CACHE_VERSION . '_' . $provider_id;
     }
 
     public function get_models( string $provider_id ): array {
@@ -332,18 +338,20 @@ class ModelRegistry {
     }
 
     public function get_openrouter_models(): array {
-        $cached = get_transient( 'sifp_openrouter_models' );
+        $cache_key = $this->cache_key( 'openrouter' );
+        $cached = get_transient( $cache_key );
         if ( false !== $cached && is_array( $cached ) ) {
             return $cached;
         }
 
+        // Start with defaults (ensures :free aliases are always available)
         $models = $this->get_default_openrouter_models();
 
+        // Fetch from OpenRouter API and merge onto defaults
         $response = wp_remote_get( 'https://openrouter.ai/api/v1/models', array( 'timeout' => 10 ) );
         if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
             $body = json_decode( wp_remote_retrieve_body( $response ), true );
             if ( isset( $body['data'] ) && is_array( $body['data'] ) ) {
-                $models = array();
                 foreach ( $body['data'] as $m ) {
                     $id = sanitize_text_field( $m['id'] );
                     $pricing  = $m['pricing'] ?? array( 'prompt' => 0, 'completion' => 0 );
@@ -366,7 +374,7 @@ class ModelRegistry {
             }
         }
 
-        set_transient( 'sifp_openrouter_models', $models, HOUR_IN_SECONDS );
+        set_transient( $cache_key, $models, HOUR_IN_SECONDS );
         return $models;
     }
 
@@ -576,11 +584,9 @@ class ModelRegistry {
     }
 
     public function refresh_models( string $provider_id ): bool {
-        if ( 'openrouter' === $provider_id ) {
-            delete_transient( 'sifp_openrouter_models' );
-            $this->get_openrouter_models();
-            return true;
-        }
-        return false;
+        $cache_key = $this->cache_key( $provider_id );
+        delete_transient( $cache_key );
+        $this->get_openrouter_models();
+        return true;
     }
 }

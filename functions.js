@@ -83,12 +83,15 @@
                 action: 'sifp_search_products',
                 nonce: sifp_ajax.nonce,
                 s: $(".sifp-keyword").val(),
+                languages: $(".sifp-languages").val(),
                 categories: $(".sifp-categories").val(),
                 limit: $(".sifp-limit").val(),
                 offset: $(".sifp-offset").val(),
                 orderby: $(".sifp-orderby").val(),
                 source: $(".sifp-source").val()
             };
+
+            console.log('Search languages:', data.languages);
 
             $.get(sifp_ajax.ajax_url, data, (response) => {
                 $container.css('opacity', '1');
@@ -535,5 +538,78 @@
     };
 
     $(document).ready(() => SIFP.init());
+
+    // ────────────────────────────────────────────────────────────
+    // Product Edit AI Sidebar (WooCommerce product edit page)
+    // ────────────────────────────────────────────────────────────
+    $(document).on('click', '#sifp-ai-prod-generate', function() {
+        const $btn = $(this);
+        const name = $('#sifp_ai_prod_name').val();
+        const context = $('#sifp_ai_prod_context').val();
+        const $result = $('#sifp-ai-prod-result');
+
+        if (!name) {
+            $result.html('<span style="color:#d63638;">⚠️ Please enter a product name.</span>');
+            return;
+        }
+
+        $btn.prop('disabled', true).html('<span class="dashicons dashicons-update spin" style="font-size:16px;width:16px;height:16px;margin:0;"></span> Generating...');
+        $result.html('');
+
+        $.post(ajaxurl, {
+            action: 'sifp_ai_generate_product',
+            nonce: sifp_ajax ? sifp_ajax.nonce : '',
+            data: { name: name, description: context }
+        }, function(response) {
+            $btn.prop('disabled', false).html('<span class="dashicons dashicons-sparkles" style="font-size:16px;width:16px;height:16px;margin:0;"></span> Generate with AI');
+
+            if (response.success) {
+                const d = response.data;
+
+                // Title
+                if (d.post_title && $('#title').length) {
+                    $('#title').val(d.post_title).trigger('input');
+                }
+
+                // Regular description (TinyMCE)
+                if (d.post_content) {
+                    if (window.tinymce && tinymce.get('content')) {
+                        tinymce.get('content').setContent(d.post_content);
+                    } else if ($('#content').length) {
+                        $('#content').val(d.post_content);
+                    }
+                }
+
+                // Excerpt / short description
+                if (d.post_excerpt && $('#excerpt').length) {
+                    if (window.tinymce && tinymce.get('excerpt')) {
+                        tinymce.get('excerpt').setContent(d.post_excerpt);
+                    } else {
+                        $('#excerpt').val(d.post_excerpt);
+                    }
+                }
+
+                // Price
+                if (d.regular_price && $('#_regular_price').length) {
+                    $('#_regular_price').val(d.regular_price).trigger('input');
+                }
+                if (d.sale_price && $('#_sale_price').length) {
+                    $('#_sale_price').val(d.sale_price).trigger('input');
+                }
+
+                // SKU
+                if (d.sku && $('#_sku').length) {
+                    $('#_sku').val(d.sku).trigger('input');
+                }
+
+                $result.html('<span style="color:#10b981;">✓ Product data generated! Check the fields above.</span>');
+            } else {
+                $result.html('<span style="color:#d63638;">✗ ' + (response.data || 'Generation failed.') + '</span>');
+            }
+        }).fail(function() {
+            $btn.prop('disabled', false).html('<span class="dashicons dashicons-sparkles" style="font-size:16px;width:16px;height:16px;margin:0;"></span> Generate with AI');
+            $result.html('<span style="color:#d63638;">✗ Connection error. Please try again.</span>');
+        });
+    });
 
 })(jQuery);

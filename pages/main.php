@@ -118,9 +118,15 @@ function sifp_render_pagination_bar() {
             <select class="sifp-languages" name="sifp_languages">
                 <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
                 <?php 
+                // Detect default language from WordPress locale
+                $locale       = get_locale();
+                $detected_lang = strpos( $locale, 'it' ) === 0 ? 'it' : 'en';
+                $selected_lang = ! empty( $_GET['languages'] ) ? sanitize_text_field( $_GET['languages'] ) : $detected_lang;
+
                 if ( isset( $languages->result ) && is_array( $languages->result ) ) {
                     foreach ($languages->result as $key => $value) {
-                        echo '<option value="'.esc_attr($value->slug).'">'.esc_html($value->name).'</option>';
+                        $is_selected = ( $value->slug === $selected_lang );
+                        echo '<option value="'.esc_attr($value->slug).'"' . ( $is_selected ? ' selected="selected"' : '' ) . '>'.esc_html($value->name).'</option>';
                     }
                 }
                 ?>

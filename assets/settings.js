@@ -5,23 +5,23 @@
         return $('#sifp_active_ai_provider').val();
     }
 
-    function getProviderSection(provider) {
+    function getProviderCard(provider) {
         return $('#sifp-provider-' + provider);
     }
 
     function getModelSelect(provider) {
-        return getProviderSection(provider).find('.sifp-ai-model-select');
+        return getProviderCard(provider).find('.sifp-ai-model-select');
     }
 
     function getApiKeyInput(provider) {
-        return getProviderSection(provider).find('.sifp-ai-api-key');
+        return getProviderCard(provider).find('.sifp-ai-api-key');
     }
 
     function getSelectedModel(provider) {
         var select = getModelSelect(provider);
         var model = select.val();
         if (model === 'custom') {
-            var customInput = getProviderSection(provider).find('input[name$="_custom"]');
+            var customInput = getProviderCard(provider).find('.sifp-field__hint input[type="text"]');
             return customInput.val() || '';
         }
         return model;
@@ -59,13 +59,8 @@
     function buildCapabilitiesCard(caps, context, description, pricing) {
         if (!caps) return '';
         var labels = {
-            coding: 'Coding',
-            reasoning: 'Reasoning',
-            writing: 'Writing',
-            speed: 'Speed',
-            vision: 'Vision',
-            json_mode: 'JSON Mode',
-            streaming: 'Streaming'
+            coding: 'Coding', reasoning: 'Reasoning', writing: 'Writing', speed: 'Speed',
+            vision: 'Vision', json_mode: 'JSON Mode', streaming: 'Streaming'
         };
         var html = '<div class="sifp-caps-card">';
         if (description) {
@@ -104,8 +99,8 @@
 
     function updateCapabilities(provider) {
         $('.sifp-model-caps').hide();
-        var section = getProviderSection(provider);
-        if (!section.length) return;
+        var card = getProviderCard(provider);
+        if (!card.length) return;
         var select = getModelSelect(provider);
         if (!select.length) return;
         var opt = select.find('option:selected');
@@ -126,12 +121,8 @@
         // Provider switch
         $('#sifp_active_ai_provider').on('change', function() {
             var provider = $(this).val();
-            // Sync hidden input for form submission
-            $('input[name="sifp_active_tab"]').val('ai-providers');
-            // Switch visible provider sections
-            $('.sifp-provider-section').hide();
-            getProviderSection(provider).show();
-            // Update capabilities for the newly visible provider
+            $('.sifp-provider-card').hide();
+            getProviderCard(provider).show();
             updateCapabilities(provider);
         });
 
@@ -141,21 +132,21 @@
             updateCapabilities(provider);
         });
 
-        // Test connection button
+        // Test connection
         $(document).on('click', '.sifp-btn-test-ai', function() {
             var $btn = $(this);
-            var $result = $btn.siblings('.sifp-ai-test-result');
+            var $result = $btn.closest('.sifp-field__control').find('.sifp-test-result');
             var provider = $btn.data('provider');
             var model = getSelectedModel(provider);
             var apiKey = getApiKeyInput(provider).val();
 
             if (!model) {
-                $result.text('Select a model first.').css('color', '#ef4444');
+                $result.html('<span class="dashicons dashicons-no-alt" style="color:#ef4444;"></span> Select a model first.').css('color', '#ef4444');
                 return;
             }
 
             $btn.prop('disabled', true);
-            $result.text('Testing...').css('color', '#64748b');
+            $result.html('<span class="dashicons dashicons-update spin" style="color:#64748b;"></span> Testing...').css('color', '#64748b');
 
             $.ajax({
                 url: sifp_ajax.ajax_url,
@@ -183,8 +174,8 @@
             });
         });
 
-        // Refresh models button
-        $(document).on('click', '.sifp-btn-refresh-models', function() {
+        // Refresh models
+        $(document).on('click', '.sifp-provider-card__refresh', function() {
             var $btn = $(this);
             var provider = $btn.data('provider');
             $btn.addClass('sifp-loading');
@@ -197,34 +188,31 @@
                     provider: provider
                 },
                 complete: function() {
-                    $btn.removeClass('sifp-loading');
                     location.reload();
                 }
             });
         });
 
-        // Show capabilities for initially selected provider
-        setTimeout(function() {
-            var provider = getCurrentProvider();
-            updateCapabilities(provider);
-        }, 200);
-
-        // Tab switching via JS for same-page navigation
-        $('.sifp-settings-tabs .sifp-main-nav-el').on('click', function(e) {
+        // Tab switching via JS (prevent page load)
+        $('.sifp-settings-tab').on('click', function(e) {
             e.preventDefault();
             var tab = $(this).data('tab');
-            $('.sifp-settings-tabs .sifp-main-nav-el').removeClass('sifp-main-nav-el--active');
-            $(this).addClass('sifp-main-nav-el--active');
-            $('.sifp-tab-content').hide();
-            $('.sifp-tab-content[data-tab="' + tab + '"]').show();
+            $('.sifp-settings-tab').removeClass('sifp-settings-tab--active');
+            $(this).addClass('sifp-settings-tab--active');
+            $('.sifp-tab-panel').hide();
+            $('.sifp-tab-panel[data-tab="' + tab + '"]').show();
             $('input[name="sifp_active_tab"]').val(tab);
-            // Update URL without reload
             if (window.history.replaceState) {
                 var url = new URL(window.location.href);
                 url.searchParams.set('tab', tab);
                 window.history.replaceState({}, '', url.toString());
             }
         });
+
+        // Show capabilities for initially selected provider
+        setTimeout(function() {
+            updateCapabilities(getCurrentProvider());
+        }, 200);
     });
 
 })(jQuery);

@@ -197,8 +197,19 @@ class Database {
         }
 
         if ( ! empty( $args['categories'] ) ) {
-            $query .= " AND categories LIKE %s";
-            $params[] = '%' . $wpdb->esc_like( $args['categories'] ) . '%';
+            // Support comma-separated category names (OR logic)
+            $cats = explode( ',', $args['categories'] );
+            $cat_conditions = array();
+            foreach ( $cats as $cat ) {
+                $cat = trim( $cat );
+                if ( ! empty( $cat ) ) {
+                    $cat_conditions[] = 'categories LIKE %s';
+                    $params[] = '%' . $wpdb->esc_like( $cat ) . '%';
+                }
+            }
+            if ( ! empty( $cat_conditions ) ) {
+                $query .= ' AND (' . implode( ' OR ', $cat_conditions ) . ')';
+            }
         }
 
         $total_results = $wpdb->get_var( $wpdb->prepare( str_replace( '*', 'COUNT(*)', $query ), $params ) );

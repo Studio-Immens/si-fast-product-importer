@@ -69,7 +69,12 @@ class AdminManager {
      * Enqueue Assets
      */
     public function enqueue_assets( $hook ) {
-        if ( strpos( $hook, 'flash_products' ) === false ) {
+        $is_product_edit = in_array( $hook, array( 'post.php', 'post-new.php' ), true )
+            && function_exists( 'get_current_screen' )
+            && get_current_screen()
+            && 'product' === get_current_screen()->post_type;
+
+        if ( strpos( $hook, 'flash_products' ) === false && ! $is_product_edit ) {
             return;
         }
 
