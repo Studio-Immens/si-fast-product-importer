@@ -10,7 +10,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 // Delete all plugin options
-$options = array(
+$sifp_options = array(
     'sifp_gemini_api_key',
     'sifp_ai_model',
     'sifp_ai_tone',
@@ -35,19 +35,19 @@ $options = array(
     'sifp_openrouter_model_custom',
 );
 
-foreach ( $options as $option ) {
-    delete_option( $option );
+foreach ( $sifp_options as $sifp_option ) {
+    delete_option( $sifp_option );
 }
 
 // Delete all transients with our prefix
 global $wpdb;
-$wpdb->query(
+$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
     $wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
         $wpdb->esc_like( '_transient_sifp_' ) . '%'
     )
 );
-$wpdb->query(
+$wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
     $wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
         $wpdb->esc_like( '_transient_timeout_sifp_' ) . '%'
@@ -55,18 +55,18 @@ $wpdb->query(
 );
 
 // Drop custom table
-$table_name = $wpdb->prefix . 'sifp_local_products';
-$wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );
+$sifp_table_name = $wpdb->prefix . 'sifp_local_products';
+$wpdb->query( "DROP TABLE IF EXISTS {$sifp_table_name}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.DirectDatabaseQuery.SchemaChange,PluginCheck.Security.DirectDB.UnescapedDBParameter,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 // Clean up uploaded JSON file
-$upload_dir = wp_upload_dir();
-$json_file  = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
-if ( file_exists( $json_file ) ) {
-    wp_delete_file( $json_file );
+$sifp_upload_dir = wp_upload_dir();
+$sifp_json_file  = $sifp_upload_dir['basedir'] . '/si-flash-products/local_products.json';
+if ( file_exists( $sifp_json_file ) ) {
+    wp_delete_file( $sifp_json_file );
 }
 
 // Clean up debug logs
-$log_dir = WP_CONTENT_DIR . '/uploads/si-flash-products';
-if ( file_exists( $log_dir . '/debug.log' ) ) {
-    wp_delete_file( $log_dir . '/debug.log' );
+$sifp_log_dir = WP_CONTENT_DIR . '/uploads/si-flash-products';
+if ( file_exists( $sifp_log_dir . '/debug.log' ) ) {
+    wp_delete_file( $sifp_log_dir . '/debug.log' );
 }

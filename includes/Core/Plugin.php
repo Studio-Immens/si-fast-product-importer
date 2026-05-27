@@ -54,7 +54,7 @@ final class Plugin {
      */
     private function define( $name, $value ) {
         if ( ! defined( $name ) ) {
-            define( $name, $value );
+            define( $name, $value ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.VariableConstantNameFound
         }
     }
 
@@ -82,7 +82,7 @@ final class Plugin {
      * On Plugins Loaded
      */
     public function on_plugins_loaded() {
-        load_plugin_textdomain( 'si-flash-products', false, dirname( SIFProd_BASENAME ) . '/languages' );
+        // Translations are loaded automatically by WordPress for plugins hosted on .org
         
         if ( $this->is_woocommerce_active() ) {
             $this->init_components();

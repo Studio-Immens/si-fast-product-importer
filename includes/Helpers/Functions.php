@@ -80,7 +80,7 @@ if ( ! function_exists( 'sifp_handle_settings_save_init' ) ) {
             return;
         }
 
-        if ( isset( $_POST['update'] ) && isset( $_POST['setting'] ) ) {
+        if ( isset( $_POST['update'] ) && isset( $_POST['setting'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
             sifp_save_settings( 'setting' );
         }
     }
@@ -96,12 +96,12 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
             return;
         }
 
-        if ( ! isset( $_POST['sett_nonce'] ) || ! wp_verify_nonce( $_POST['sett_nonce'], 'si-flash-prod-sett' ) ) {
+        if ( ! isset( $_POST['sett_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['sett_nonce'] ), 'si-flash-prod-sett' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
             wp_die( esc_html__( 'Security check failed', 'si-flash-products' ) );
         }
 
         if ( isset( $_POST[ $args_name ] ) && is_array( $_POST[ $args_name ] ) ) {
-            foreach ( $_POST[ $args_name ] as $key => $value ) {
+            foreach ( wp_unslash( $_POST[ $args_name ] ) as $key => $value ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
                 $sanitized_key = sanitize_key( $key );
                 
                 // Specific sanitization based on setting key
@@ -143,7 +143,7 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
             }
             
             // Re-render the page with a success message
-            $redirect_url = remove_query_arg( array( 'message', 'sifp_sync_db', 'sifp_regenerate_db', '_wpnonce' ), wp_unslash( $_SERVER['REQUEST_URI'] ) );
+            $redirect_url = remove_query_arg( array( 'message', 'sifp_sync_db', 'sifp_regenerate_db', '_wpnonce' ), isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' );
             wp_safe_redirect( add_query_arg( 'message', 'settings_saved', $redirect_url ) );
             exit;
         }
@@ -323,8 +323,8 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
                 $adj       = $lang['adjectives'][ array_rand( $lang['adjectives'] ) ];
                 $title     = "$base_name $adj";
 
-                $price      = rand( 15, 800 ) + ( rand( 0, 99 ) / 100 );
-                $sale_price = ( rand( 1, 10 ) > 7 ) ? ( $price * 0.85 ) : '';
+                $price      = wp_rand( 15, 800 ) + ( wp_rand( 0, 99 ) / 100 );
+                $sale_price = ( wp_rand( 1, 10 ) > 7 ) ? ( $price * 0.85 ) : '';
 
                 // Image pool lookup
                 $image_cat  = isset( $cat_image_map[ $category ] ) ? $cat_image_map[ $category ] : $category;
@@ -345,14 +345,14 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
                 $excerpt = sprintf( $lang['excerpt'], $category, $title );
 
                 $ing = '';
-                if ( ( 'Bellezza' === $category || 'Beauty' === $category ) || rand( 1, 10 ) > 8 ) {
+                if ( ( 'Bellezza' === $category || 'Beauty' === $category ) || wp_rand( 1, 10 ) > 8 ) {
                     $ing = $lang['ingredients'][ array_rand( $lang['ingredients'] ) ] . ', ' . $lang['ingredients'][ array_rand( $lang['ingredients'] ) ];
                 }
                 $all = '';
-                if ( ( 'Bellezza' === $category || 'Beauty' === $category ) && rand( 1, 10 ) > 7 ) {
+                if ( ( 'Bellezza' === $category || 'Beauty' === $category ) && wp_rand( 1, 10 ) > 7 ) {
                     $all = $lang['allergens'][ array_rand( $lang['allergens'] ) ];
                 }
-                $stick = ( rand( 1, 10 ) > 8 ) ? 'NEW' : ( ( rand( 1, 10 ) > 8 ) ? 'BEST SELLER' : '' );
+                $stick = ( wp_rand( 1, 10 ) > 8 ) ? 'NEW' : ( ( wp_rand( 1, 10 ) > 8 ) ? 'BEST SELLER' : '' );
 
                 $products[] = array(
                     'post_title'      => $title,
@@ -366,17 +366,17 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
                     'sale_price'      => $sale_price ? number_format( $sale_price, 2, '.', '' ) : '',
                     'sku'             => 'SIFP-' . strtoupper( substr( $image_cat, 0, 3 ) ) . '-' . str_pad( $i, 4, '0', STR_PAD_LEFT ),
                     'stock_status'    => 'instock',
-                    'stock_qty'       => rand( 5, 150 ),
-                    'weight'          => ( rand( 5, 100 ) / 10 ),
-                    'length'          => rand( 5, 80 ),
-                    'width'           => rand( 5, 80 ),
-                    'height'          => rand( 2, 40 ),
+                    'stock_qty'       => wp_rand( 5, 150 ),
+                    'weight'          => ( wp_rand( 5, 100 ) / 10 ),
+                    'length'          => wp_rand( 5, 80 ),
+                    'width'           => wp_rand( 5, 80 ),
+                    'height'          => wp_rand( 2, 40 ),
                     'is_virtual'      => 'no',
                     'is_downloadable' => 'no',
                     'sifp_ingredient' => $ing,
                     'sifp_allerg'     => $all,
                     'sifp_sticker'    => $stick,
-                    'sifp_temp'       => ( rand( 1, 10 ) > 9 ) ? ( 'it' === $lang_code ? 'Conservare in luogo fresco' : 'Store in a cool place' ) : '',
+                    'sifp_temp'       => ( wp_rand( 1, 10 ) > 9 ) ? ( 'it' === $lang_code ? 'Conservare in luogo fresco' : 'Store in a cool place' ) : '',
                     'attributes'      => array(
                         array( 'name' => 'Colore', 'value' => 'Nero | Bianco | Grigio | Blu', 'visible' => 1, 'variation' => 0 ),
                         array( 'name' => 'Materiale', 'value' => 'Premium | Eco-friendly', 'visible' => 1, 'variation' => 0 ),
@@ -441,7 +441,7 @@ if ( ! function_exists( 'sifp_ensure_local_db_hook' ) ) {
  */
 if ( ! function_exists( 'sifp_log' ) ) {
     function sifp_log( $message, $context = 'general', $level = 'info' ) {
-        $timestamp = date( 'Y-m-d H:i:s' );
+        $timestamp = gmdate( 'Y-m-d H:i:s' );
         $log_entry = array(
             'timestamp' => $timestamp,
             'context'   => $context,
@@ -463,7 +463,7 @@ if ( ! function_exists( 'sifp_log' ) ) {
             }
             $log_file = $log_dir . '/debug.log';
             $formatted_message = "[{$timestamp}] [{$level}] [{$context}] " . $log_entry['message'] . PHP_EOL;
-            error_log( $formatted_message, 3, $log_file );
+            error_log( $formatted_message, 3, $log_file ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
         }
     }
 }

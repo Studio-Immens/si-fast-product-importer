@@ -94,7 +94,11 @@ class Importer {
             if ( function_exists( 'sifp_log' ) ) {
                 sifp_log( 'Fatal error importing product: ' . $e->getMessage(), 'importer', 'error' );
             }
-            return new \WP_Error( 'import_failed', sprintf( __( 'Error creating product: %s', 'si-flash-products' ), $e->getMessage() ) );
+            return new \WP_Error( 'import_failed', sprintf(
+                /* translators: %s: error message */
+                __( 'Error creating product: %s', 'si-flash-products' ),
+                $e->getMessage()
+            ) );
         }
     }
 

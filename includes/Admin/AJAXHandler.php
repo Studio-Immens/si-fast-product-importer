@@ -73,13 +73,13 @@ class AJAXHandler {
         }
 
         $args = array(
-            's'          => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['s'] ?? '' ) ) ),
-            'languages'  => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['languages'] ?? '' ) ) ),
-            'categories' => sanitize_text_field( wp_unslash( wp_strip_all_tags( $_GET['categories'] ?? '' ) ) ),
-            'limit'      => intval( $_GET['limit'] ?? 100 ),
-            'offset'     => intval( $_GET['offset'] ?? 0 ),
-            'orderby'    => sanitize_text_field( $_GET['orderby'] ?? 'title' ),
-            'source'     => sanitize_key( $_GET['source'] ?? 'all' ),
+            's'          => sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) ),
+            'languages'  => sanitize_text_field( wp_unslash( $_GET['languages'] ?? '' ) ),
+            'categories' => sanitize_text_field( wp_unslash( $_GET['categories'] ?? '' ) ),
+            'limit'      => intval( wp_unslash( $_GET['limit'] ?? 100 ) ),
+            'offset'     => intval( wp_unslash( $_GET['offset'] ?? 0 ) ),
+            'orderby'    => sanitize_text_field( wp_unslash( $_GET['orderby'] ?? 'title' ) ),
+            'source'     => sanitize_key( wp_unslash( $_GET['source'] ?? 'all' ) ),
         );
 
         $all_results = array( 'result' => array(), 'total_results' => 0 );
@@ -186,7 +186,7 @@ class AJAXHandler {
             wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
         }
 
-        $product_data = $_POST['product'] ?? array();
+        $product_data = isset( $_POST['product'] ) ? wp_unslash( $_POST['product'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         
         // Sanitize product data
         $product_data = $this->sanitize_product_data( $product_data );
@@ -214,7 +214,7 @@ class AJAXHandler {
             wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
         }
 
-        $input_data = $_POST['data'] ?? array();
+        $input_data = isset( $_POST['data'] ) ? wp_unslash( $_POST['data'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
         
         $generator = new \SIFlashProducts\Core\AIGenerator();
         $result = $generator->generate( $input_data );

@@ -7,74 +7,74 @@ if ( ! current_user_can( 'manage_options' ) ) {
 }
 
 // Use Transients for API results
-$categories = get_transient( 'sifp_api_categories' );
-if ( false === $categories || ! is_object( $categories ) ) {
-    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat', array( 'timeout' => 5 ) );
+$sifp_categories = get_transient( 'sifp_api_categories' );
+if ( false === $sifp_categories || ! is_object( $sifp_categories ) ) {
+    $sifp_response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=product_cat', array( 'timeout' => 5 ) );
     
-    if ( is_wp_error( $response ) ) {
-        $categories = (object) array( 'result' => array() );
+    if ( is_wp_error( $sifp_response ) ) {
+        $sifp_categories = (object) array( 'result' => array() );
     } else {
-        $categories = json_decode( wp_remote_retrieve_body( $response ) );
-        if ( ! is_object( $categories ) ) {
-            $categories = (object) array( 'result' => array() );
+        $sifp_categories = json_decode( wp_remote_retrieve_body( $sifp_response ) );
+        if ( ! is_object( $sifp_categories ) ) {
+            $sifp_categories = (object) array( 'result' => array() );
         }
     }
 }
 
-// Final safety check for $categories
-if ( ! is_object( $categories ) ) {
-    $categories = (object) array( 'result' => array() );
+// Final safety check
+if ( ! is_object( $sifp_categories ) ) {
+    $sifp_categories = (object) array( 'result' => array() );
 }
     
     // Add Local Categories to the list
-    $upload_dir = wp_upload_dir();
-    $local_db_path = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
-    if ( file_exists( $local_db_path ) ) {
-        $local_data = json_decode( file_get_contents( $local_db_path ), true );
-        if ( is_array($local_data) ) {
-            $local_cats = array_unique(array_column($local_data, 'sifp_categories'));
-            if ( ! isset($categories->result) || ! is_array($categories->result) ) $categories->result = array();
+    $sifp_upload_dir = wp_upload_dir();
+    $sifp_local_db_path = $sifp_upload_dir['basedir'] . '/si-flash-products/local_products.json';
+    if ( file_exists( $sifp_local_db_path ) ) {
+        $sifp_local_data = json_decode( file_get_contents( $sifp_local_db_path ), true );
+        if ( is_array($sifp_local_data) ) {
+            $sifp_local_cats = array_unique(array_column($sifp_local_data, 'sifp_categories'));
+            if ( ! isset($sifp_categories->result) || ! is_array($sifp_categories->result) ) $sifp_categories->result = array();
             
-            foreach ($local_cats as $cat_name) {
+            foreach ($sifp_local_cats as $sifp_cat_name) {
                 // Check if already exists in remote
-                $exists = false;
-                foreach ($categories->result as $remote_cat) {
-                    if ( isset($remote_cat->name) && strtolower($remote_cat->name) === strtolower($cat_name) ) {
-                        $exists = true;
+                $sifp_exists = false;
+                foreach ($sifp_categories->result as $sifp_remote_cat) {
+                    if ( isset($sifp_remote_cat->name) && strtolower($sifp_remote_cat->name) === strtolower($sifp_cat_name) ) {
+                        $sifp_exists = true;
                         break;
                     }
                 }
-                if ( ! $exists ) {
-                    $categories->result[] = (object) array(
-                        'name' => $cat_name,
-                        'slug' => sanitize_title($cat_name)
+                if ( ! $sifp_exists ) {
+                    $sifp_categories->result[] = (object) array(
+                        'name' => $sifp_cat_name,
+                        'slug' => sanitize_title($sifp_cat_name)
                     );
                 }
             }
         }
     }
 
-    set_transient( 'sifp_api_categories', $categories, DAY_IN_SECONDS );
+    set_transient( 'sifp_api_categories', $sifp_categories, DAY_IN_SECONDS );
 
 // Delete stale transient to force refresh
 delete_transient( 'sifp_api_languages' );
 
-$languages = get_transient( 'sifp_api_languages' );
-if ( false === $languages ) {
-    $response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=Languages', array( 'timeout' => 5 ) );
+$sifp_languages = get_transient( 'sifp_api_languages' );
+if ( false === $sifp_languages ) {
+    $sifp_response = wp_remote_get( 'https://flashproducts.studioimmens.com/wp-json/flash_products/v1/taxonomy?tax=Languages', array( 'timeout' => 5 ) );
     
-    if ( is_wp_error( $response ) ) {
+    if ( is_wp_error( $sifp_response ) ) {
         // Fallback languages when remote API is unreachable
-        $languages = (object) array(
+        $sifp_languages = (object) array(
             'result' => array(
                 (object) array( 'slug' => 'it', 'name' => 'Italiano' ),
                 (object) array( 'slug' => 'en', 'name' => 'English' ),
             ),
         );
     } else {
-        $languages = json_decode( wp_remote_retrieve_body( $response ) );
-        if ( ! is_object( $languages ) || ! isset( $languages->result ) || ! is_array( $languages->result ) ) {
-            $languages = (object) array(
+        $sifp_languages = json_decode( wp_remote_retrieve_body( $sifp_response ) );
+        if ( ! is_object( $sifp_languages ) || ! isset( $sifp_languages->result ) || ! is_array( $sifp_languages->result ) ) {
+            $sifp_languages = (object) array(
                 'result' => array(
                     (object) array( 'slug' => 'it', 'name' => 'Italiano' ),
                     (object) array( 'slug' => 'en', 'name' => 'English' ),
@@ -83,7 +83,7 @@ if ( false === $languages ) {
         }
     }
     
-    set_transient( 'sifp_api_languages', $languages, DAY_IN_SECONDS );
+    set_transient( 'sifp_api_languages', $sifp_languages, DAY_IN_SECONDS );
 }
 
 /**
@@ -134,16 +134,15 @@ function sifp_render_pagination_bar() {
             <label><?php echo esc_html__('Languages:','si-flash-products');?></label>
             <select class="sifp-languages" name="sifp_languages">
                 <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
-                <?php 
-                // Detect default language from WordPress locale
-                $locale       = get_locale();
-                $detected_lang = strpos( $locale, 'it' ) === 0 ? 'it' : 'en';
-                $selected_lang = ! empty( $_GET['languages'] ) ? sanitize_text_field( $_GET['languages'] ) : $detected_lang;
+                <?php
+                $sifp_locale       = get_locale();
+                $sifp_detected_lang = strpos( $sifp_locale, 'it' ) === 0 ? 'it' : 'en';
+                $sifp_selected_lang = ! empty( $_GET['languages'] ) ? sanitize_text_field( wp_unslash( $_GET['languages'] ) ) : $sifp_detected_lang; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-                if ( isset( $languages->result ) && is_array( $languages->result ) ) {
-                    foreach ($languages->result as $key => $value) {
-                        $is_selected = ( $value->slug === $selected_lang );
-                        echo '<option value="'.esc_attr($value->slug).'"' . ( $is_selected ? ' selected="selected"' : '' ) . '>'.esc_html($value->name).'</option>';
+                if ( isset( $sifp_languages->result ) && is_array( $sifp_languages->result ) ) {
+                    foreach ($sifp_languages->result as $sifp_key => $sifp_value) {
+                        $sifp_is_selected = ( $sifp_value->slug === $sifp_selected_lang );
+                        echo '<option value="'.esc_attr($sifp_value->slug).'"' . ( $sifp_is_selected ? ' selected="selected"' : '' ) . '>'.esc_html($sifp_value->name).'</option>';
                     }
                 }
                 ?>
@@ -155,18 +154,18 @@ function sifp_render_pagination_bar() {
             <select class="sifp-categories" name="sifp_categories">
                 <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
                 <?php
-                $lang_cat_map = array(
+                $sifp_lang_cat_map = array(
                     'it' => array( 'Elettronica', 'Casa', 'Abbigliamento', 'Bellezza', 'Sport' ),
                     'en' => array( 'Electronics', 'Home', 'Clothing', 'Beauty', 'Sports' ),
                 );
-                $valid_cats = ! empty( $selected_lang ) && isset( $lang_cat_map[ $selected_lang ] ) ? $lang_cat_map[ $selected_lang ] : null;
+                $sifp_valid_cats = ! empty( $sifp_selected_lang ) && isset( $sifp_lang_cat_map[ $sifp_selected_lang ] ) ? $sifp_lang_cat_map[ $sifp_selected_lang ] : null;
 
-                if ( isset( $categories->result ) && is_array( $categories->result ) ) {
-                    foreach ($categories->result as $key => $value) {
-                        if ( $valid_cats !== null && ! in_array( $value->name, $valid_cats ) ) {
+                if ( isset( $sifp_categories->result ) && is_array( $sifp_categories->result ) ) {
+                    foreach ($sifp_categories->result as $sifp_key => $sifp_value) {
+                        if ( $sifp_valid_cats !== null && ! in_array( $sifp_value->name, $sifp_valid_cats ) ) {
                             continue;
                         }
-                        echo '<option value="'.esc_attr($value->slug).'">'.esc_html($value->name).'</option>';
+                        echo '<option value="'.esc_attr($sifp_value->slug).'">'.esc_html($sifp_value->name).'</option>';
                     }
                 }
                 ?>

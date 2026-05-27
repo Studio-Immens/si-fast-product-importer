@@ -5,7 +5,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
     return;
 }
 
-$api_key = get_option('sifp_gemini_api_key');
+$sifp_api_key = get_option('sifp_gemini_api_key');
 ?>
 
 <div class="sifp-main-container sifp-generator-section">

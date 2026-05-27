@@ -14,6 +14,7 @@ class AIGenerator {
 
         if ( ! $provider->is_available() ) {
             return new \WP_Error( 'provider_not_configured', sprintf(
+                /* translators: %s: AI provider name */
                 __( '%s is not configured. Please add your API key in Settings.', 'si-flash-products' ),
                 $provider->get_name()
             ) );
@@ -41,7 +42,7 @@ class AIGenerator {
 
         if ( ! is_array( $decoded ) ) {
             if ( function_exists( 'sifp_log' ) ) {
-                sifp_log( 'Failed to decode JSON from AI. Raw: ' . substr( print_r( $content, true ), 0, 500 ), 'ai_generator', 'error' );
+                sifp_log( 'Failed to decode JSON from AI. Raw: ' . substr( wp_json_encode( $content ), 0, 500 ), 'ai_generator', 'error' );
             }
             return new \WP_Error( 'ai_invalid_json', __( 'AI returned an invalid JSON format.', 'si-flash-products' ) );
         }

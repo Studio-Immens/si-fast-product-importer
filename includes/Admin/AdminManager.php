@@ -93,10 +93,13 @@ class AdminManager {
             'sku_prefix'    => get_option( 'sifp_sku_prefix', 'PROD-' ),
             'default_stock' => get_option( 'sifp_default_stock', '10' ),
             'strings'       => array(
-                'confirm_bulk'        => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
+                /* translators: %d: number of products to import */
+                'confirm_bulk'        => __( 'Are you sure you want to import %1$d products?', 'si-flash-products' ),
                 'bulk_success'        => __( 'products imported successfully!', 'si-flash-products' ),
-                'confirm_bulk_import' => __( 'Are you sure you want to import %d products?', 'si-flash-products' ),
-                'bulk_import_done'    => __( 'Import completed: %d success, %d failure.', 'si-flash-products' ),
+                /* translators: %d: number of products to import */
+                'confirm_bulk_import' => __( 'Are you sure you want to import %1$d products?', 'si-flash-products' ),
+                /* translators: %1$d: number of successful imports, %2$d: number of failed imports */
+                'bulk_import_done'    => __( 'Import completed: %1$d success, %2$d failure.', 'si-flash-products' ),
                 'confirm_clear_logs'  => __( 'Are you sure you want to clear all logs?', 'si-flash-products' ),
                 'logs_cleared'        => __( 'Logs cleared successfully!', 'si-flash-products' ),
                 'error_clear_logs'    => __( 'Error while clearing logs', 'si-flash-products' ),
