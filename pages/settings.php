@@ -115,7 +115,7 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
                 <div class="sifp-provider-card" id="sifp-provider-<?php echo esc_attr( $sifp_pid ); ?>" <?php echo $sifp_is_active ? '' : 'style="display:none;"'; ?>>
 
                     <div class="sifp-provider-card__head">
-                        <h3><?php echo esc_html( $pinst->get_name() ); ?></h3>
+                        <h3><?php echo esc_html( $sifp_pinst->get_name() ); ?></h3>
                         <button type="button" class="sifp-provider-card__refresh"
                                 data-provider="<?php echo esc_attr( $sifp_pid ); ?>"
                                 title="<?php esc_attr_e( 'Refresh model list', 'si-flash-products' ); ?>">
@@ -129,7 +129,7 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
                         <div class="sifp-field">
                             <label class="sifp-field__label"><?php esc_html_e( 'Model', 'si-flash-products' ); ?></label>
                             <div class="sifp-field__control">
-                                <select name="setting[<?php echo esc_attr( $pinst->get_model_option_name() ); ?>]"
+                                <select name="setting[<?php echo esc_attr( $sifp_pinst->get_model_option_name() ); ?>]"
                                         class="sifp-ai-model-select"
                                         data-provider="<?php echo esc_attr( $sifp_pid ); ?>">
                                     <?php if ( ! empty( $sifp_premium_models ) ) : ?>
@@ -162,13 +162,13 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
                                             <?php endforeach; ?>
                                         </optgroup>
                                     <?php endif; ?>
-                                    <option value="custom" <?php selected( $saved_model, 'custom' ); ?>>
+                                    <option value="custom" <?php selected( $sifp_saved_model, 'custom' ); ?>>
                                         <?php esc_html_e( 'Custom Model (enter below)', 'si-flash-products' ); ?>
                                     </option>
                                 </select>
                                 <p class="sifp-field__hint">
                                     <?php esc_html_e( 'Custom model ID:', 'si-flash-products' ); ?>
-                                    <input type="text" name="setting[<?php echo esc_attr( $pinst->get_model_option_name() ); ?>_custom]"
+                                    <input type="text" name="setting[<?php echo esc_attr( $sifp_pinst->get_model_option_name() ); ?>_custom]"
                                         value="<?php echo esc_attr( $custom_model ); ?>"
                                         placeholder="<?php esc_attr_e( 'e.g. my-custom-model', 'si-flash-products' ); ?>">
                                 </p>
