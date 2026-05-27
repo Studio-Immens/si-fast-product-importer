@@ -28,6 +28,10 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
     }
 }
 ?>
+<div class="sifp-header-logo">
+    <img src="<?php echo SIFProd_URL . 'assets/flash-products-logo-128.png'; ?>" class="sifp-admin-logo" alt="SI Flash Products Logo">
+</div>
+
 <div id="sifp-admin-content" class="sifp-main-container">
 
     <div class="sifp-settings-header">

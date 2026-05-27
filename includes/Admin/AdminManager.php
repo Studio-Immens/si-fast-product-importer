@@ -42,7 +42,7 @@ class AdminManager {
             'manage_options',
             'flash_products',
             array( $this, 'render_main_page' ),
-            'dashicons-products',
+			SIFProd_URL . 'assets/flash-products-logo-128.png',
             30
         );
 

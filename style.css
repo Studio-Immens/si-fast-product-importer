@@ -2123,6 +2123,46 @@
     background: var(--sifp-bg-hover);
 }
 
+/* ─── Plugin Logo / Icon (es. Primary-Source) ─── */
+.sifp-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.sifp-admin-logo {
+    width: 32px;
+    height: auto;
+    display: block;
+}
+
+/* Sidebar Menu Icon - Stessa logica di Primary-Source */
+li#toplevel_page_flash_products .wp-menu-image {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+li#toplevel_page_flash_products .wp-menu-image img {
+    max-width: 20px !important;
+    max-height: 20px !important;
+    width: 20px !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    opacity: 0.8;
+    transition: all 0.2s ease-in-out;
+}
+
+li#toplevel_page_flash_products:hover .wp-menu-image img,
+li#toplevel_page_flash_products.wp-has-current-submenu .wp-menu-image img {
+    opacity: 1;
+    scale: 1.1;
+}
+
 /* Animations */
 @keyframes sifpSpin {
     from { transform: rotate(0deg); }
