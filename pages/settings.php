@@ -169,14 +169,14 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
                                 <p class="sifp-field__hint">
                                     <?php esc_html_e( 'Custom model ID:', 'si-flash-products' ); ?>
                                     <input type="text" name="setting[<?php echo esc_attr( $sifp_pinst->get_model_option_name() ); ?>_custom]"
-                                        value="<?php echo esc_attr( $custom_model ); ?>"
+                                        value="<?php echo esc_attr( $sifp_custom_model ); ?>"
                                         placeholder="<?php esc_attr_e( 'e.g. my-custom-model', 'si-flash-products' ); ?>">
                                 </p>
                             </div>
                         </div>
 
                         <!-- Capabilities -->
-                        <div class="sifp-model-caps" id="sifp-caps-<?php echo esc_attr( $pid ); ?>" style="display:none;"></div>
+                        <div class="sifp-model-caps" id="sifp-caps-<?php echo esc_attr( $sifp_pid ); ?>" style="display:none;"></div>
 
                         <!-- API Key -->
                     <div class="sifp-field">
