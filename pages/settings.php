@@ -28,13 +28,12 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
     }
 }
 ?>
-<div class="sifp-header-logo">
-    <img src="<?php echo SIFProd_URL . 'assets/flash-products-logo-128.png'; ?>" class="sifp-admin-logo" alt="SI Flash Products Logo">
-</div>
-
 <div id="sifp-admin-content" class="sifp-main-container">
 
     <div class="sifp-settings-header">
+        <div class="sifp-header-logo">
+            <img src="<?php echo SIFProd_URL . 'assets/flash-products-logo-128.png'; ?>" class="sifp-admin-logo" alt="SI Flash Products Logo">
+        </div>
         <h1><span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e( 'Plugin Settings', 'si-flash-products' ); ?></h1>
         <button form="sifp-form" name="update" value="update" class="sifp-button">
             <span class="dashicons dashicons-saved"></span>
@@ -210,7 +209,7 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
                             <label class="sifp-field__label"><?php esc_html_e( 'Connection', 'si-flash-products' ); ?></label>
                             <div class="sifp-field__control">
                                 <button type="button" class="sifp-button sifp-btn-test-ai"
-                                        data-provider="<?php echo esc_attr( $pid ); ?>">
+                                        data-provider="<?php echo esc_attr( $sifp_pid ); ?>">
                                     <span class="dashicons dashicons-plugins"></span>
                                     <?php esc_html_e( 'Test Connection', 'si-flash-products' ); ?>
                                 </button>
@@ -219,7 +218,6 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
                         </div>
 
                     </div>
-                </div>
             <?php endforeach; ?>
         </div>
 
@@ -312,6 +310,45 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
                             <p class="sifp-settings-row__hint"><?php esc_html_e( 'One URL per line. Each endpoint must return a JSON with a "result" array of products.', 'si-flash-products' ); ?></p>
                         </div>
                     </div>
+
+                    <details style="padding:12px 22px;cursor:pointer;">
+                        <summary style="color:var(--sifp-primary);font-weight:600;"><?php esc_html_e( 'View JSON example', 'si-flash-products' ); ?></summary>
+                        <pre style="background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-size:12px;line-height:1.6;margin-top:8px;max-width:100%;box-sizing:border-box;">{
+    "result": [
+        {
+            "post_title": "Wireless Bluetooth Headphones",
+            "post_content": "High-quality wireless headphones with noise cancellation and 30-hour battery life.",
+            "post_excerpt": "Premium wireless headphones with ANC.",
+            "sku": "WH-1000XM5",
+            "regular_price": "299.99",
+            "sale_price": "249.99",
+            "sifp_categories": "Electronics, Audio",
+            "sifp_tag": "wireless, bluetooth, headphones",
+            "sifp_img": "https://example.com/images/headphones.jpg"
+        },
+        {
+            "post_title": "Organic Cotton T-Shirt",
+            "post_content": "Comfortable and eco-friendly t-shirt made from 100% organic cotton. Available in multiple colors.",
+            "post_excerpt": "Eco-friendly organic cotton t-shirt.",
+            "sku": "TS-ORG-001",
+            "regular_price": "39.99",
+            "sifp_categories": "Clothing, Sustainable",
+            "sifp_tag": "organic, cotton, t-shirt",
+            "sifp_img": "https://example.com/images/tshirt.jpg"
+        },
+        {
+            "post_title": "Stainless Steel Water Bottle",
+            "post_content": "Double-wall vacuum insulated bottle. Keeps drinks cold for 24h or hot for 12h. BPA-free.",
+            "post_excerpt": "Premium insulated water bottle.",
+            "sku": "BTL-500-SS",
+            "regular_price": "34.99",
+            "sale_price": "28.99",
+            "sifp_categories": "Home, Sports",
+            "sifp_tag": "water bottle, stainless steel, eco-friendly"
+        }
+    ]
+}</pre>
+                    </details>
 
                 </div>
             </div>

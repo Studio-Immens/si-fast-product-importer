@@ -30,6 +30,8 @@ class AdminManager {
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'register_menu' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+        add_filter( 'admin_footer_text', '__return_empty_string', 11 );
+        add_filter( 'update_footer', '__return_empty_string', 11 );
     }
 
     /**
