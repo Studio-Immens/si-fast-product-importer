@@ -33,6 +33,7 @@ if ( isset( $_GET['message'] ) ) { // phpcs:ignore WordPress.Security.NonceVerif
     <div class="sifp-settings-header">
         <div class="sifp-header-logo">
             <img src="<?php echo SIFProd_URL . 'assets/flash-products-logo-128.png'; ?>" class="sifp-admin-logo" alt="SI Flash Products Logo">
+            <h1 class="sifp-plugin-title">Flash Products</h1>
         </div>
         <h1><span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e( 'Plugin Settings', 'si-flash-products' ); ?></h1>
         <button form="sifp-form" name="update" value="update" class="sifp-button">

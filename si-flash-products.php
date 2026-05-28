@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:     SI Flash Products
+ * Plugin Name:     Flash Products
  * Description:     Flash Products is a powerful WordPress plugin that gives you instant access to a vast database of ready-to-import products for your WooCommerce store. Designed for e-commerce businesses looking to expand their product range quickly and efficiently, Flash Products allows you to import high-quality, pre-configured items with just a few clicks.
  * Version:         1.1.0
  * Author:          Studio Immens

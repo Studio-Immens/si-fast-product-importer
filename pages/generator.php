@@ -12,6 +12,7 @@ $sifp_api_key = get_option('sifp_gemini_api_key');
 
     <div class="sifp-header-logo">
         <img src="<?php echo SIFProd_URL . 'assets/flash-products-logo-128.png'; ?>" class="sifp-admin-logo" alt="SI Flash Products Logo">
+        <h1 class="sifp-plugin-title">Flash Products</h1>
     </div>
     <div class="sifp-generator-header">
         <div class="sifp-generator-header__title-group">
