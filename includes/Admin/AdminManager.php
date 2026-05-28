@@ -30,6 +30,7 @@ class AdminManager {
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'register_menu' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+        add_action( 'admin_head', array( $this, 'admin_icon_styles' ) );
         add_filter( 'admin_footer_text', '__return_empty_string', 11 );
         add_filter( 'update_footer', '__return_empty_string', 11 );
     }
@@ -122,6 +123,38 @@ class AdminManager {
                 'no_results'          => __( 'No products found matching your search.', 'si-flash-products' ),
             )
         ) );
+    }
+
+    /**
+     * Admin Icon Styles - always loaded on all admin pages
+     */
+    public function admin_icon_styles() {
+        ?>
+        <style>
+            li#toplevel_page_flash_products .wp-menu-image {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                overflow: hidden !important;
+            }
+            li#toplevel_page_flash_products .wp-menu-image img {
+                max-width: 20px !important;
+                max-height: 20px !important;
+                width: 20px !important;
+                height: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+                opacity: 0.8;
+                transition: all 0.2s ease-in-out;
+            }
+            li#toplevel_page_flash_products:hover .wp-menu-image img,
+            li#toplevel_page_flash_products.wp-has-current-submenu .wp-menu-image img {
+                opacity: 1;
+                scale: 1.1;
+            }
+        </style>
+        <?php
     }
 
     /**
