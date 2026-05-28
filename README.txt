@@ -1,5 +1,5 @@
 === SI Flash Products ===
-Contributors: mauroarnone
+Contributors: innovazioneweb
 Tags: woocommerce, product importer, ai generator, gemini, product management
 Requires at least: 5.8
 Tested up to: 7.0
