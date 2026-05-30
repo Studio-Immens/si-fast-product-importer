@@ -55,11 +55,11 @@ class AJAXHandler {
         check_ajax_referer( 'sifp_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Unauthorized', 'si-fast-product-importer' ) );
         }
 
         delete_option( 'sifp_error_logs' );
-        wp_send_json_success( __( 'Logs cleared successfully!', 'si-flash-products' ) );
+        wp_send_json_success( __( 'Logs cleared successfully!', 'si-fast-product-importer' ) );
     }
 
     /**
@@ -69,7 +69,7 @@ class AJAXHandler {
         check_ajax_referer( 'sifp_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Unauthorized', 'si-fast-product-importer' ) );
         }
 
         $args = array(
@@ -183,7 +183,7 @@ class AJAXHandler {
         check_ajax_referer( 'sifp_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Unauthorized', 'si-fast-product-importer' ) );
         }
 
         $product_data = isset( $_POST['product'] ) ? wp_unslash( $_POST['product'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -211,7 +211,7 @@ class AJAXHandler {
         check_ajax_referer( 'sifp_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Unauthorized', 'si-fast-product-importer' ) );
         }
 
         $input_data = isset( $_POST['data'] ) ? wp_unslash( $_POST['data'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -233,7 +233,7 @@ class AJAXHandler {
         check_ajax_referer( 'sifp_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Unauthorized', 'si-fast-product-importer' ) );
         }
 
         $provider_id = sanitize_key( $_POST['provider'] ?? '' );
@@ -241,14 +241,14 @@ class AJAXHandler {
         $api_key     = sanitize_text_field( wp_unslash( $_POST['api_key'] ?? '' ) );
 
         if ( ! $provider_id || ! $model ) {
-            wp_send_json_error( __( 'Provider and model are required.', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Provider and model are required.', 'si-fast-product-importer' ) );
         }
 
         $manager = \SIFlashProducts\Core\AIProviderManager::instance();
         $provider = $manager->get_provider( $provider_id );
 
         if ( ! $provider ) {
-            wp_send_json_error( __( 'Provider not found.', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Provider not found.', 'si-fast-product-importer' ) );
         }
 
         // Temporarily override options for this test
@@ -266,7 +266,7 @@ class AJAXHandler {
         }
         update_option( $provider->get_model_option_name(), $model );
 
-        $test_prompt = __( 'Reply with ONLY the word: OK. No punctuation, no extra text, just OK.', 'si-flash-products' );
+        $test_prompt = __( 'Reply with ONLY the word: OK. No punctuation, no extra text, just OK.', 'si-fast-product-importer' );
         $result = $provider->call_ai( $test_prompt, false, 50 );
 
         // Restore original settings
@@ -274,9 +274,9 @@ class AJAXHandler {
         update_option( $provider->get_model_option_name(), $original_model );
 
         if ( $result['success'] && trim( strtoupper( $result['text'] ) ) === 'OK' ) {
-            wp_send_json_success( __( 'Connection successful!', 'si-flash-products' ) );
+            wp_send_json_success( __( 'Connection successful!', 'si-fast-product-importer' ) );
         } else {
-            wp_send_json_error( $result['error'] ?? __( 'Connection failed. Check your API key and model.', 'si-flash-products' ) );
+            wp_send_json_error( $result['error'] ?? __( 'Connection failed. Check your API key and model.', 'si-fast-product-importer' ) );
         }
     }
 
@@ -287,7 +287,7 @@ class AJAXHandler {
         check_ajax_referer( 'sifp_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Unauthorized', 'si-fast-product-importer' ) );
         }
 
         $provider_id = sanitize_key( $_POST['provider'] ?? '' );
@@ -295,7 +295,7 @@ class AJAXHandler {
         $cache_key = 'sifp_models_v' . \SIFlashProducts\Core\ModelRegistry::CACHE_VERSION . '_' . $provider_id;
         delete_transient( $cache_key );
 
-        wp_send_json_success( __( 'Models refreshed.', 'si-flash-products' ) );
+        wp_send_json_success( __( 'Models refreshed.', 'si-fast-product-importer' ) );
     }
 
     /**
@@ -305,19 +305,19 @@ class AJAXHandler {
         check_ajax_referer( 'sifp_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( __( 'Unauthorized', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Unauthorized', 'si-fast-product-importer' ) );
         }
 
         $upload_dir = wp_upload_dir();
-        $json_file = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
+        $json_file = $upload_dir['basedir'] . '/si-fast-product-importer/local_products.json';
 
         $db = \SIFlashProducts\Core\Database::instance();
         $success = $db->sync_json_to_db( $json_file );
 
         if ( $success ) {
-            wp_send_json_success( __( 'Database synced successfully!', 'si-flash-products' ) );
+            wp_send_json_success( __( 'Database synced successfully!', 'si-fast-product-importer' ) );
         } else {
-            wp_send_json_error( __( 'Failed to sync database. Ensure the JSON file exists.', 'si-flash-products' ) );
+            wp_send_json_error( __( 'Failed to sync database. Ensure the JSON file exists.', 'si-fast-product-importer' ) );
         }
     }
 

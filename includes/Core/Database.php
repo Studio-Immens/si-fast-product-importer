@@ -76,7 +76,7 @@ class Database {
         // Copy default JSON file to uploads directory
         $source_file = __DIR__ . '/../local_products.json';
         $upload_dir  = wp_upload_dir();
-        $dest_dir    = $upload_dir['basedir'] . '/si-flash-products';
+        $dest_dir    = $upload_dir['basedir'] . '/si-fast-product-importer';
 
         if ( file_exists( $source_file ) && ! file_exists( $dest_dir . '/local_products.json' ) ) {
             if ( ! file_exists( $dest_dir ) ) {

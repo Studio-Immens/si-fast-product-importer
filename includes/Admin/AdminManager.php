@@ -40,30 +40,30 @@ class AdminManager {
      */
     public function register_menu() {
         add_menu_page(
-            __( 'Flash Products', 'si-flash-products' ),
-            __( 'Flash Products', 'si-flash-products' ),
+            __( 'Fast Product Importer', 'si-fast-product-importer' ),
+            __( 'Fast Product Importer', 'si-fast-product-importer' ),
             'manage_options',
-            'flash_products',
+            'si_fast_products',
             array( $this, 'render_main_page' ),
 			SIFProd_URL . 'assets/flash-products-logo-128.png',
             30
         );
 
         add_submenu_page(
-            'flash_products',
-            __( 'Generator', 'si-flash-products' ),
-            __( 'Generator', 'si-flash-products' ),
+            'si_fast_products',
+            __( 'Generator', 'si-fast-product-importer' ),
+            __( 'Generator', 'si-fast-product-importer' ),
             'manage_options',
-            'flash_products_generator',
+            'si_fast_products_generator',
             array( $this, 'render_generator_page' )
         );
 
         add_submenu_page(
-            'flash_products',
-            __( 'Settings', 'si-flash-products' ),
-            __( 'Settings', 'si-flash-products' ),
+            'si_fast_products',
+            __( 'Settings', 'si-fast-product-importer' ),
+            __( 'Settings', 'si-fast-product-importer' ),
             'manage_options',
-            'flash_products_settings',
+            'si_fast_products_settings',
             array( $this, 'render_settings_page' )
         );
     }
@@ -77,7 +77,7 @@ class AdminManager {
             && get_current_screen()
             && 'product' === get_current_screen()->post_type;
 
-        if ( strpos( $hook, 'flash_products' ) === false && ! $is_product_edit ) {
+        if ( strpos( $hook, 'si_fast_products' ) === false && ! $is_product_edit ) {
             return;
         }
 
@@ -86,7 +86,7 @@ class AdminManager {
         wp_enqueue_script( 'sifp-admin-functions', SIFProd_URL . 'functions.js', array( 'jquery' ), SIFProd_VERSION, true );
 
         // Enqueue settings JS only on settings page
-        if ( strpos( $hook, 'flash_products_settings' ) !== false ) {
+        if ( strpos( $hook, 'si_fast_products_settings' ) !== false ) {
             wp_enqueue_script( 'sifp-settings', SIFProd_URL . 'assets/settings.js', array( 'jquery' ), SIFProd_VERSION, true );
         }
 
@@ -97,47 +97,46 @@ class AdminManager {
             'default_stock' => get_option( 'sifp_default_stock', '10' ),
             'strings'       => array(
                 /* translators: %d: number of products to import */
-                'confirm_bulk'        => __( 'Are you sure you want to import %1$d products?', 'si-flash-products' ),
-                'bulk_success'        => __( 'products imported successfully!', 'si-flash-products' ),
+                'confirm_bulk'        => __( 'Are you sure you want to import %1$d products?', 'si-fast-product-importer' ),
+                'bulk_success'        => __( 'products imported successfully!', 'si-fast-product-importer' ),
                 /* translators: %d: number of products to import */
-                'confirm_bulk_import' => __( 'Are you sure you want to import %1$d products?', 'si-flash-products' ),
+                'confirm_bulk_import' => __( 'Are you sure you want to import %1$d products?', 'si-fast-product-importer' ),
                 /* translators: %1$d: number of successful imports, %2$d: number of failed imports */
-                'bulk_import_done'    => __( 'Import completed: %1$d success, %2$d failure.', 'si-flash-products' ),
-                'confirm_clear_logs'  => __( 'Are you sure you want to clear all logs?', 'si-flash-products' ),
-                'logs_cleared'        => __( 'Logs cleared successfully!', 'si-flash-products' ),
-                'error_clear_logs'    => __( 'Error while clearing logs', 'si-flash-products' ),
-                'error_missing_name'  => __( 'Please enter at least the product name', 'si-flash-products' ),
-                'ai_gen_success'      => __( 'Content generated successfully!', 'si-flash-products' ),
-                'attr_limit_reached'  => __( 'At least one attribute must be present (even if empty).', 'si-flash-products' ),
-                'importing'           => __( 'Importing...', 'si-flash-products' ),
-                'generating'          => __( 'Generating...', 'si-flash-products' ),
-                'error_ai_call'       => __( 'Error during AI call', 'si-flash-products' ),
-                'error_import'        => __( 'Error during import', 'si-flash-products' ),
-                'preset_loaded'       => __( 'Preset loaded!', 'si-flash-products' ),
-                'select_image'        => __( 'Select Product Image', 'si-flash-products' ),
-                'use_image'           => __( 'Use Image', 'si-flash-products' ),
-                'select_gallery'      => __( 'Select Gallery Images', 'si-flash-products' ),
-                'add_to_gallery'      => __( 'Add to gallery', 'si-flash-products' ),
-                'error'               => __( 'Error', 'si-flash-products' ),
-                'fetch_error'         => __( 'Failed to fetch products', 'si-flash-products' ),
-                'no_results'          => __( 'No products found matching your search.', 'si-flash-products' ),
+                'bulk_import_done'    => __( 'Import completed: %1$d success, %2$d failure.', 'si-fast-product-importer' ),
+                'confirm_clear_logs'  => __( 'Are you sure you want to clear all logs?', 'si-fast-product-importer' ),
+                'logs_cleared'        => __( 'Logs cleared successfully!', 'si-fast-product-importer' ),
+                'error_clear_logs'    => __( 'Error while clearing logs', 'si-fast-product-importer' ),
+                'error_missing_name'  => __( 'Please enter at least the product name', 'si-fast-product-importer' ),
+                'ai_gen_success'      => __( 'Content generated successfully!', 'si-fast-product-importer' ),
+                'attr_limit_reached'  => __( 'At least one attribute must be present (even if empty).', 'si-fast-product-importer' ),
+                'importing'           => __( 'Importing...', 'si-fast-product-importer' ),
+                'generating'          => __( 'Generating...', 'si-fast-product-importer' ),
+                'error_ai_call'       => __( 'Error during AI call', 'si-fast-product-importer' ),
+                'error_import'        => __( 'Error during import', 'si-fast-product-importer' ),
+                'preset_loaded'       => __( 'Preset loaded!', 'si-fast-product-importer' ),
+                'select_image'        => __( 'Select Product Image', 'si-fast-product-importer' ),
+                'use_image'           => __( 'Use Image', 'si-fast-product-importer' ),
+                'select_gallery'      => __( 'Select Gallery Images', 'si-fast-product-importer' ),
+                'add_to_gallery'      => __( 'Add to gallery', 'si-fast-product-importer' ),
+                'error'               => __( 'Error', 'si-fast-product-importer' ),
+                'fetch_error'         => __( 'Failed to fetch products', 'si-fast-product-importer' ),
+                'no_results'          => __( 'No products found matching your search.', 'si-fast-product-importer' ),
             )
         ) );
     }
 
     /**
-     * Admin Icon Styles - always loaded on all admin pages
+     * Admin Icon Styles
      */
     public function admin_icon_styles() {
-        ?>
-        <style>
-            li#toplevel_page_flash_products .wp-menu-image {
+        $css = '
+            li#toplevel_page_si_fast_products .wp-menu-image {
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
                 overflow: hidden !important;
             }
-            li#toplevel_page_flash_products .wp-menu-image img {
+            li#toplevel_page_si_fast_products .wp-menu-image img {
                 max-width: 20px !important;
                 max-height: 20px !important;
                 width: 20px !important;
@@ -148,13 +147,13 @@ class AdminManager {
                 opacity: 0.8;
                 transition: all 0.2s ease-in-out;
             }
-            li#toplevel_page_flash_products:hover .wp-menu-image img,
-            li#toplevel_page_flash_products.wp-has-current-submenu .wp-menu-image img {
+            li#toplevel_page_si_fast_products:hover .wp-menu-image img,
+            li#toplevel_page_si_fast_products.wp-has-current-submenu .wp-menu-image img {
                 opacity: 1;
                 scale: 1.1;
             }
-        </style>
-        <?php
+        ';
+        wp_add_inline_style( 'sifp-admin-style', $css );
     }
 
     /**

@@ -28,7 +28,7 @@ if ( ! is_object( $sifp_categories ) ) {
     
     // Add Local Categories to the list
     $sifp_upload_dir = wp_upload_dir();
-    $sifp_local_db_path = $sifp_upload_dir['basedir'] . '/si-flash-products/local_products.json';
+    $sifp_local_db_path = $sifp_upload_dir['basedir'] . '/si-fast-product-importer/local_products.json';
     if ( file_exists( $sifp_local_db_path ) ) {
         $sifp_local_data = json_decode( file_get_contents( $sifp_local_db_path ), true );
         if ( is_array($sifp_local_data) ) {
@@ -93,32 +93,32 @@ function sifp_render_pagination_bar() {
     ?>
     <div class="sifp-pagination-bar">
         <div class="sifp-nav-element sifp-nav-element--inline">
-            <label><?php echo esc_html__('Order:','si-flash-products');?></label>
+            <label><?php echo esc_html__('Order:','si-fast-product-importer');?></label>
             <select class="sifp-orderby" name="sifp_orderby">
-                <option value="name"> <?php esc_html_e('By Name', 'si-flash-products'); ?> </option>
-                <option value="date"> <?php esc_html_e('By Date', 'si-flash-products'); ?> </option>
+                <option value="name"> <?php esc_html_e('By Name', 'si-fast-product-importer'); ?> </option>
+                <option value="date"> <?php esc_html_e('By Date', 'si-fast-product-importer'); ?> </option>
             </select>
         </div>
 
         <div class="sifp-nav-element sifp-nav-element--inline">
-            <label><?php echo esc_html__('Limit:','si-flash-products');?></label>
-            <input class="sifp-limit sifp-u-w-65" name="sifp_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 1000','si-flash-products');?>" min="1" max="1000" step="1" value="100">
+            <label><?php echo esc_html__('Limit:','si-fast-product-importer');?></label>
+            <input class="sifp-limit sifp-u-w-65" name="sifp_limit" type="number" title="<?php echo esc_html__('Results per page. max value is 1000','si-fast-product-importer');?>" min="1" max="1000" step="1" value="100">
         </div>
 
         <div class="sifp-nav-element sifp-nav-element--inline">
-            <label><?php echo esc_html__('Page:','si-flash-products');?></label>
-            <input class="sifp-offset sifp-u-w-65" name="sifp_offset" type="number" placeholder="<?php esc_attr_e('type a number', 'si-flash-products'); ?>" step="1" value="0" total_pages="0">
+            <label><?php echo esc_html__('Page:','si-fast-product-importer');?></label>
+            <input class="sifp-offset sifp-u-w-65" name="sifp_offset" type="number" placeholder="<?php esc_attr_e('type a number', 'si-fast-product-importer'); ?>" step="1" value="0" total_pages="0">
         </div>
 
         <div class="sifp-nav-element sifp-nav-element--inline sifp-u-ml-auto">
-            <label><?php echo esc_html__('Founds:','si-flash-products');?></label>
+            <label><?php echo esc_html__('Founds:','si-fast-product-importer');?></label>
             <strong class="sifp-found"></strong>
         </div>
 
         <div class="sifp-nav-element sifp-nav-element--inline bulk-actions sifp-u-ml-auto sifp-u-hidden">
             <input type="checkbox" class="sifp-select-all-products">
-            <label><?php esc_html_e('Select All', 'si-flash-products'); ?></label>
-            <button class="sifp-bulk-import-btn button-primary sifp-u-ml-10"><?php esc_html_e('Import Selected', 'si-flash-products'); ?> (<span class="selected-count">0</span>)</button>
+            <label><?php esc_html_e('Select All', 'si-fast-product-importer'); ?></label>
+            <button class="sifp-bulk-import-btn button-primary sifp-u-ml-10"><?php esc_html_e('Import Selected', 'si-fast-product-importer'); ?> (<span class="selected-count">0</span>)</button>
         </div>
     </div>
     <?php
@@ -129,16 +129,16 @@ function sifp_render_pagination_bar() {
 <div id="sifp-admin-content" class="sifp-main-container">
 
     <div class="sifp-header-logo">
-        <img src="<?php echo SIFProd_URL . 'assets/flash-products-logo-128.png'; ?>" class="sifp-admin-logo" alt="SI Flash Products Logo">
-        <h1 class="sifp-plugin-title">Flash Products</h1>
+        <img src="<?php echo esc_url( SIFProd_URL . 'assets/flash-products-logo-128.png' ); ?>" class="sifp-admin-logo" alt="SI Fast Product Importer">
+        <h1 class="sifp-plugin-title">SI Fast Product Importer</h1>
     </div>
 
     <div class="sifp-navbar">
 
         <div class="sifp-nav-element">
-            <label><?php echo esc_html__('Languages:','si-flash-products');?></label>
+            <label><?php echo esc_html__('Languages:','si-fast-product-importer');?></label>
             <select class="sifp-languages" name="sifp_languages">
-                <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
+                <option value=""> <?php esc_html_e( '- select -', 'si-fast-product-importer' ); ?> </option>
                 <?php
                 $sifp_locale       = get_locale();
                 $sifp_detected_lang = strpos( $sifp_locale, 'it' ) === 0 ? 'it' : 'en';
@@ -155,9 +155,9 @@ function sifp_render_pagination_bar() {
         </div>
 
         <div class="sifp-nav-element">
-            <label><?php echo esc_html__('Categories:','si-flash-products');?></label>
+            <label><?php echo esc_html__('Categories:','si-fast-product-importer');?></label>
             <select class="sifp-categories" name="sifp_categories">
-                <option value=""> <?php esc_html_e( '- select -', 'si-flash-products' ); ?> </option>
+                <option value=""> <?php esc_html_e( '- select -', 'si-fast-product-importer' ); ?> </option>
                 <?php
                 $sifp_lang_cat_map = array(
                     'it' => array( 'Elettronica', 'Casa', 'Abbigliamento', 'Bellezza', 'Sport' ),
@@ -178,20 +178,20 @@ function sifp_render_pagination_bar() {
         </div>
 
         <div class="sifp-nav-element">
-            <label><?php echo esc_html__('Keyword:','si-flash-products');?></label>
-            <input class="sifp-keyword" name="sifp_keyword" type="search" placeholder="<?php esc_attr_e('type a keyword', 'si-flash-products'); ?>">
+            <label><?php echo esc_html__('Keyword:','si-fast-product-importer');?></label>
+            <input class="sifp-keyword" name="sifp_keyword" type="search" placeholder="<?php esc_attr_e('type a keyword', 'si-fast-product-importer'); ?>">
         </div>
         
         <div class="sifp-nav-element">
-            <label><?php echo esc_html__('Source:','si-flash-products');?></label>
+            <label><?php echo esc_html__('Source:','si-fast-product-importer');?></label>
             <select class="sifp-source" name="sifp_source">
-                <option value="all"> <?php esc_html_e('All Sources', 'si-flash-products'); ?> </option>
-                <option value="local"> <?php esc_html_e('Local JSON DB', 'si-flash-products'); ?> </option>
-                <option value="remote"> <?php esc_html_e('Remote Databases', 'si-flash-products'); ?> </option>
+                <option value="all"> <?php esc_html_e('All Sources', 'si-fast-product-importer'); ?> </option>
+                <option value="local"> <?php esc_html_e('Local JSON DB', 'si-fast-product-importer'); ?> </option>
+                <option value="remote"> <?php esc_html_e('Remote Databases', 'si-fast-product-importer'); ?> </option>
             </select>
         </div>
 
-        <button class="sifp-search-btn sifp-u-ml-auto"><?php echo esc_html__('SEARCH','si-flash-products');?></button>
+        <button class="sifp-search-btn sifp-u-ml-auto"><?php echo esc_html__('SEARCH','si-fast-product-importer');?></button>
     </div>
 
     <?php sifp_render_pagination_bar(); ?>
@@ -205,14 +205,14 @@ function sifp_render_pagination_bar() {
                     <input type="checkbox" class="sifp-select-product">
                 </div>
                 <img class="sifp-card-img" src="<?php echo esc_url( wc_placeholder_img_src('300') ); ?>">
-                <div class="sifp-rapid-import" title="<?php esc_attr_e('Rapid Import', 'si-flash-products'); ?>">
+                <div class="sifp-rapid-import" title="<?php esc_attr_e('Rapid Import', 'si-fast-product-importer'); ?>">
                     <span class="dashicons dashicons-plus"></span>
                 </div>
             </div>
 
             <div class="sifp-card-foot">
                 <strong class="sifp-card-title">
-                    <?php echo esc_html__('Product Title','si-flash-products');?>
+                    <?php echo esc_html__('Product Title','si-fast-product-importer');?>
                 </strong>
             </div>
 
@@ -229,7 +229,7 @@ function sifp_render_pagination_bar() {
     <div class="sifp-detail-section sifp-u-hidden">
         <div class="sifp-detail-section__head">
             <input type="text" class="sifp-detail-title editable-title" sifp-edit="post_title" value="">
-            <div class="sifp-button--close sifp-u-ml-auto"><?php echo esc_html__('CLOSE','si-flash-products');?></div>
+            <div class="sifp-button--close sifp-u-ml-auto"><?php echo esc_html__('CLOSE','si-fast-product-importer');?></div>
         </div>
         <div class="sifp-detail-section__body">
             <div class="sifp-detail-body-images">
@@ -238,12 +238,12 @@ function sifp_render_pagination_bar() {
             <div class="sifp-detail-section__col">
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Excerpt:','si-flash-products');?></strong>
+                    <strong><?php echo esc_html__('Excerpt:','si-fast-product-importer');?></strong>
                     <textarea sifp-edit="post_excerpt" rows="3"></textarea>
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Description:','si-flash-products');?></strong>
+                    <strong><?php echo esc_html__('Description:','si-fast-product-importer');?></strong>
                     <textarea sifp-edit="post_content" rows="10"></textarea>
                 </div>
 
@@ -251,47 +251,47 @@ function sifp_render_pagination_bar() {
             <div class="sifp-detail-section__col">
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Categories:','si-flash-products');?></strong>
-                    <input type="text" sifp-edit="sifp_categories" placeholder="<?php esc_attr_e('cat1, cat2...', 'si-flash-products'); ?>">
+                    <strong><?php echo esc_html__('Categories:','si-fast-product-importer');?></strong>
+                    <input type="text" sifp-edit="sifp_categories" placeholder="<?php esc_attr_e('cat1, cat2...', 'si-fast-product-importer'); ?>">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Tags:','si-flash-products');?></strong>
-                    <input type="text" sifp-edit="sifp_tag" placeholder="<?php esc_attr_e('tag1, tag2...', 'si-flash-products'); ?>">
+                    <strong><?php echo esc_html__('Tags:','si-fast-product-importer');?></strong>
+                    <input type="text" sifp-edit="sifp_tag" placeholder="<?php esc_attr_e('tag1, tag2...', 'si-fast-product-importer'); ?>">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Ingredients:','si-flash-products');?></strong>
-                    <input type="text" sifp-edit="sifp_ingredient" placeholder="<?php esc_attr_e('ing1, ing2...', 'si-flash-products'); ?>">
+                    <strong><?php echo esc_html__('Ingredients:','si-fast-product-importer');?></strong>
+                    <input type="text" sifp-edit="sifp_ingredient" placeholder="<?php esc_attr_e('ing1, ing2...', 'si-fast-product-importer'); ?>">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Allergens:','si-flash-products');?></strong>
-                    <input type="text" sifp-edit="sifp_allerg" placeholder="<?php esc_attr_e('all1, all2...', 'si-flash-products'); ?>">
+                    <strong><?php echo esc_html__('Allergens:','si-fast-product-importer');?></strong>
+                    <input type="text" sifp-edit="sifp_allerg" placeholder="<?php esc_attr_e('all1, all2...', 'si-fast-product-importer'); ?>">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Stickers:','si-flash-products');?></strong>
-                    <input type="text" sifp-edit="sifp_sticker" placeholder="<?php esc_attr_e('sticker1, sticker2...', 'si-flash-products'); ?>">
+                    <strong><?php echo esc_html__('Stickers:','si-fast-product-importer');?></strong>
+                    <input type="text" sifp-edit="sifp_sticker" placeholder="<?php esc_attr_e('sticker1, sticker2...', 'si-fast-product-importer'); ?>">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Temperature:','si-flash-products');?></strong>
-                    <input type="text" sifp-edit="sifp_temp" placeholder="<?php esc_attr_e('Cold, Hot...', 'si-flash-products'); ?>">
+                    <strong><?php echo esc_html__('Temperature:','si-fast-product-importer');?></strong>
+                    <input type="text" sifp-edit="sifp_temp" placeholder="<?php esc_attr_e('Cold, Hot...', 'si-fast-product-importer'); ?>">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('SKU:','si-flash-products');?></strong>
-                    <input type="text" sifp-edit="sku" placeholder="<?php esc_attr_e('PROD-001', 'si-flash-products'); ?>">
+                    <strong><?php echo esc_html__('SKU:','si-fast-product-importer');?></strong>
+                    <input type="text" sifp-edit="sku" placeholder="<?php esc_attr_e('PROD-001', 'si-fast-product-importer'); ?>">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Regular Price:','si-flash-products');?></strong>
+                    <strong><?php echo esc_html__('Regular Price:','si-fast-product-importer');?></strong>
                     <input type="number" step="0.01" sifp-edit="regular_price">
                 </div>
 
                 <div class="sifp-detail-block">
-                    <strong><?php echo esc_html__('Sale Price:','si-flash-products');?></strong>
+                    <strong><?php echo esc_html__('Sale Price:','si-fast-product-importer');?></strong>
                     <input type="number" step="0.01" sifp-edit="sale_price">
                 </div>
 
@@ -300,7 +300,7 @@ function sifp_render_pagination_bar() {
         <div class="sifp-detail-section__foot">
         <button class="button-primary sifp-import-edited-btn">
             <span class="dashicons dashicons-download"></span>
-            <?php esc_html_e('Import with Edited Values', 'si-flash-products'); ?>
+            <?php esc_html_e('Import with Edited Values', 'si-fast-product-importer'); ?>
         </button>
     </div>
     </div>

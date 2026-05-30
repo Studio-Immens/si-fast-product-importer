@@ -1,6 +1,6 @@
 <?php
 /**
- * Uninstall SI Flash Products.
+ * Uninstall SI Fast Product Importer.
  *
  * Cleans up all plugin options, transients, and custom DB tables.
  */
@@ -60,13 +60,14 @@ $wpdb->query( "DROP TABLE IF EXISTS {$sifp_table_name}" ); // phpcs:ignore WordP
 
 // Clean up uploaded JSON file
 $sifp_upload_dir = wp_upload_dir();
-$sifp_json_file  = $sifp_upload_dir['basedir'] . '/si-flash-products/local_products.json';
+$sifp_json_file  = $sifp_upload_dir['basedir'] . '/si-fast-product-importer/local_products.json';
 if ( file_exists( $sifp_json_file ) ) {
     wp_delete_file( $sifp_json_file );
 }
 
 // Clean up debug logs
-$sifp_log_dir = WP_CONTENT_DIR . '/uploads/si-flash-products';
+$sifp_upload_dir = wp_upload_dir();
+$sifp_log_dir = $sifp_upload_dir['basedir'] . '/si-fast-product-importer';
 if ( file_exists( $sifp_log_dir . '/debug.log' ) ) {
     wp_delete_file( $sifp_log_dir . '/debug.log' );
 }

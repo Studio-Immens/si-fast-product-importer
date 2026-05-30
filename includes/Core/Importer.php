@@ -13,7 +13,7 @@ class Importer {
      */
     public function create_woo_product( $data ) {
         if ( ! class_exists( 'WC_Product' ) ) {
-            return new \WP_Error( 'wc_missing', __( 'WooCommerce is not active.', 'si-flash-products' ) );
+            return new \WP_Error( 'wc_missing', __( 'WooCommerce is not active.', 'si-fast-product-importer' ) );
         }
 
         try {
@@ -68,7 +68,7 @@ class Importer {
             if ( function_exists( 'sifp_log' ) ) {
                 sifp_log( 'Failed to save product: ' . ( $data['post_title'] ?? 'Untitled' ), 'importer', 'error' );
             }
-            return new \WP_Error( 'save_failed', __( 'Failed to save product.', 'si-flash-products' ) );
+            return new \WP_Error( 'save_failed', __( 'Failed to save product.', 'si-fast-product-importer' ) );
         }
 
         // Handle Images
@@ -96,7 +96,7 @@ class Importer {
             }
             return new \WP_Error( 'import_failed', sprintf(
                 /* translators: %s: error message */
-                __( 'Error creating product: %s', 'si-flash-products' ),
+                __( 'Error creating product: %s', 'si-fast-product-importer' ),
                 $e->getMessage()
             ) );
         }

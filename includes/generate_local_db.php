@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  */
 function sifp_generate_local_db() {
 	$sifp_upload_dir = wp_upload_dir();
-	$sifp_output_dir = $sifp_upload_dir['basedir'] . '/si-flash-products';
+	$sifp_output_dir = $sifp_upload_dir['basedir'] . '/si-fast-product-importer';
 	if ( ! file_exists( $sifp_output_dir ) ) {
 		wp_mkdir_p( $sifp_output_dir );
 	}
@@ -118,8 +118,8 @@ function sifp_generate_local_db() {
 	);
 
 	$sifp_colors    = array('Rosso', 'Blu', 'Nero', 'Bianco', 'Verde', 'Grigio', 'Oro', 'Argento');
-	$sifp_img_base  = 'https://images.unsplash.com/';
-	$sifp_img_params = '?auto=format&fit=crop&w=800&q=80';
+	$sifp_img_base  = '';
+	$sifp_img_params = '';
 
 	$sifp_products = array();
 	$sifp_total    = 500;

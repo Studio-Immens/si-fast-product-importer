@@ -40,7 +40,7 @@ class GeminiProvider implements AIInterface {
         if ( ! $api_key ) {
             return array(
                 'success' => false,
-                'error'   => __( 'Gemini API Key is missing in settings.', 'si-flash-products' ),
+                'error'   => __( 'Gemini API Key is missing in settings.', 'si-fast-product-importer' ),
             );
         }
 
@@ -83,7 +83,7 @@ class GeminiProvider implements AIInterface {
         if ( isset( $res_body['error'] ) ) {
             return array(
                 'success' => false,
-                'error'   => $res_body['error']['message'] ?? __( 'Gemini API error', 'si-flash-products' ),
+                'error'   => $res_body['error']['message'] ?? __( 'Gemini API error', 'si-fast-product-importer' ),
             );
         }
 

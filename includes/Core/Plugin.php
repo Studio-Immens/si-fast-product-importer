@@ -115,7 +115,7 @@ final class Plugin {
     public function woocommerce_missing_notice() {
         ?>
         <div class="notice notice-error">
-            <p><?php esc_html_e( 'ERROR! Flash Products needs the WooCommerce plugin installed and active to work properly.', 'si-flash-products' ); ?></p>
+            <p><?php esc_html_e( 'ERROR! SI Fast Product Importer needs the WooCommerce plugin installed and active to work properly.', 'si-fast-product-importer' ); ?></p>
         </div>
         <?php
     }

@@ -96,8 +96,8 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
             return;
         }
 
-        if ( ! isset( $_POST['sett_nonce'] ) || ! wp_verify_nonce( wp_unslash( $_POST['sett_nonce'] ), 'si-flash-prod-sett' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-            wp_die( esc_html__( 'Security check failed', 'si-flash-products' ) );
+        if ( ! isset( $_POST['sett_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sett_nonce'] ) ), 'si-fast-prod-sett' ) ) {
+            wp_die( esc_html__( 'Security check failed', 'si-fast-product-importer' ) );
         }
 
         if ( isset( $_POST[ $args_name ] ) && is_array( $_POST[ $args_name ] ) ) {
@@ -156,7 +156,7 @@ if ( ! function_exists( 'sifp_save_settings' ) ) {
 if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
     function sifp_ensure_local_db() {
         $upload_dir = wp_upload_dir();
-        $plugin_upload_dir = $upload_dir['basedir'] . '/si-flash-products';
+        $plugin_upload_dir = $upload_dir['basedir'] . '/si-fast-product-importer';
         
         if ( ! file_exists( $plugin_upload_dir ) ) {
             wp_mkdir_p( $plugin_upload_dir );
@@ -233,8 +233,8 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
             'Sports'      => 'Sport',
         );
 
-        $img_base    = 'https://images.unsplash.com/';
-        $img_params  = '?auto=format&fit=crop&w=800&q=80';
+        $img_base    = '';
+        $img_params  = '';
 
         $category_images = array(
             'Elettronica' => array(
@@ -396,7 +396,7 @@ if ( ! function_exists( 'sifp_ensure_local_db' ) ) {
         $db->sync_json_to_db( $json_path );
         
         if ( isset( $_GET['sifp_regenerate_db'] ) ) {
-            wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&tab=database&message=db_regenerated' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=si_fast_products_settings&tab=database&message=db_regenerated' ) );
             exit;
         }
     }
@@ -413,15 +413,15 @@ if ( ! function_exists( 'sifp_handle_sync_db' ) ) {
 
         if ( isset( $_GET['sifp_sync_db'] ) && check_admin_referer( 'sifp_sync_db' ) ) {
             $upload_dir = wp_upload_dir();
-            $json_path  = $upload_dir['basedir'] . '/si-flash-products/local_products.json';
+            $json_path  = $upload_dir['basedir'] . '/si-fast-product-importer/local_products.json';
             
             if ( file_exists( $json_path ) ) {
                 $db = \SIFlashProducts\Core\Database::instance();
                 $db->sync_json_to_db( $json_path );
-                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&tab=database&message=db_synced' ) );
+                wp_safe_redirect( admin_url( 'admin.php?page=si_fast_products_settings&tab=database&message=db_synced' ) );
                 exit;
             } else {
-                wp_safe_redirect( admin_url( 'admin.php?page=flash_products_settings&tab=database&message=db_file_not_found' ) );
+                wp_safe_redirect( admin_url( 'admin.php?page=si_fast_products_settings&tab=database&message=db_file_not_found' ) );
                 exit;
             }
         }
@@ -455,9 +455,10 @@ if ( ! function_exists( 'sifp_log' ) ) {
         $logs = array_slice( $logs, 0, 50 );
         update_option( 'sifp_error_logs', $logs );
 
-        // Fallback to file logging if WP_DEBUG is on (use content dir, not plugin dir)
+        // Fallback to file logging if WP_DEBUG is on
         if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-            $log_dir = WP_CONTENT_DIR . '/uploads/si-flash-products';
+            $upload_dir = wp_upload_dir();
+            $log_dir = $upload_dir['basedir'] . '/si-fast-product-importer';
             if ( ! file_exists( $log_dir ) ) {
                 wp_mkdir_p( $log_dir );
             }

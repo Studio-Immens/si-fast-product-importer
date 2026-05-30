@@ -9,13 +9,13 @@ class AIGenerator {
         $provider = AIProviderManager::instance()->get_active_provider();
 
         if ( ! $provider ) {
-            return new \WP_Error( 'no_provider', __( 'No active AI provider found. Please configure one in Settings.', 'si-flash-products' ) );
+            return new \WP_Error( 'no_provider', __( 'No active AI provider found. Please configure one in Settings.', 'si-fast-product-importer' ) );
         }
 
         if ( ! $provider->is_available() ) {
             return new \WP_Error( 'provider_not_configured', sprintf(
                 /* translators: %s: AI provider name */
-                __( '%s is not configured. Please add your API key in Settings.', 'si-flash-products' ),
+                __( '%s is not configured. Please add your API key in Settings.', 'si-fast-product-importer' ),
                 $provider->get_name()
             ) );
         }
@@ -28,7 +28,7 @@ class AIGenerator {
             if ( function_exists( 'sifp_log' ) ) {
                 sifp_log( 'AI generation failed: ' . ( $result['error'] ?? 'Unknown error' ), 'ai_generator', 'error' );
             }
-            return new \WP_Error( 'ai_error', $result['error'] ?? __( 'AI call failed.', 'si-flash-products' ) );
+            return new \WP_Error( 'ai_error', $result['error'] ?? __( 'AI call failed.', 'si-fast-product-importer' ) );
         }
 
         $content = $result['text'];
@@ -44,7 +44,7 @@ class AIGenerator {
             if ( function_exists( 'sifp_log' ) ) {
                 sifp_log( 'Failed to decode JSON from AI. Raw: ' . substr( wp_json_encode( $content ), 0, 500 ), 'ai_generator', 'error' );
             }
-            return new \WP_Error( 'ai_invalid_json', __( 'AI returned an invalid JSON format.', 'si-flash-products' ) );
+            return new \WP_Error( 'ai_invalid_json', __( 'AI returned an invalid JSON format.', 'si-fast-product-importer' ) );
         }
 
         return $decoded;

@@ -39,7 +39,7 @@ class OpenAIProvider implements AIInterface {
         if ( empty( $encrypted ) ) {
             return array(
                 'success' => false,
-                'error'   => __( 'OpenAI API Key is missing in settings.', 'si-flash-products' ),
+                'error'   => __( 'OpenAI API Key is missing in settings.', 'si-fast-product-importer' ),
             );
         }
 
@@ -83,7 +83,7 @@ class OpenAIProvider implements AIInterface {
         if ( isset( $res_body['error'] ) ) {
             return array(
                 'success' => false,
-                'error'   => $res_body['error']['message'] ?? __( 'OpenAI API error', 'si-flash-products' ),
+                'error'   => $res_body['error']['message'] ?? __( 'OpenAI API error', 'si-fast-product-importer' ),
             );
         }
 
