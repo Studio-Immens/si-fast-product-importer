@@ -62,63 +62,29 @@ function sifp_generate_local_db() {
 
 	$sifp_category_images = array(
 		'Elettronica' => array(
-			'main' => array(
-				'photo-1468495244123-6c6c332eeece', 'photo-1505740420928-5e560c06d30e',
-				'photo-1523275335684-37898b6baf30',             'photo-1507003211169-0a1dd7228f2d',
-				'photo-1511707171634-5f897ff02aa9',
-			),
-			'gallery' => array(
-				'photo-1544244015-0df4b3ffc6b0', 'photo-1561948955-570b270e7c36',
-				'photo-1531297484001-80022131f5a1',
-			),
+			'main'    => array_fill( 0, 5, '' ),
+			'gallery' => array_fill( 0, 3, '' ),
 		),
 		'Casa' => array(
-			'main' => array(
-				'photo-1555041469-a586c61ea9bc', 'photo-1493663284031-b7e3aefcae8e',
-				'photo-1507003211169-0a1dd7228f2d', 'photo-1540574163026-643ea20ade25',
-				'photo-1533090161767-e6ffed986c88',
-			),
-			'gallery' => array(
-				'photo-1487700160040-b2e5f2b9c0a0', 'photo-1524758631624-e2822e304c36',
-				'photo-1560448204-e02f11c3d0e2',
-			),
+			'main'    => array_fill( 0, 5, '' ),
+			'gallery' => array_fill( 0, 3, '' ),
 		),
 		'Abbigliamento' => array(
-			'main' => array(
-				'photo-1491553895911-0055eca6402d', 'photo-1523381210434-271e8be1f52b',
-				'photo-1542291026-7eec264c27ff', 'photo-1551028719-00167b16eac5',
-				'photo-1512436991641-6745b0cfb1b1',
-			),
-			'gallery' => array(
-				'photo-1556905055-8f358a7a47b2', 'photo-1549298916-b41d501d3772',
-				'photo-1517404215738-1526349b4db0',
-			),
+			'main'    => array_fill( 0, 5, '' ),
+			'gallery' => array_fill( 0, 3, '' ),
 		),
 		'Bellezza' => array(
-			'main' => array(
-				'photo-1596462502278-27bfdc403348', 'photo-1522335789203-aabd1fc54bc8',
-				'photo-1570172619644-dfd03ed5d881', 'photo-1567721913486-6585f069b332',
-			),
-			'gallery' => array(
-				'photo-1556228578-0d85b1a4d571', 'photo-1596755389378-c31d21fd1273',
-				'photo-1608248543803-ba4f8c70ae0b',
-			),
+			'main'    => array_fill( 0, 4, '' ),
+			'gallery' => array_fill( 0, 3, '' ),
 		),
 		'Sport' => array(
-			'main' => array(
-				'photo-1571019613454-1cb2f99b2d8b', 'photo-1517836357463-d25dfeac3438',
-				'photo-1530541930197-ff16ac917b0e', 'photo-1518611012118-696072aa579a',
-				'photo-1556817411-31ae72fa3ea0',
-			),
-			'gallery' => array(
-				'photo-1534438327276-14e5300c3a48', 'photo-1562183241-b937e95585b6',
-				'photo-1571902943202-507ec2618e8f',
-			),
+			'main'    => array_fill( 0, 5, '' ),
+			'gallery' => array_fill( 0, 3, '' ),
 		),
 	);
 
 	$sifp_colors    = array('Rosso', 'Blu', 'Nero', 'Bianco', 'Verde', 'Grigio', 'Oro', 'Argento');
-	$sifp_img_base  = '';
+	$sifp_img_base  = wc_placeholder_img_src();
 	$sifp_img_params = '';
 
 	$sifp_products = array();

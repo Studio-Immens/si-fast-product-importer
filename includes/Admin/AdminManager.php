@@ -129,6 +129,9 @@ class AdminManager {
      * Admin Icon Styles
      */
     public function admin_icon_styles() {
+        wp_register_style( 'sifp-admin-icon', false );
+        wp_enqueue_style( 'sifp-admin-icon' );
+
         $css = '
             li#toplevel_page_si_fast_products .wp-menu-image {
                 display: flex !important;
@@ -153,7 +156,7 @@ class AdminManager {
                 scale: 1.1;
             }
         ';
-        wp_add_inline_style( 'sifp-admin-style', $css );
+        wp_add_inline_style( 'sifp-admin-icon', $css );
     }
 
     /**
