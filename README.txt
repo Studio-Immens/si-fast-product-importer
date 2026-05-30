@@ -32,8 +32,8 @@ This plugin connects to the following external services:
 **Flash Products API (flashproducts.studioimmens.com)**
 This plugin queries the Flash Products remote database to fetch ready-to-import WooCommerce products. The following data is sent with each search request: search keywords, selected language, category filter, pagination parameters. No personal user data is transmitted.
 - Service provided by: Studio Immens
-- Terms of Service: https://flashproducts.studioimmens.com/terms
-- Privacy Policy: https://flashproducts.studioimmens.com/privacy
+- Terms of Service: https://studioimmens.com/termini-e-condizioni
+- Privacy Policy: https://studioimmens.com/privacy-policy/
 
 **OpenAI API (api.openai.com)**
 When the OpenAI provider is enabled and configured, the plugin sends product names and optional context descriptions to OpenAI's API to generate product descriptions, excerpts, and metadata. No personal user data is transmitted.
