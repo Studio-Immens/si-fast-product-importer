@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     SI Fast Product Importer for WooCommerce
  * Description:     Import high-quality, pre-configured products into your WooCommerce store with just a few clicks. Includes AI-powered product generation, a vast product database, and one-click imports.
- * Version:         1.1.1
+ * Version:         1.1.2
  * Author:          Studio Immens
  * Text Domain:     si-fast-product-importer
  * License:         GPLv2 or later
