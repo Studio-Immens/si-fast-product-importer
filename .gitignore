@@ -51,5 +51,5 @@ wp-config.php
 INTERNAL_DOCUMENTATION.md
 *.log
 debug.log
-.github/
+# .github/ is tracked by git but excluded from SVN deploy via .gitattributes
 .git/
