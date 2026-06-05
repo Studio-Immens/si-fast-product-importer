@@ -79,6 +79,9 @@ Each AI provider has its own signup process. You can get free or paid API keys f
 1. The main product search and import interface.
 2. AI Product Generator.
 3. Plugin settings and logs.
+4. Product detail view with inline editing capabilities.
+5. AI Providers configuration settings.
+6. Local database management tools.
 
 == Changelog ==
 
