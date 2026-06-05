@@ -7,7 +7,7 @@ Requires PHP: 7.4
 Requires Plugins: woocommerce
 WC requires at least: 5.0
 WC tested up to: 9.0
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,11 @@ Each AI provider has its own signup process. You can get free or paid API keys f
 
 == Changelog ==
 
+= 1.2.0 =
+* Added WordPress.org SVN deploy automation via GitHub Actions.
+* Updated plugin banner, icons, and screenshots for WordPress.org.
+* Improved README.txt formatting and compatibility headers.
+
 = 1.1.0 =
 * Security hardening: CSRF protection and data sanitization.
 * Improved AI generation logic.
@@ -98,6 +103,9 @@ Each AI provider has its own signup process. You can get free or paid API keys f
 * Full WPCS compliance and security hardening.
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Automated SVN deployment and updated WordPress.org assets. Recommended update.
 
 = 1.1.0 =
 Important security and compliance update. All users should upgrade.

@@ -40,7 +40,7 @@ final class Plugin {
      * Define Constants
      */
     private function define_constants() {
-        $this->define( 'SIFProd_VERSION', '1.1.0' );
+        $this->define( 'SIFProd_VERSION', '1.2.0' );
         $this->define( 'SIFProd_PATH', plugin_dir_path( SIFProd_FILE ) );
         $this->define( 'SIFProd_URL', plugin_dir_url( SIFProd_FILE ) );
         $this->define( 'SIFProd_BASENAME', plugin_basename( SIFProd_FILE ) );
