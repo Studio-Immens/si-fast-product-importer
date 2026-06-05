@@ -11,7 +11,7 @@ Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Import high-quality, pre-configured products into your WooCommerce store with just a few clicks. Includes AI-powered product generation, a vast product database, and one-click imports.
+Import high-quality products into WooCommerce with AI-powered generation, one-click imports, and a vast pre-configured product database.
 
 == Description ==
 
